@@ -47,6 +47,11 @@ public:
 	virtual bool czyPusty() const = 0;
 	virtual const vector<int>& pokazMagazynek() const = 0;
 	virtual void ustawMagazynek(const vector<int>& nowyMagazynek) = 0;
+	virtual void zliczPociski() = 0;
+	virtual int pokazPelne() const = 0;
+	virtual int pokazPuste() const = 0;
+	virtual int zmniejszLiczbePelnych() = 0;
+	virtual int zmniejszLiczbePustych() = 0;
 
 	virtual ~IMagazynek() = default;
 
@@ -132,6 +137,8 @@ public:
 	virtual void cinPodziekowanie() const = 0;
 	virtual void cinCzyKontynuowac() const = 0;
 	virtual int podejmijDecyzje(int& wybor, Gracz& gracz) = 0;
+	virtual void cinWskaznik() const = 0;
+	virtual void cinEndl() const = 0;
 
 	virtual ~IInterfejs() = default;
 
@@ -160,6 +167,8 @@ class Magazynek : public IMagazynek
 
 private:
 
+	int pelne = 0;
+	int puste = 0;
 	int liczbaPociskow = 0;
 	vector<int> magazynek;
 
@@ -189,6 +198,51 @@ public:
 				cout << "Pusta - 0" << endl;
 			}
 		}
+	}
+
+	void zliczPociski() override
+	{
+
+		for (int i = 0; i < liczbaPociskow; i++)
+		{
+			if (magazynek[i] == 1)
+			{
+				pelne++;
+			}
+			else
+			{
+				puste++;
+			}
+		}
+
+	}
+
+	int pokazPelne() const override
+	{
+		return pelne;
+	}
+
+	int pokazPuste() const override
+	{
+		return puste;
+	}
+
+	int zmniejszLiczbePelnych() override
+	{
+		if (pelne > 0)
+		{
+			pelne--;
+		}
+		return pelne;
+	}
+
+	int zmniejszLiczbePustych() override
+	{
+		if (puste > 0)
+		{
+			puste--;
+		}
+		return puste;
 	}
 
 	int pokazLiczbePociskow() const override
@@ -232,8 +286,11 @@ public:
 	{
 		magazynek.clear();
 		liczbaPociskow = 0;
+		puste = 0;
+		pelne = 0;
 
 		zaladuj();
+		zliczPociski();
 	}
 
 	bool sprawdzLuske() const override
@@ -400,12 +457,14 @@ public:
 
 			if (magazynek.sprawdzLuske())
 			{
-				cout << "Pudlo!" << endl;
+				cout << "Pudlo!";
+				magazynek.zmniejszLiczbePustych();
 			}
 			else
 			{
 				cel.utrataHP();
-				cout << "Trafiony!" << endl;
+				magazynek.zmniejszLiczbePelnych();
+				cout << "Trafiony!";
 			}
 		}
 		else
@@ -415,17 +474,19 @@ public:
 				if (strzelajacy.pokazHP() < 3)
 				{
 					strzelajacy.odzyskanieHP();
-					cout << "Udalo sie odzyskac 1 HP!" << endl;
+					cout << "Udalo sie odzyskac 1 HP!";
 				}
 				else
 				{
-					cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!" << endl;
+					cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
 				}
+				magazynek.zmniejszLiczbePustych();
 			}
 			else
 			{
 				strzelajacy.utrataHP();
-				cout << "Nie udalo sie odzyskac HP i straciles 1 HP!" << endl;
+				magazynek.zmniejszLiczbePelnych();
+				cout << "Nie udalo sie odzyskac HP i straciles 1 HP!";
 			}
 		}
 		magazynek.zmniejszLiczbePociskow();
@@ -560,13 +621,15 @@ public:
 
 	void wyswietlStatystyki(const Gracz& czlowiek, const Gracz& komputer, const Magazynek& magazynek) const override
 	{
-		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "------------------------------------------------------------------------------------------------------------------------" << endl;
 		cout << "Statystyki:" << endl;
 		cout << "czlowiek HP: " << czlowiek.pokazHP() << endl;
 		cout << "komputer HP: " << komputer.pokazHP() << endl;
+		cout << "Pelne pociski w magazynku: " << magazynek.pokazPelne() << endl;
+		cout << "Puste pociski w magazynku: " << magazynek.pokazPuste() << endl;
 		cout << "Pociski w magazynku: " << magazynek.pokazLiczbePociskow() << endl;
-		magazynek.pokazPociski();
-		cout << "--------------------------------------------------------------------------" << endl;
+		//magazynek.pokazPociski(); //Do debugowania
+		cout << "------------------------------------------------------------------------------------------------------------------------" << endl;
 	}
 
 	void przewinEkran() const override
@@ -585,7 +648,7 @@ public:
 		cout << "1 - Strzel w komputera" << endl;
 		cout << "5 - Zapisz gre" << endl;
 		cout << "6 - Wczytaj gre" << endl;
-		cout << "--------------------------------------------------------------------------" << endl;
+		cout << "------------------------------------------------------------------------------------------------------------------------" << endl;
 		cout << "Twoj wybor: ";
 
 	}
@@ -665,6 +728,16 @@ public:
 	{
 		cout << "Czy chcesz kontynuowac gre? (t/n): ";
 	}	
+
+	void cinWskaznik() const override
+	{
+		cout << "										*" << endl;
+	}
+
+	void cinEndl() const override
+	{
+		cout << endl;
+	}
 
 };
 
@@ -795,13 +868,14 @@ public:
 
 					zaczynajacy = 0;
 					strzal.oddajStrzal(komputer, czlowiek, wybor, magazynek);
-
+					ui.cinWskaznik();
 				}
 				else if (wybor == 0)
 				{
 
 					zaczynajacy = 0;
 					strzal.oddajStrzal(czlowiek, czlowiek, wybor, magazynek);
+					ui.cinWskaznik();
 
 				}
 				else if (wybor == 5)
@@ -810,7 +884,7 @@ public:
 					ui.cinZapis(nazwaPliku);
 					zapis.zapiszStanGry(czlowiek, komputer, liczbaPociskow, zaczynajacy, magazynek, nazwaPliku);
 					ui.wyswietlStatystyki(czlowiek, komputer, magazynek);
-					zaczynajacy = 1;
+					ui.cinWskaznik();
 
 				}
 				else if (wybor == 6)
@@ -819,7 +893,7 @@ public:
 					ui.cinOdczyt(nazwaPliku);
 					odczyt.wczytajStanGry(czlowiek, komputer, liczbaPociskow, zaczynajacy, magazynek, nazwaPliku);
 					ui.wyswietlStatystyki(czlowiek, komputer, magazynek);
-					zaczynajacy = 1;
+					ui.cinWskaznik();
 
 				}
 				else
@@ -827,6 +901,7 @@ public:
 
 					zaczynajacy = 0;
 					ui.cinNieprawidowyWybor();
+					ui.cinWskaznik();
 
 				}
 
@@ -840,10 +915,12 @@ public:
 				if (wybor == 1)
 				{
 					strzal.oddajStrzal(czlowiek, komputer, wybor, magazynek);
+					ui.cinEndl();
 				}
 				else
 				{
 					strzal.oddajStrzal(komputer, komputer, wybor, magazynek);
+					ui.cinEndl();
 				}
 			}
 			ui.wyswietlStatystyki(czlowiek, komputer, magazynek);
