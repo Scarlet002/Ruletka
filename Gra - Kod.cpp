@@ -96,7 +96,7 @@ private:
 
 public:
 
-	virtual void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& liczbaPociskow, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
+	virtual void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
 
 	virtual ~IZapis() = default;
 
@@ -109,7 +109,7 @@ private:
 
 public:
 
-	virtual void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& liczbaPociskow, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
+	virtual void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
 
 	virtual ~IOdczyt() = default;
 
@@ -254,6 +254,16 @@ public:
 	{
 		liczbaPociskow = noweLiczbaPociskow;
 		magazynek.resize(liczbaPociskow);
+	}
+
+	void ustawPelne(int nowePelne)
+	{
+		pelne = nowePelne;
+	}
+
+	void ustawPuste(int nowePuste)
+	{
+		puste = nowePuste;
 	}
 
 	void zmniejszLiczbePociskow() override
@@ -502,10 +512,17 @@ private:
 
 public:
 
-	void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& liczbaPociskow, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
+	void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
 
 		string nazwa;
 		nazwa = nazwaPliku;
+
+		int hpkomputer = komputer.pokazHP();
+		int hpczlowiek = czlowiek.pokazHP();
+		int liczbaPociskow = magazynek.pokazLiczbePociskow();
+		int pelne = magazynek.pokazPelne();
+		int puste = magazynek.pokazPuste();
+		int zaczyna = zaczynajacy;
 
 		ofstream saveStanuGry(nazwa);
 
@@ -518,9 +535,11 @@ public:
 			}
 			else {
 
-				saveStanuGry << czlowiek.pokazHP() << endl;
-				saveStanuGry << komputer.pokazHP() << endl;
-				saveStanuGry << magazynek.pokazLiczbePociskow() << endl;
+				saveStanuGry << hpczlowiek << endl;
+				saveStanuGry << hpkomputer << endl;	
+				saveStanuGry << pelne << endl;
+				saveStanuGry << puste << endl;
+				saveStanuGry << liczbaPociskow << endl;
 				saveStanuGry << zaczynajacy << endl;
 
 				for (int i = 0; i < magazynek.pokazLiczbePociskow(); i++)
@@ -556,7 +575,7 @@ private:
 
 public:
 
-	void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& liczbaPociskow, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
+	void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
 
 		string nazwa;
 		nazwa = nazwaPliku;
@@ -576,19 +595,26 @@ public:
 				int pocisk;
 				int hpczlowiek;
 				int hpkomputer;
-				int liczbaPociskowMagazynek;
+				int pelne;
+				int puste;
+				int liczbaPociskow;
 
 				saveStanuGry >> hpczlowiek;
 				saveStanuGry >> hpkomputer;
-				saveStanuGry >> liczbaPociskowMagazynek;
+				saveStanuGry >> pelne;
+				saveStanuGry >> puste;
+				saveStanuGry >> liczbaPociskow;
 				saveStanuGry >> zaczynajacy;
 
 				czlowiek.ustawHP(hpczlowiek);
 				komputer.ustawHP(hpkomputer);
+				magazynek.ustawPelne(pelne);
+				magazynek.ustawPuste(puste);
+				magazynek.ustawLiczbePociskow(liczbaPociskow);
 
 				vector<int> nowyMagazynek;
 
-				for (int i = 0; i < liczbaPociskowMagazynek; i++)
+				for (int i = 0; i < liczbaPociskow; i++)
 				{
 
 					saveStanuGry >> pocisk;
@@ -806,7 +832,7 @@ public:
 
 		if (czyChceKontynuowac())
 		{
-
+			rozpocznijGre();
 		}
 		else
 		{
@@ -882,7 +908,7 @@ public:
 				{
 
 					ui.cinZapis(nazwaPliku);
-					zapis.zapiszStanGry(czlowiek, komputer, liczbaPociskow, zaczynajacy, magazynek, nazwaPliku);
+					zapis.zapiszStanGry(czlowiek, komputer, zaczynajacy, magazynek, nazwaPliku);
 					ui.wyswietlStatystyki(czlowiek, komputer, magazynek);
 					ui.cinWskaznik();
 
@@ -891,7 +917,7 @@ public:
 				{
 
 					ui.cinOdczyt(nazwaPliku);
-					odczyt.wczytajStanGry(czlowiek, komputer, liczbaPociskow, zaczynajacy, magazynek, nazwaPliku);
+					odczyt.wczytajStanGry(czlowiek, komputer, zaczynajacy, magazynek, nazwaPliku);
 					ui.wyswietlStatystyki(czlowiek, komputer, magazynek);
 					ui.cinWskaznik();
 
