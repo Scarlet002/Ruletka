@@ -13,6 +13,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 using std::string;
+using std::runtime_error;
 
 class IGra;
 class IInterfejs;
@@ -43,15 +44,15 @@ public:
 	virtual void zmniejszLiczbePociskow() = 0;
 	virtual bool czyKoniecPociskow() const = 0;
 	virtual void przeladuj() = 0;
-	virtual bool sprawdzLuske() const = 0;
+	virtual bool czyPusta() const = 0;
 	virtual bool czyPusty() const = 0;
 	virtual const vector<int>& pokazMagazynek() const = 0;
 	virtual void ustawMagazynek(const vector<int>& nowyMagazynek) = 0;
 	virtual void zliczPociski() = 0;
 	virtual int pokazPelne() const = 0;
 	virtual int pokazPuste() const = 0;
-	virtual int zmniejszLiczbePelnych() = 0;
-	virtual int zmniejszLiczbePustych() = 0;
+	virtual void zmniejszLiczbePelnych() = 0;
+	virtual void zmniejszLiczbePustych() = 0;
 
 	virtual ~IMagazynek() = default;
 
@@ -64,7 +65,7 @@ private:
 
 public:
 
-	virtual void oddajStrzal(Gracz& cel, Gracz& strzelajacy, int& wyborDoIfa, Magazynek& magazynek) = 0;
+	virtual void oddajStrzal(Gracz& cel, Gracz& strzelajacy, const int& wybor, Magazynek& magazynek) = 0;
 
 	virtual ~IStrzal() = default;
 
@@ -96,7 +97,7 @@ private:
 
 public:
 
-	virtual void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
+	virtual void zapiszStanGry(const Gracz& czlowiek, const Gracz& komputer, const int& zaczynajacy, const Magazynek& magazynek, const string& nazwaPliku) const = 0;
 
 	virtual ~IZapis() = default;
 
@@ -109,7 +110,7 @@ private:
 
 public:
 
-	virtual void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) = 0;
+	virtual void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, const string& nazwaPliku) const = 0;
 
 	virtual ~IOdczyt() = default;
 
@@ -136,7 +137,7 @@ public:
 	virtual void cinKoniecPociskow() const = 0;
 	virtual void cinPodziekowanie() const = 0;
 	virtual void cinCzyKontynuowac() const = 0;
-	virtual int podejmijDecyzje(int& wybor, Gracz& gracz) = 0;
+	virtual int podejmijDecyzje(int& wybor, const Gracz& gracz) const = 0;
 	virtual void cinWskaznik() const = 0;
 	virtual void cinEndl() const = 0;
 
@@ -151,10 +152,10 @@ private:
 
 public:
 
-	virtual void losowanieZaczynajacego(int& zaczynajacy, Interfejs& ui) = 0;
-	virtual void wygrana(Gracz& czlowiek, Gracz& komputer, Interfejs& ui) = 0;
-	virtual void nowaTura(Gracz& czlowiek, Gracz& komputer, Interfejs& ui, Magazynek& magazynek) = 0;
-	virtual bool ktoWygral(Gracz& czlowiek, Gracz& komputer, Interfejs& ui) = 0;
+	virtual void losowanieZaczynajacego(int& zaczynajacy, const Interfejs& ui) = 0;
+	virtual void wygrana(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui) = 0;
+	virtual void nowaTura(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui, Magazynek& magazynek) = 0;
+	virtual bool ktoWygral(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui) = 0;
 	virtual bool czyChceKontynuowac() = 0;
 	virtual void rozpocznijGre() = 0;
 
@@ -227,22 +228,20 @@ public:
 		return puste;
 	}
 
-	int zmniejszLiczbePelnych() override
+	void zmniejszLiczbePelnych() override
 	{
 		if (pelne > 0)
 		{
 			pelne--;
 		}
-		return pelne;
 	}
 
-	int zmniejszLiczbePustych() override
+	void zmniejszLiczbePustych() override
 	{
 		if (puste > 0)
 		{
 			puste--;
 		}
-		return puste;
 	}
 
 	int pokazLiczbePociskow() const override
@@ -254,6 +253,7 @@ public:
 	{
 		liczbaPociskow = noweLiczbaPociskow;
 		magazynek.resize(liczbaPociskow);
+		zliczPociski();
 	}
 
 	void ustawPelne(int nowePelne)
@@ -275,8 +275,8 @@ public:
 		}
 		else
 		{
-			liczbaPociskow--;
 			magazynek.erase(magazynek.begin());
+			liczbaPociskow = static_cast<int>(magazynek.size());
 		}
 
 	}
@@ -303,11 +303,11 @@ public:
 		zliczPociski();
 	}
 
-	bool sprawdzLuske() const override
+	bool czyPusta() const override
 	{
 		if (magazynek.empty())
 		{
-			return false;
+			throw runtime_error("Magazynek jest pusty!");
 		}
 		else
 		{
@@ -459,47 +459,53 @@ private:
 
 public:
 
-	void oddajStrzal(Gracz& cel, Gracz& strzelajacy, int& wyborDoIfa, Magazynek& magazynek) override
+	void oddajStrzal(Gracz& cel, Gracz& strzelajacy, const int& wybor, Magazynek& magazynek) override
 	{
-
-		if (wyborDoIfa == 1)
+		if (magazynek.czyPusty())
 		{
-
-			if (magazynek.sprawdzLuske())
-			{
-				cout << "Pudlo!";
-				magazynek.zmniejszLiczbePustych();
-			}
-			else
-			{
-				cel.utrataHP();
-				magazynek.zmniejszLiczbePelnych();
-				cout << "Trafiony!";
-			}
+			throw runtime_error("Brak pociskow w magazynku!");
 		}
 		else
 		{
-			if (magazynek.sprawdzLuske())
+			if (wybor == 1)
 			{
-				if (strzelajacy.pokazHP() < 3)
+
+				if (magazynek.czyPusta())
 				{
-					strzelajacy.odzyskanieHP();
-					cout << "Udalo sie odzyskac 1 HP!";
+					cout << "Pudlo!";
+					magazynek.zmniejszLiczbePustych();
 				}
 				else
 				{
-					cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
+					cel.utrataHP();
+					magazynek.zmniejszLiczbePelnych();
+					cout << "Trafiony!";
 				}
-				magazynek.zmniejszLiczbePustych();
 			}
 			else
 			{
-				strzelajacy.utrataHP();
-				magazynek.zmniejszLiczbePelnych();
-				cout << "Nie udalo sie odzyskac HP i straciles 1 HP!";
+				if (magazynek.czyPusta())
+				{
+					if (strzelajacy.pokazHP() < 3)
+					{
+						strzelajacy.odzyskanieHP();
+						cout << "Udalo sie odzyskac 1 HP!";
+					}
+					else
+					{
+						cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
+					}
+					magazynek.zmniejszLiczbePustych();
+				}
+				else
+				{
+					strzelajacy.utrataHP();
+					magazynek.zmniejszLiczbePelnych();
+					cout << "Nie udalo sie odzyskac HP i straciles 1 HP!";
+				}
 			}
+			magazynek.zmniejszLiczbePociskow();
 		}
-		magazynek.zmniejszLiczbePociskow();
 
 	}
 
@@ -512,7 +518,7 @@ private:
 
 public:
 
-	void zapiszStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
+	void zapiszStanGry(const Gracz& czlowiek, const Gracz& komputer, const int& zaczynajacy, const Magazynek& magazynek, const string& nazwaPliku) const override {
 
 		string nazwa;
 		nazwa = nazwaPliku;
@@ -575,7 +581,7 @@ private:
 
 public:
 
-	void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, string& nazwaPliku) override {
+	void wczytajStanGry(Gracz& czlowiek, Gracz& komputer, int& zaczynajacy, Magazynek& magazynek, const string& nazwaPliku) const override {
 
 		string nazwa;
 		nazwa = nazwaPliku;
@@ -622,6 +628,7 @@ public:
 				}
 
 				magazynek.ustawMagazynek(nowyMagazynek);
+				magazynek.zliczPociski();
 				saveStanuGry.close();
 
 			}
@@ -679,7 +686,7 @@ public:
 
 	}
 
-	int podejmijDecyzje(int& wybor, Gracz& gracz) override {
+	int podejmijDecyzje(int& wybor, const Gracz& gracz) const override {
 
 		if (gracz.czyJestCzlowiekiem())
 		{
@@ -792,7 +799,7 @@ public:
 
 	}
 
-	void losowanieZaczynajacego(int& zaczynajacy, Interfejs& ui) override
+	void losowanieZaczynajacego(int& zaczynajacy, const Interfejs& ui) override
 	{
 
 		if (rand() % 2 == 1)
@@ -827,7 +834,7 @@ public:
 		}
 	}
 
-	void wygrana(Gracz& czlowiek, Gracz& komputer, Interfejs& ui) override
+	void wygrana(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui) override
 	{
 
 		if (czyChceKontynuowac())
@@ -841,7 +848,7 @@ public:
 
 	}
 
-	void nowaTura(Gracz& czlowiek, Gracz& komputer, Interfejs& ui, Magazynek& magazynek) override
+	void nowaTura(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui, Magazynek& magazynek) override
 	{
 
 		ui.cinKoniecPociskow();
@@ -850,7 +857,7 @@ public:
 
 	}
 
-	bool ktoWygral(Gracz& czlowiek, Gracz& komputer, Interfejs& ui) override
+	bool ktoWygral(const Gracz& czlowiek, const Gracz& komputer, const Interfejs& ui) override
 	{
 
 		if (!czlowiek.czyZyje())
