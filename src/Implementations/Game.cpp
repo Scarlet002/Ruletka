@@ -67,16 +67,20 @@ void Game::StartGame()
             gameState.human.MakeDecision(gameState);
 
             if (gameStateManager.GetChoice() == GameEnums::SHOOT)
-            {
-                gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+            {   
+                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
+                gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
+                gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::HEAL)
             {
-                gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
+                gameState.gameStateManager.SetTarget(GameEnums::STARTER_HUMAN);
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
+                gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::SAVE)
             {
@@ -105,24 +109,26 @@ void Game::StartGame()
             }
             else
             {
-                gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
                 ui.InvalidInput();
                 ui.ShowPointer();
             }
         }
         else
         {
-            gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
             ui.ComputerChoosing();
             gameState.computer.MakeDecision(gameState);
 
             if (gameState.gameStateManager.GetChoice() == GameEnums::SHOOT)
             {
+                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
+                gameState.gameStateManager.SetTarget(GameEnums::STARTER_HUMAN);
                 gameState.computer.Shoot(gameState);
                 ui.NewLine();
             }
             else
             {
+                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
+                gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.computer.Shoot(gameState);
                 ui.NewLine();
             }

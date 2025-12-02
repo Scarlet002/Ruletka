@@ -42,7 +42,7 @@ void ShootingManager::Shoot(GameState& gameState)
         {
             if (gameState.magazine.IsEmptySlot())
             {
-                if (shooter == GameEnums::SHOOTER_HUMAN ? gameState.human.GetHP() : gameState.computer.GetHP() < gameState.gameConfig.maxPlayerHP)
+                if ((shooter == GameEnums::SHOOTER_HUMAN ? gameState.human.GetHP() : gameState.computer.GetHP()) < gameState.gameConfig.maxPlayerHP)
                 {
                     if (shooter == GameEnums::SHOOTER_HUMAN)
                     {
