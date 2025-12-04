@@ -15,7 +15,7 @@ int AiManager::GetDifficulty() const
 
 void AiManager::EasyAI(GameState& gameState) const
 {
-    gameState.gameStateManager.SetChoice(rand() % 2);
+    gameState.gameStateManager.SetChoice(rand() % gameState.gameConfig.numberOfBulletTypes);
 }
 
 void AiManager::NormalAI(GameState& gameState) const

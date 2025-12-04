@@ -1,4 +1,3 @@
-#pragma once
 #include "GameEnums.h"
 #include "MagazineManager.h"
 #include <iostream>
@@ -10,26 +9,25 @@ using std::endl;
 using std::runtime_error;
 using std::any_of;
 
+MagazineManager::MagazineManager(GameConfig& gameConfig) : gameConfig(gameConfig) {};
+
 void MagazineManager::Load()
 {
-    bulletCount = rand() % 8 + 1;
+    bulletCount = rand() % gameConfig.maxBullets + gameConfig.minBullets;
     magazine.resize(bulletCount);
 
     for (int i = 0; i < bulletCount; i++)
     {
-        magazine[i] = rand() % 2;
+        magazine[i] = rand() % gameConfig.numberOfBulletTypes;
     }
 }
 
 void MagazineManager::ShowBullets() const
 {
-    for (int i = 0; i < bulletCount; i++)
+    for_each(magazine.begin(), magazine.end(), [](int bullet) 
     {
-        if (magazine[i] == 1)
-            cout << "Pelna - 1" << endl;
-        else
-            cout << "Pusta - 0" << endl;
-    }
+        cout << (bullet == GameEnums::FULL ? "Pelna - 1" : "Pusta - 0") << endl;
+    });
 }
 
 bool MagazineManager::CheckBulletType() const
@@ -39,13 +37,9 @@ bool MagazineManager::CheckBulletType() const
 
 void MagazineManager::CheckBullets()
 {
-    for (int i = 0; i < bulletCount; i++)
-    {
-        if (magazine[i] == 1)
-            full++;
-        else
-            empty++;
-    }
+    full = count_if(magazine.begin(), magazine.end(),
+        [](int bullet) { return bullet == GameEnums::FULL; });
+    empty = magazine.size() - full;
 }
 
 int MagazineManager::ShowFull() const { return full; }
@@ -109,4 +103,13 @@ double MagazineManager::CalculateHitProbability() const
 bool MagazineManager::HasEmptyBullets() const
 {
     return any_of(magazine.begin(), magazine.end(), [](int bullet) { return bullet == GameEnums::EMPTY; });
+}
+
+void MagazineManager::InvertBulletType() { CheckBulletType() ? magazine[0] = GameEnums::EMPTY : magazine[0] = GameEnums::FULL; };
+
+int MagazineManager::GetMagazienSize() const { return magazine.size(); }
+
+bool MagazineManager::CheckBulletTypeCellPhone(int bullet) const
+{
+    return magazine[bullet] == GameEnums::FULL;
 }

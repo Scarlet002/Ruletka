@@ -12,11 +12,15 @@ public:
     virtual void Menu() const = 0;
     virtual void DifficultyMenu() const = 0;
     virtual void ShowAIDifficulty(int difficulty) const = 0;
+    virtual void InventoryMenu() const = 0;
+
     virtual void InputSaveTXT(string& fileName) = 0;
     virtual void InputLoadTXT(string& fileName) = 0;
     virtual void InputSaveJSON(string& fileName) = 0;
     virtual void InputLoadJSON(string& fileName) = 0;
     virtual void InputdifficultyLevel(GameState& gameState) = 0;
+    virtual void InputItemChoice(GameState& gameState) = 0;
+
     virtual bool WantsToContinue(GameState& gameState) = 0;
     virtual void ComputerChoosing() const = 0;
     virtual void ComputerStarts() const = 0;
@@ -28,6 +32,8 @@ public:
     virtual void SavingSucces() const = 0;
     virtual void LoadingSucces() const = 0;
     virtual void DifficultyChangeSucces() const = 0;
+    virtual void ItemUseSuccesHuman(GameState& gameState) const = 0;
+    virtual void ItemUseSuccesComputer(GameState& gameState) const = 0;
     virtual void InvalidInput() const = 0;
     virtual void ComputerWin() const = 0;
     virtual void HumanWin() const = 0;

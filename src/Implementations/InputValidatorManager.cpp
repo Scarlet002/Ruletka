@@ -15,7 +15,12 @@ using std::endl;
     }
 
     bool InputValidatorManager::IsValidMenuChoice(const string& input) {
-        regex pattern("^[0-7]$");
+        regex pattern("^[0-6]$");
+        return regex_match(input, pattern);
+    }
+
+    bool InputValidatorManager::IsValidItemChoice(const string& input) {
+        regex pattern("^[0-6]$");
         return regex_match(input, pattern);
     }
 

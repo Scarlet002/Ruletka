@@ -28,11 +28,11 @@ void ShootingManager::Shoot(GameState& gameState)
             {
                 if (target == GameEnums::SHOOTER_HUMAN)
                 {
-                    gameState.human.LoseHP();
+                    gameState.human.LoseHP(gameState);
                 }
                 else
                 {
-                    gameState.computer.LoseHP();
+                    gameState.computer.LoseHP(gameState);
                 }
                 gameState.magazine.DecreaseFullCount();
                 cout << "Trafiony!";
@@ -62,11 +62,11 @@ void ShootingManager::Shoot(GameState& gameState)
             {
                 if (shooter == GameEnums::SHOOTER_HUMAN)
                 {
-                    gameState.human.LoseHP();
+                    gameState.human.LoseHP(gameState);
                 }
                 else
                 {
-                    gameState.computer.LoseHP();
+                    gameState.computer.LoseHP(gameState);
                 }
                 gameState.magazine.DecreaseFullCount();
                 cout << "Nie udalo sie odzyskac HP i straciles 1 HP!";

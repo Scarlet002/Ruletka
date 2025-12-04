@@ -15,31 +15,37 @@
 #include <memory>
 
 using std::string;
+using std::unique_ptr;
+using std::make_unique;
 
 Game::Game(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON)
-    : humanHP(gameConfig), computerHP(gameConfig),
-    human("czlowiek", "czlowiek", humanHP), computer("komputer", "komputer", computerHP),
+    : magazine(gameConfig), gameStateManager(gameConfig),
+    human("Czlowiek", "human", gameConfig), computer("Komputer", "computer", gameConfig),
     gameState(human, computer, magazine, gameStateManager, gameConfig, ai),
     loaderJSON(loaderJSON), saverJSON(saverJSON)
 {
-          asyncSaver = new AutoSaveManager(saverJSON, gameState);
+          asyncSaver = make_unique<AutoSaveManager>(saverJSON, gameState);
 };
 
 void Game::NewRound(GameState& gameState, const UiManager& ui)
 {
     ui.EndOfBullets();
     gameState.magazine.Reload();
+    gameState.human.GetRandomItem(gameState);
+    gameState.human.GetNumberOfItems(gameState);
+    gameState.computer.GetRandomItem(gameState);
+    gameState.computer.GetNumberOfItems(gameState);
     ui.DisplayStats(gameState);
 }
 
-bool Game::WhoWon(const Player& human, const Player& computer, const UiManager& ui)
+bool Game::WhoWon(const GameState& gameState, const UiManager& ui)
 {
-    if (!human.isAlive())
+    if (!gameState.human.isAlive())
     {
         ui.ComputerWin();
         return true;
     }
-    else if (!computer.isAlive())
+    else if (!gameState.computer.isAlive())
     {
         ui.HumanWin();
         return true;
@@ -52,7 +58,9 @@ void Game::StartGame()
     gameState.human.ResetHP();
     gameState.computer.ResetHP();
     gameState.magazine.Reload();
-    gameState.gameStateManager.RundomizeStarter();
+    gameState.human.ResetInventory(gameState);
+    gameState.computer.ResetInventory(gameState);
+    gameState.gameStateManager.RandomizeStarter();
     ui.DisplayStats(gameState);
 
     while (true)
@@ -63,6 +71,7 @@ void Game::StartGame()
             ui.AutoSaveDone();
             ui.ShowAutoSaveName(autoSaveFileName);
             ui.NewLine();
+            ui.NewLine();
             ui.Menu();
             gameState.human.MakeDecision(gameState);
 
@@ -72,21 +81,30 @@ void Game::StartGame()
                 gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
+                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
                 gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::HEAL)
             {
                 gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
-                gameState.gameStateManager.SetTarget(GameEnums::STARTER_HUMAN);
+                gameState.gameStateManager.SetTarget(GameEnums::TARGET_HUMAN);
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
+                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
                 gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+            }
+            else if (gameState.gameStateManager.GetChoice() == GameEnums::USEITEM)
+            {
+                ui.InventoryMenu();
+                ui.InputItemChoice(gameState);
+                ui.ItemUseSuccesHuman(gameState);
+                gameState.human.GetNumberOfItems(gameState);
+                ui.ShowPointer();
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::SAVE)
             {
                 ui.InputSaveJSON(fileName);
                 saverJSON.SaveGameState(gameState, fileName);
-                ui.DisplayStats(gameState);
                 ui.SavingSucces();
                 ui.ShowPointer();
             }
@@ -95,7 +113,6 @@ void Game::StartGame()
                 ui.InputLoadJSON(fileName);
                 loaderJSON.LoadGameState(gameState, fileName);
                 ui.LoadingSucces();
-                ui.DisplayStats(gameState);
                 ui.ShowPointer();
 
             }
@@ -103,15 +120,16 @@ void Game::StartGame()
             {
                 ui.DifficultyMenu();
                 ui.InputdifficultyLevel(gameState);
-                ui.DisplayStats(gameState);
                 ui.DifficultyChangeSucces();
                 ui.ShowPointer();
             }
             else
             {
-                ui.InvalidInput();
-                ui.ShowPointer();
+                ui.ScrollScreen();
+                ui.ThankYou();
+                break;
             }
+            gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
         }
         else
         {
@@ -121,8 +139,9 @@ void Game::StartGame()
             if (gameState.gameStateManager.GetChoice() == GameEnums::SHOOT)
             {
                 gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
-                gameState.gameStateManager.SetTarget(GameEnums::STARTER_HUMAN);
+                gameState.gameStateManager.SetTarget(GameEnums::TARGET_HUMAN);
                 gameState.computer.Shoot(gameState);
+                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
                 ui.NewLine();
             }
             else
@@ -130,6 +149,7 @@ void Game::StartGame()
                 gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
                 gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.computer.Shoot(gameState);
+                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
                 ui.NewLine();
             }
             gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
@@ -137,22 +157,20 @@ void Game::StartGame()
 
         ui.DisplayStats(gameState);
 
-        if (WhoWon(human, computer, ui)) {
+        if (WhoWon(gameState, ui)) {
             if (!ui.WantsToContinue(gameState))
             {
                 break;
             }
             else
             {
-                NewRound(gameState, ui);
+                continue;
             }
         }
 
-        if (magazine.IsOutOfBullets())
+        if (gameState.magazine.IsOutOfBullets())
             NewRound(gameState, ui);
     }
 }
 
-Game::~Game() {
-    delete asyncSaver;
-};
+Game::~Game() {};

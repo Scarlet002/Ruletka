@@ -9,6 +9,8 @@ class IUiManager;
 class ISaveSyncManager;
 class ILoadManager;
 class ISaveAsyncManager;
+class Item;
+class Inventory;
 
 class HpManager;
 class MagazineManager;
@@ -24,6 +26,14 @@ class SaveTXTManager;
 class LoadJSONManager;
 class LoadTXTManager;
 class AutoSaveManager;
+class HandCuffs;
+class Saw;
+class CellPhone;
+class Beer;
+class Magnifier;
+class Inverter;
+class CellPhone;
+class InventoryManager;
 
 struct GameState;
 struct GameConfig;

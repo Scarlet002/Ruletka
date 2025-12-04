@@ -13,7 +13,7 @@ public:
 
     HpManager(GameConfig& gameConfig);
 
-    void LoseHP() override;
+    void LoseHP(GameState& gameState) override;
     void RegainHP() override;
     void ResetHP() override;
     int GetHP() const override;
