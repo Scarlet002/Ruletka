@@ -9,8 +9,8 @@ struct GameConfig
     int defaultDamage = 1;
     int sawDamage = 2;
     int maxPlayerHP = 5;
-    int maxBullets = 8;
-    int minBullets = 1;
+    int maxBullets = 7;
+    int minBullets = 2;
     int maxItemsRand = 2;
     int minItemsRand = 1;
     int minSaws = 0;

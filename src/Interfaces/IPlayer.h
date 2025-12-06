@@ -1,5 +1,8 @@
 #pragma once
 #include "ForwardDeclarations.h"
+#include <vector>
+
+using std::vector;
 
 class IPlayer
 {
@@ -21,6 +24,7 @@ public:
     virtual int SetHandCuffs(int newHandCuffs) = 0;
     virtual int SetInverters(int newInverters) = 0;
     virtual int SetCellPhones(int newCellPhones) = 0;
+    virtual void SetInventory(const vector<int>& newInventory) = 0;
 
     virtual int GetFreeSlots() const = 0;
     virtual int GetSaws() const = 0;
@@ -29,6 +33,7 @@ public:
     virtual int GetHandCuffs() const = 0;
     virtual int GetInverters() const = 0;
     virtual int GetCellPhones() const = 0;
+    virtual const vector<int>& GetInventory() const = 0;
 
     virtual int MakeDecision(GameState& gameState) const = 0;
     virtual void Shoot(GameState& gameState) = 0;
