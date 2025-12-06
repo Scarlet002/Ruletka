@@ -35,6 +35,7 @@ void Game::NewRound(GameState& gameState, const UiManager& ui)
     gameState.human.GetNumberOfItems(gameState);
     gameState.computer.GetRandomItem(gameState);
     gameState.computer.GetNumberOfItems(gameState);
+    ui.ScrollScreen();
     ui.DisplayStats(gameState);
 }
 
@@ -61,6 +62,7 @@ void Game::StartGame()
     gameState.human.ResetInventory(gameState);
     gameState.computer.ResetInventory(gameState);
     gameState.gameStateManager.RandomizeStarter();
+    gameState.gameStateManager.SetStateOfHandCuffs(false);
     ui.DisplayStats(gameState);
 
     while (true)
@@ -70,8 +72,6 @@ void Game::StartGame()
             asyncSaver->SaveGameStateAsync(gameState, autoSaveFileName);
             ui.AutoSaveDone();
             ui.ShowAutoSaveName(autoSaveFileName);
-            ui.NewLine();
-            ui.NewLine();
             ui.Menu();
             gameState.human.MakeDecision(gameState);
 
@@ -82,7 +82,14 @@ void Game::StartGame()
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
                 gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
+                {
+                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+                }
+                else
+                {
+                    gameState.gameStateManager.SetStateOfHandCuffs(false);
+                }
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::HEAL)
             {
@@ -91,7 +98,14 @@ void Game::StartGame()
                 gameState.human.Shoot(gameState);
                 ui.ShowPointer();
                 gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
+                {
+                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
+                }
+                else
+                {
+                    gameState.gameStateManager.SetStateOfHandCuffs(false);
+                }
             }
             else if (gameState.gameStateManager.GetChoice() == GameEnums::USEITEM)
             {
@@ -129,7 +143,6 @@ void Game::StartGame()
                 ui.ThankYou();
                 break;
             }
-            gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
         }
         else
         {
@@ -142,6 +155,14 @@ void Game::StartGame()
                 gameState.gameStateManager.SetTarget(GameEnums::TARGET_HUMAN);
                 gameState.computer.Shoot(gameState);
                 gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
+                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
+                {
+                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
+                }
+                else
+                {
+                    gameState.gameStateManager.SetStateOfHandCuffs(false);
+                }
                 ui.NewLine();
             }
             else
@@ -150,9 +171,16 @@ void Game::StartGame()
                 gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.computer.Shoot(gameState);
                 gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
+                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
+                {
+                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
+                }
+                else
+                {
+                    gameState.gameStateManager.SetStateOfHandCuffs(false);
+                }
                 ui.NewLine();
             }
-            gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
         }
 
         ui.DisplayStats(gameState);
@@ -161,10 +189,6 @@ void Game::StartGame()
             if (!ui.WantsToContinue(gameState))
             {
                 break;
-            }
-            else
-            {
-                continue;
             }
         }
 

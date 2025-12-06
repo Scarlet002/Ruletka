@@ -13,10 +13,10 @@ void CellPhone::UseItem(GameState& gameState)
 	bullet = rand() % gameState.magazine.GetMagazienSize();
 	if ( gameState.magazine.CheckBulletTypeCellPhone(bullet) ) 
 	{
-		cout << bullet << " Pelna" << endl;
+		cout << bullet + 1 << " Pelna" << endl;
 	}
 	else
 	{
-		cout << bullet << " Pusta" << endl;
+		cout << bullet + 1 << " Pusta" << endl;
 	}
 }

@@ -6,6 +6,7 @@
 
 using std::cout;
 using std::endl;
+using std::vector;
 using std::runtime_error;
 using std::any_of;
 

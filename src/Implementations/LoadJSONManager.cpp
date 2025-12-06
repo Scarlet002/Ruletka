@@ -35,6 +35,11 @@ void LoadJSONManager::LoadGameState(GameState& gameState, const string& fileName
         int Starter = data["Starter"];
         int difficulty = data["difficulty"];
         int choice = data["choice"];
+        int shooter = data["shooter"];
+        int target = data["target"];
+        int item = data["item"];
+        int damage = data["damage"];
+        bool wereHandCuffsUsed = data["WereHandCuffsUsed"];
 
         gameState.human.SetHP(hpHuman);
         gameState.computer.SetHP(hpComputer);
@@ -44,15 +49,46 @@ void LoadJSONManager::LoadGameState(GameState& gameState, const string& fileName
         gameState.gameStateManager.SetStarter(Starter);
         gameState.ai.SetDifficulty(difficulty);
         gameState.gameStateManager.SetChoice(choice);
+        gameState.gameStateManager.SetShooter(shooter);
+        gameState.gameStateManager.SetTarget(target);
+        gameState.gameStateManager.SetItem(item);
+        gameState.gameStateManager.SetDamage(damage);
+        gameState.gameStateManager.SetStateOfHandCuffs(wereHandCuffsUsed);
+
+        vector<int> humanInventory;
+        for (int i : data["human_inventory"]) 
+        {
+            humanInventory.push_back(i);
+        }
+        gameState.human.SetInventory(humanInventory);
+
+        gameState.human.SetSaws(data["human_Saws"]);
+        gameState.human.SetBeers(data["human_Beers"]);
+        gameState.human.SetMagnifiers(data["human_Magnifiers"]);
+        gameState.human.SetInverters(data["human_Inverters"]);
+        gameState.human.SetHandCuffs(data["human_HandCuffs"]);
+        gameState.human.SetCellPhones(data["human_CellPhones"]);
+
+        vector<int> computerInventory;
+        for (int i : data["computer_inventory"]) 
+        {
+            computerInventory.push_back(i);
+        }
+        gameState.computer.SetInventory(computerInventory);
+
+        gameState.computer.SetSaws(data["computer_Saws"]);
+        gameState.computer.SetBeers(data["computer_Beers"]);
+        gameState.computer.SetMagnifiers(data["computer_Magnifiers"]);
+        gameState.computer.SetInverters(data["computer_Inverters"]);
+        gameState.computer.SetHandCuffs(data["computer_HandCuffs"]);
+        gameState.computer.SetCellPhones(data["computer_CellPhones"]);
 
         vector<int> newMagazine;
         for (int i = 0; i < bulletCount; i++)
         {
             newMagazine.push_back(data["magazine"][i]);
         }
-
         gameState.magazine.SetMagazine(newMagazine);
-
     }
     catch (const json::exception& e)
     {

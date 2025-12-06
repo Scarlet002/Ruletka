@@ -6,8 +6,10 @@
 #include "DecisionManger.h"
 #include "InventoryManager.h"
 #include <string>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 class Player : public IPlayer
 {
@@ -39,6 +41,7 @@ public:
     int SetHandCuffs(int newHandCuffs) override;
     int SetInverters(int newInverters) override;
     int SetCellPhones(int newCellPhones) override;
+    void SetInventory(const vector<int>& newInventory) override;
 
     int GetFreeSlots() const override;
     int GetSaws() const override;
@@ -47,6 +50,7 @@ public:
     int GetHandCuffs() const override;
     int GetInverters() const override;
     int GetCellPhones() const override;
+    const vector<int>& GetInventory() const override;
 
     int MakeDecision(GameState& gameState) const override;
     void Shoot(GameState& gameState) override;

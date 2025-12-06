@@ -49,6 +49,7 @@ public:
 	int SetHandCuffs(int newHandCuffs) override;
 	int SetInverters(int newInverters) override;
 	int SetCellPhones(int newCellPhones) override;
+	void SetInventory(const vector<int>& newInventory) override;
 
 	int GetFreeSlots() const override;
 	int GetSaws() const override;
@@ -57,6 +58,7 @@ public:
 	int GetHandCuffs() const override;
 	int GetInverters() const override;
 	int GetCellPhones() const override;
+	const vector<int>& GetInventory() const override;
 
 	void ResetInventory(GameState& gameState) override;
 	void UseSaw(GameState& gameState) override;

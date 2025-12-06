@@ -5,15 +5,18 @@
 #include "DecisionManger.h"
 #include "InventoryManager.h"
 #include <string>
+#include <vector>
+
+using std::vector;
 
 static DecisionManager decision;
 static ShootingManager gun;
 
 Player::Player(const string& playerName, const string& playerType, GameConfig& gameConfig) :
     name(playerName), 
-    type(playerType), 
-    hp(gameConfig), 
-    inventory(gameConfig) {}
+    type(playerType),
+    inventory(gameConfig),
+    hp(gameConfig) {}
 
 void Player::LoseHP(GameState& gameState) { hp.LoseHP(gameState); }
 void Player::RegainHP() { hp.RegainHP(); }
@@ -35,6 +38,7 @@ int Player::SetMagnifiers(int newMagnifiers) { return inventory.SetMagnifiers(ne
 int Player::SetHandCuffs(int newHandCuffs) { return inventory.SetHandCuffs(newHandCuffs); }
 int Player::SetInverters(int newInverters) { return inventory.SetInverters(newInverters); }
 int Player::SetCellPhones(int newCellPhones) { return inventory.SetCellPhones(newCellPhones); }
+void Player::SetInventory(const vector<int>& newInventory) { inventory.SetInventory(newInventory); }
 
 int Player::GetFreeSlots() const { return inventory.GetFreeSlots(); }
 int Player::GetSaws() const { return inventory.GetSaws(); }
@@ -43,6 +47,7 @@ int Player::GetMagnifiers() const { return inventory.GetMagnifiers(); }
 int Player::GetHandCuffs() const { return inventory.GetHandCuffs(); }
 int Player::GetInverters() const { return inventory.GetInverters(); }
 int Player::GetCellPhones() const { return inventory.GetCellPhones(); }
+const vector<int>& Player::GetInventory() const { return inventory.GetInventory(); }
 
 void Player::GetRandomItem(GameState& gameState) { inventory.GetRandomItem(gameState); }
 void Player::GetNumberOfItems(GameState& gameState) 

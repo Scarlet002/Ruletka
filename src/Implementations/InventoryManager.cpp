@@ -112,6 +112,11 @@ int InventoryManager::SetMagnifiers(int newMagnifiers) { return magnifiers = new
 int InventoryManager::SetHandCuffs(int newHandCuffs) { return handCuffsAmount = newHandCuffs; }
 int InventoryManager::SetInverters(int newInverters) { return inverters = newInverters; }
 int InventoryManager::SetCellPhones(int newCellPhones) { return cellPhones = newCellPhones; }
+void InventoryManager::SetInventory(const vector<int>& newInventory)
+{
+	inventory = newInventory;
+	inventorySize = static_cast<int>(inventory.size());
+}
 
 int InventoryManager::GetFreeSlots() const { return free; }
 int InventoryManager::GetSaws() const { return saws; }
@@ -120,6 +125,7 @@ int InventoryManager::GetMagnifiers() const { return magnifiers; }
 int InventoryManager::GetHandCuffs() const { return handCuffsAmount; }
 int InventoryManager::GetInverters() const { return inverters; }
 int InventoryManager::GetCellPhones() const { return cellPhones; }
+const vector<int>& InventoryManager::GetInventory() const { return inventory; }
 
 void InventoryManager::ResetInventory(GameState& gameState) 
 { 
