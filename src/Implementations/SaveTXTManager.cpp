@@ -1,5 +1,6 @@
 #include "SaveTXTManager.h"
 #include "GameState.h"
+#include "SaveConfig.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -13,10 +14,29 @@ void SaveTXTManager::SaveGameState(const GameState& gameState, const string& fil
 {
     try
     {
-        ofstream gameSave(fileName);
+        string saveDir;
+
+        if (fileName.find("autosave") == 0)
+        {
+            saveDir = SaveConfig::GetAutoSaveDirectory();
+        }
+        else
+        {
+            saveDir = SaveConfig::GetSaveDirectory();
+        }
+
+        if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
+        {
+            cout << "Nie mozna utworzyc katalogu zapisow!" << endl;
+            return;
+        }
+
+        string fullPath = saveDir + "/" + fileName;
+
+        ofstream gameSave(fullPath);
         if (!gameSave.is_open())
         {
-            cout << "Nie mozna otworzyc pliku podczas zapisu!" << endl;
+            cout << "Nie mozna otworzyc pliku! " << endl;
             return;
         }
         if (gameSave.fail())
@@ -69,8 +89,11 @@ void SaveTXTManager::SaveGameState(const GameState& gameState, const string& fil
         for (int i : gameState.magazine.GetMagazine())
             gameSave << i << endl;
 
+        cout << "Zapisano do: " << fullPath << endl;
+
         gameSave.close();
     }
+
     catch (const exception& e)
     {
         cout << "Blad zapisywania: " << e.what() << endl;

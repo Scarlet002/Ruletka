@@ -1,0 +1,38 @@
+#include "SaveConfig.h"
+#include <filesystem>
+#include <iostream>
+#include <string>
+
+using std::string;
+
+namespace fs = std::filesystem;
+
+using std::cout;
+using std::endl;
+
+const string SaveConfig::GetSaveDirectory()
+{
+    return "Saves";
+}
+
+const string SaveConfig::GetAutoSaveDirectory()
+{
+    return "Saves/Autosave";
+}
+
+bool SaveConfig::CreateDirectoryIfNotExists(const std::string& path)
+{
+    try
+    {
+        if (!fs::exists(path))
+        {
+            return fs::create_directories(path);
+        }
+        return true;
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        cout << "Blad tworzenia katalogu " << path << ": " << e.what() << endl;
+        return false;
+    }
+}

@@ -1,6 +1,8 @@
 #include "SaveJSONManager.h"
 #include "GameState.h"
+#include "SaveConfig.h"
 #include <string>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -19,6 +21,25 @@ void SaveJSONManager::SaveGameState(const GameState& gameState, const string& fi
 {
     try
     {
+        string saveDir;
+
+        if (fileName.find("autosave") == 0)
+        {
+            saveDir = SaveConfig::GetAutoSaveDirectory();
+        }
+        else
+        {
+            saveDir = SaveConfig::GetSaveDirectory();
+        }
+
+        if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
+        {
+            cout << "Nie mozna utworzyc katalogu zapisow!" << endl;
+            return;
+        }
+
+        string fullPath = saveDir + "/" + fileName;
+
         json data;
         data["human_HP"] = gameState.human.GetHP();
         for (int i : gameState.human.GetInventory())
@@ -58,10 +79,10 @@ void SaveJSONManager::SaveGameState(const GameState& gameState, const string& fi
         for (int i : gameState.magazine.GetMagazine())
             data["magazine"].push_back(i);
 
-        ofstream gameSave(fileName);
+        ofstream gameSave(fullPath);
         if (!gameSave.is_open())
         {
-            cout << "Nie mozna otworzyc pliku podczas zapisu!" << endl;
+            cout << "Nie mozna otworzyc pliku!" << endl;
             return;
         }
         if (gameSave.fail())
@@ -69,6 +90,8 @@ void SaveJSONManager::SaveGameState(const GameState& gameState, const string& fi
             cout << "Blad podczas zapisu stanu gry!" << endl;
             return;
         }
+        cout << "Zapisano do: " << fullPath << endl;
+
         gameSave << data.dump(4);
         gameSave.close();
     }

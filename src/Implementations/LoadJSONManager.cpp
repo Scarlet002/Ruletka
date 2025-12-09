@@ -1,5 +1,6 @@
 #include "LoadJSONManager.h"
 #include "GameState.h"
+#include "SaveConfig.h"
 #include <string>
 #include <fstream>
 #include <vector>
@@ -19,7 +20,20 @@ void LoadJSONManager::LoadGameState(GameState& gameState, const string& fileName
 {
     try
     {
-        ifstream gameSave(fileName);
+        string saveDir;
+
+        if (fileName.find("autosave") == 0)
+        {
+            saveDir = SaveConfig::GetAutoSaveDirectory();
+        }
+        else
+        {
+            saveDir = SaveConfig::GetSaveDirectory();
+        }
+
+        string fullPath = saveDir + "/" + fileName;
+
+        ifstream gameSave(fullPath);
         if (!gameSave.is_open())
         {
             cout << "Nie mozna otworzyc pliku podczas wczytywania!" << endl;
