@@ -90,7 +90,6 @@ void SaveJSONManager::SaveGameState(const GameState& gameState, const string& fi
             cout << "Blad podczas zapisu stanu gry!" << endl;
             return;
         }
-        cout << "Zapisano do: " << fullPath << endl;
 
         gameSave << data.dump(4);
         gameSave.close();

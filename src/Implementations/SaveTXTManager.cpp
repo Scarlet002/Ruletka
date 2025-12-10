@@ -89,8 +89,6 @@ void SaveTXTManager::SaveGameState(const GameState& gameState, const string& fil
         for (int i : gameState.magazine.GetMagazine())
             gameSave << i << endl;
 
-        cout << "Zapisano do: " << fullPath << endl;
-
         gameSave.close();
     }
 
