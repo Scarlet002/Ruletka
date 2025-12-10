@@ -12,12 +12,12 @@ using std::endl;
 
 const string SaveConfig::GetSaveDirectory()
 {
-    return "Saves";
+    return "data/Saves";
 }
 
 const string SaveConfig::GetAutoSaveDirectory()
 {
-    return "Saves/Autosave";
+    return "data/Saves/Autosave";
 }
 
 bool SaveConfig::CreateDirectoryIfNotExists(const std::string& path)

@@ -34,6 +34,8 @@ class Magnifier;
 class Inverter;
 class CellPhone;
 class InventoryManager;
+class SaveConfig;
+class UiSFMLManager;
 
 struct GameState;
 struct GameConfig;
