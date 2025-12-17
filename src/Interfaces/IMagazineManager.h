@@ -29,6 +29,9 @@ public:
     virtual void SetMagazine(const vector<int>& newMagazine) = 0;
     virtual double CalculateHitProbability() const = 0;
     virtual bool HasEmptyBullets() const = 0;
+    virtual void InvertBulletType() = 0;
+    virtual int GetMagazienSize() const = 0;
+    virtual bool CheckBulletTypeCellPhone(int bullet) const = 0;
 
     virtual ~IMagazineManager() = default;
 };

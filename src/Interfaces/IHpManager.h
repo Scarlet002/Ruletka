@@ -5,7 +5,7 @@ class IHpManager
 {
 public:
 
-    virtual void LoseHP() = 0;
+    virtual void LoseHP(GameState& gameState) = 0;
     virtual void RegainHP() = 0;
     virtual void ResetHP() = 0;
     virtual int GetHP() const = 0;
