@@ -16,20 +16,20 @@
 #include <memory>
 
 using std::string;
+using std::unique_ptr;
 
 class Game : public IGame {
 private:
 
     GameConfig gameConfig;
-    HpManager humanHP;
-    HpManager computerHP;
     MagazineManager magazine;
     GameStateManager gameStateManager;
     AiManager ai;
     Player human;
     Player computer;
+    vector<string> log;
     GameState gameState;
-    AutoSaveManager* asyncSaver;
+    unique_ptr<AutoSaveManager> asyncSaver;
 
     UiManager ui;
 
@@ -43,7 +43,7 @@ public:
     Game(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON);
 
     void NewRound(GameState& gameState, const UiManager& ui) override;
-    bool WhoWon(const Player& human, const Player& computer, const UiManager& ui) override;
+    bool WhoWon(const GameState& gameState, const UiManager& ui) override;
     void StartGame() override;
 
     ~Game();

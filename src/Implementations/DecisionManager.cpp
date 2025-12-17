@@ -9,8 +9,9 @@ int DecisionManager::MakeDecision(GameState& gameState) const
     int choice = GameEnums::SHOOT;
     if (gameState.gameStateManager.GetStarter() == GameEnums::STARTER_HUMAN)
     {
-        string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 7): ", InputValidatorManager::IsValidMenuChoice);
+        string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 6): ", InputValidatorManager::IsValidMenuChoice);
         choice = stoi(input);
+        gameState.gameStateManager.SetChoice(choice);
     }
     else
     {
@@ -26,7 +27,7 @@ int DecisionManager::MakeDecision(GameState& gameState) const
         {
             gameState.ai.HardAI(gameState);
         }
-        gameState.gameStateManager.GetChoice();
+        choice = gameState.gameStateManager.GetChoice();
     }
     return choice;
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include "IAiManager.h"
 #include "ForwardDeclarations.h"
-#include "GameState.h"
 #include "GameEnums.h"
 
 class AiManager : public IAiManager

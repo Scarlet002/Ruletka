@@ -1,11 +1,19 @@
 #include "HpManger.h"
 #include "GameConfig.h"
+#include "GameState.h"
 
 HpManager::HpManager(GameConfig& gameConfig)
     : gameConfig(gameConfig), MAXHP(gameConfig.maxPlayerHP), currentHP(gameConfig.maxPlayerHP) {
 }
 
-void HpManager::LoseHP() { if (currentHP > 0) currentHP--; }
+void HpManager::LoseHP(GameState& gameState) 
+{ 
+    int damage = gameState.gameStateManager.GetDamage(); 
+    if (currentHP > 0)
+    {
+        SetHP(GetHP() - damage);
+    }
+}
 void HpManager::RegainHP()
 {
     if (currentHP > 0 && currentHP < MAXHP)

@@ -2,6 +2,7 @@
 #include "ForwardDeclarations.h"
 #include "GameEnums.h"
 #include "IMagazineManager.h"
+#include "GameConfig.h"
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
@@ -15,10 +16,11 @@ private:
     int empty = 0;
     int bulletCount = 0;
     vector<int> magazine;
+    GameConfig& gameConfig;
 
 public:
 
-    MagazineManager() {};
+    MagazineManager(GameConfig& gameConfig);
 
     void Load() override;
     void ShowBullets() const override;
@@ -41,6 +43,9 @@ public:
     void SetMagazine(const vector<int>& newMagazine) override;
     double CalculateHitProbability() const override;
     bool HasEmptyBullets() const override;
+    void InvertBulletType() override;
+    int GetMagazienSize() const override;
+    bool CheckBulletTypeCellPhone(int bullet) const override;
 
     ~MagazineManager() {};
 };
