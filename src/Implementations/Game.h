@@ -27,6 +27,7 @@ private:
     AiManager ai;
     Player human;
     Player computer;
+    vector<string> log;
     GameState gameState;
     unique_ptr<AutoSaveManager> asyncSaver;
 

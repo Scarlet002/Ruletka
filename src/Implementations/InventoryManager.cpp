@@ -34,7 +34,7 @@ void InventoryManager::GetRandomItem(GameState& gameState)
 	int k = 0;
 	for (int i = 0; i < inventorySize; i++)
 	{
-		if (GetFreeSlots() > 0 && k < 2)
+		if (GetFreeSlots() > 0 && k < gameConfig.maxItemsRand)
 		{
 			if (inventory[i] == GameEnums::NOITEMS)
 			{

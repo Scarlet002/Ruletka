@@ -13,6 +13,9 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using std::string;
 using std::unique_ptr;
@@ -21,10 +24,10 @@ using std::make_unique;
 Game::Game(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON)
     : magazine(gameConfig), gameStateManager(gameConfig),
     human("Czlowiek", "human", gameConfig), computer("Komputer", "computer", gameConfig),
-    gameState(human, computer, magazine, gameStateManager, gameConfig, ai),
-    loaderJSON(loaderJSON), saverJSON(saverJSON)
+    gameState(human, computer, magazine, gameStateManager, gameConfig, ai, log),
+    loaderJSON(loaderJSON), saverJSON(saverJSON), log({})
 {
-          asyncSaver = make_unique<AutoSaveManager>(saverJSON, gameState);
+    asyncSaver = make_unique<AutoSaveManager>(saverJSON, gameState);
 };
 
 void Game::NewRound(GameState& gameState, const UiManager& ui)
@@ -36,6 +39,7 @@ void Game::NewRound(GameState& gameState, const UiManager& ui)
     gameState.computer.GetRandomItem(gameState);
     gameState.computer.GetNumberOfItems(gameState);
     ui.ScrollScreen();
+    ui.Clear();
     ui.DisplayStats(gameState);
 }
 
@@ -63,6 +67,8 @@ void Game::StartGame()
     gameState.computer.ResetInventory(gameState);
     gameState.gameStateManager.RandomizeStarter();
     gameState.gameStateManager.SetStateOfHandCuffs(false);
+    gameState.log.resize(0);
+	ui.Clear();
     ui.DisplayStats(gameState);
 
     while (true)
@@ -73,10 +79,24 @@ void Game::StartGame()
             ui.AutoSaveDone();
             ui.ShowAutoSaveName(autoSaveFileName);
             ui.Menu();
+            if (gameState.log.size() != 0)
+            {
+                for (int i = 0; i < gameState.log.size(); i++)
+                {
+                    if (i != 0) 
+                    { 
+                        if (i % 3 == 0) { std::cout << std::endl; }
+                        std::cout << " -> ";
+                    }
+                    std::cout << gameState.log[i];
+                }
+            }
+            gameState.log.resize(0);
+            ui.NewLine();
             gameState.human.MakeDecision(gameState);
 
             if (gameStateManager.GetChoice() == GameEnums::SHOOT)
-            {   
+            {
                 gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
                 gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
                 gameState.human.Shoot(gameState);
@@ -139,8 +159,9 @@ void Game::StartGame()
             }
             else
             {
-                ui.ScrollScreen();
+                ui.Clear();
                 ui.ThankYou();
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 break;
             }
         }
@@ -182,12 +203,13 @@ void Game::StartGame()
                 ui.NewLine();
             }
         }
-
+        ui.Clear();
         ui.DisplayStats(gameState);
 
         if (WhoWon(gameState, ui)) {
             if (!ui.WantsToContinue(gameState))
             {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 break;
             }
         }

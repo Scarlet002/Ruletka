@@ -1,8 +1,12 @@
 #pragma once
 #include "GameEnums.h"
 #include "GameConfig.h"
+#include "GameConfig.h"
 #include "ForwardDeclarations.h"
 #include "IGameStateManager.h"
+#include <string>
+
+using std::string;
 
 class GameStateManager : IGameStateManager
 {
@@ -16,6 +20,7 @@ private:
     int item = GameEnums::NOITEMS;
     int damage = gameConfig.defaultDamage;
     bool WereHandCuffsUsed = false;
+	string LogLine = "";
 
 public:
 
@@ -28,6 +33,7 @@ public:
     int SetShooter(int newShooter) override;
     int SetDamage(int newDamage) override;
     void SetStateOfHandCuffs(bool newState) override;
+	void SetLogLine(string newLogLine) override;
     int GetStarter() const override;
     int GetChoice() const override;
     int GetTarget() const override;
@@ -35,6 +41,7 @@ public:
     int GetDamage() const override;
     int GetItem() const override;
     bool GetStateOfHandCuffs() const override;
+	string GetLogLine() const override;
     int RandomizeStarter() override;
     void ResetDamage() override;
 

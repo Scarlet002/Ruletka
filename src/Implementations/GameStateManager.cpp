@@ -38,6 +38,11 @@ void GameStateManager::SetStateOfHandCuffs(bool newState)
     WereHandCuffsUsed = newState;
 }
 
+void GameStateManager::SetLogLine(string newLogLine)
+{
+    LogLine = newLogLine;
+}
+
 int GameStateManager::GetStarter() const
 {
     return starter;
@@ -66,6 +71,11 @@ int GameStateManager::GetDamage() const
 bool GameStateManager::GetStateOfHandCuffs() const
 {
     return WereHandCuffsUsed == true;
+}
+
+string GameStateManager::GetLogLine() const
+{
+    return LogLine;
 }
 
 int GameStateManager::RandomizeStarter()

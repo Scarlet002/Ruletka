@@ -43,6 +43,7 @@ public:
     void HumanWin() const override;
     void EndOfBullets() const override;
     void ThankYou() const override;
+    void Clear() const override;
 
     ~UiManager() {};
 };

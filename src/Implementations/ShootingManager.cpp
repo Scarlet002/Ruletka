@@ -21,7 +21,15 @@ void ShootingManager::Shoot(GameState& gameState)
         {
             if (gameState.magazine.IsEmptySlot())
             {
-                cout << "Pudlo!";
+                //cout << "Pudlo!";
+                if (target == GameEnums::SHOOTER_HUMAN)
+                {
+                    gameState.log.push_back("Komputer nie trafia!");
+                }
+                else
+                {
+                    gameState.log.push_back("Nie trafiasz!");
+                }
                 gameState.magazine.DecreaseEmptyCount();
             }
             else
@@ -29,13 +37,15 @@ void ShootingManager::Shoot(GameState& gameState)
                 if (target == GameEnums::SHOOTER_HUMAN)
                 {
                     gameState.human.LoseHP(gameState);
+                    gameState.log.push_back("Zostales trafiony!");
                 }
                 else
                 {
                     gameState.computer.LoseHP(gameState);
+                    gameState.log.push_back("Trafiles komputer!");
                 }
                 gameState.magazine.DecreaseFullCount();
-                cout << "Trafiony!";
+                //cout << "Trafiony!";
             }
         }
         else
@@ -47,15 +57,27 @@ void ShootingManager::Shoot(GameState& gameState)
                     if (shooter == GameEnums::SHOOTER_HUMAN)
                     {
                         gameState.human.RegainHP();
+                        gameState.log.push_back("Odzyskales 1 HP!");
                     }
                     else
                     {
                         gameState.computer.RegainHP();
+                        gameState.log.push_back("Komputer odzyskal 1 HP!");
                     }
-                    cout << "Udalo sie odzyskac 1 HP!";
+                    //cout << "Udalo sie odzyskac 1 HP!";
                 }
                 else
-                    cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
+                {
+                    //cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
+                    if (shooter == GameEnums::SHOOTER_HUMAN)
+                    {
+                        gameState.log.push_back("Nie odzyskales HP bo masz MAXHP!");
+                    }
+                    else
+                    {
+                        gameState.log.push_back("Komputer nie odzyskal HP bo ma MAXHP!");
+                    }
+                }
                 gameState.magazine.DecreaseEmptyCount();
             }
             else
@@ -63,13 +85,14 @@ void ShootingManager::Shoot(GameState& gameState)
                 if (shooter == GameEnums::SHOOTER_HUMAN)
                 {
                     gameState.human.LoseHP(gameState);
+                    gameState.log.push_back("Nie udalo sie odzyskac HP (straciles 1 HP)");
                 }
                 else
                 {
                     gameState.computer.LoseHP(gameState);
+                    gameState.log.push_back("Nie udalo sie odzyskac HP (komputer stracil 1 HP)!");
                 }
                 gameState.magazine.DecreaseFullCount();
-                cout << "Nie udalo sie odzyskac HP i straciles 1 HP!";
             }
         }
         gameState.magazine.DecreaseBulletCount();

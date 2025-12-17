@@ -229,13 +229,13 @@ bool UiManager::WantsToContinue(GameState& gameState)
         gameState.human.GetNumberOfItems(gameState);
         gameState.computer.ResetInventory(gameState);
         gameState.computer.GetNumberOfItems(gameState);
-        ScrollScreen();
+        Clear();
         DisplayStats(gameState);
         return true;
     }
     else
     {
-        ScrollScreen();
+        Clear();
         ThankYou();
         return false;
     }
@@ -260,3 +260,9 @@ void UiManager::ComputerWin() const { cout << "Komputer wygrywa gre!" << endl; }
 void UiManager::HumanWin() const { cout << "Wygrywasz gre!" << endl; }
 void UiManager::EndOfBullets() const { cout << "Koniec pociskow! Przeladowanie!" << endl; }
 void UiManager::ThankYou() const { cout << "Dziekuje za gre! Do zobaczenia!" << endl; }
+void UiManager::Clear() const 
+{
+#ifdef _WIN32
+    system("cls");
+#endif 
+}
