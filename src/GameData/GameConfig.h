@@ -11,7 +11,7 @@ struct GameConfig
     int maxPlayerHP = 5;
     int maxBullets = 7;
     int minBullets = 2;
-    int maxItemsRand = 2;
+    int maxItemsRand = 1;
     int minItemsRand = 1;
     int minSaws = 0;
     int minBeers = 0;

@@ -39,6 +39,7 @@ public:
     virtual void HumanWin() const = 0;
     virtual void EndOfBullets() const = 0;
     virtual void ThankYou() const = 0;
+    virtual void Clear() const = 0;
 
     virtual ~IUiManager() = default;
 };

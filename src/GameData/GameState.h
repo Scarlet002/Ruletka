@@ -6,10 +6,15 @@
 #include "GameConfig.h"
 #include "AiManager.h"
 #include <memory>
+#include <string>
+#include <vector>
+
+using std::string;
+using std::vector;
 
 struct GameState
 {
-    GameState(Player& human, Player& computer, MagazineManager& magazine, GameStateManager& gameStateManager, GameConfig& gameConfig, AiManager& ai);
+    GameState(Player& human, Player& computer, MagazineManager& magazine, GameStateManager& gameStateManager, GameConfig& gameConfig, AiManager& ai, vector<string>& log);
 
     Player& human;
     Player& computer;
@@ -17,6 +22,7 @@ struct GameState
     GameStateManager& gameStateManager;
     GameConfig& gameConfig;
     AiManager& ai;
+    vector<string>& log;
 
     ~GameState() {};
 };
