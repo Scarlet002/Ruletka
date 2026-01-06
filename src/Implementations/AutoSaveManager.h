@@ -10,15 +10,17 @@ using std::future;
 class AutoSaveManager : public ISaveAsyncManager {
 private:
     future<void> saveFuture;
-    bool isSaving = false;
-    int saveCounter = 0;
+    bool isSaving;
+    int saveCounter;
     SaveJSONManager& saver;
     GameState& gameState;
 
 public:
     AutoSaveManager(SaveJSONManager& saverRef, GameState& gameState);
 
+    void SetSaveCounter(int newSaveCounter) override;
     void SaveGameStateAsync(const GameState& gameState, string& autoSaveFileName) override;
+	int GetSaveCounter() const override;
     bool IsSaving() const override;
 
     ~AutoSaveManager() {};

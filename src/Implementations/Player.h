@@ -3,9 +3,10 @@
 #include "IPlayer.h"
 #include "HpManger.h"
 #include "ShootingManager.h"
-#include "DecisionManger.h"
+#include "DecisionManager.h"
 #include "InventoryManager.h"
 #include <string>
+#include <memory>
 #include <vector>
 
 using std::string;
@@ -14,8 +15,8 @@ using std::vector;
 class Player : public IPlayer
 {
 private:
-    //DecisionManager decision;
-    //ShootingManager gun;
+    std::unique_ptr<DecisionManager> decision;
+    std::unique_ptr<ShootingManager> gun;
     InventoryManager inventory;
     HpManager hp;
     string name;

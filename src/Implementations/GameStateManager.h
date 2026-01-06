@@ -8,32 +8,32 @@
 
 using std::string;
 
-class GameStateManager : IGameStateManager
+class GameStateManager : public IGameStateManager
 {
 private:
 
     GameConfig& gameConfig;
     int starter = GameEnums::STARTER_HUMAN;
-    int choice = GameEnums::SHOOT;
+    int choice = GameEnums::NO_CHOICE;
     int target = GameEnums::TARGET_COMPUTER;
     int shooter = GameEnums::SHOOTER_HUMAN;
-    int item = GameEnums::NOITEMS;
+    int item = GameEnums::NO_ITEMS;
     int damage = gameConfig.defaultDamage;
     bool WereHandCuffsUsed = false;
-	string LogLine = "";
+    string LogLine = "";
 
 public:
 
     GameStateManager(GameConfig& gameConfig);
 
-    int SetItem(int newItem) override;
-    int SetStarter(int newStarter) override;
-    int SetChoice(int newChoice) override;
-    int SetTarget(int newTarget) override;
-    int SetShooter(int newShooter) override;
-    int SetDamage(int newDamage) override;
+    void SetItem(int newItem) override;
+    void SetStarter(int newStarter) override;
+    void SetChoice(int newChoice) override;
+    void SetTarget(int newTarget) override;
+    void SetShooter(int newShooter) override;
+    void SetDamage(int newDamage) override;
     void SetStateOfHandCuffs(bool newState) override;
-	void SetLogLine(string newLogLine) override;
+    void SetLogLine(string newLogLine) override;
     int GetStarter() const override;
     int GetChoice() const override;
     int GetTarget() const override;
@@ -41,7 +41,7 @@ public:
     int GetDamage() const override;
     int GetItem() const override;
     bool GetStateOfHandCuffs() const override;
-	string GetLogLine() const override;
+    string GetLogLine() const override;
     int RandomizeStarter() override;
     void ResetDamage() override;
 
