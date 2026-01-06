@@ -26,7 +26,7 @@ InventoryManager::InventoryManager(GameConfig& gameConfig) :
 	inverters(gameConfig.minInverters),
 	cellPhones(gameConfig.minCellPhones), 
 	inventorySize(gameConfig.maxInventorySize),
-	inventory(gameConfig.maxInventorySize, GameEnums::NOITEMS)
+	inventory(gameConfig.maxInventorySize, GameEnums::NO_ITEMS)
 {}
 
 void InventoryManager::GetRandomItem(GameState& gameState) 
@@ -36,7 +36,7 @@ void InventoryManager::GetRandomItem(GameState& gameState)
 	{
 		if (GetFreeSlots() > 0 && k < gameConfig.maxItemsRand)
 		{
-			if (inventory[i] == GameEnums::NOITEMS)
+			if (inventory[i] == GameEnums::NO_ITEMS)
 			{
 				inventory[i] = rand() % gameState.gameConfig.numberOfItemTypes + gameState.gameConfig.minItemsRand;
 				SetFreeSlots(GetFreeSlots() - 1);
@@ -67,7 +67,7 @@ void InventoryManager::GetNumberOfItems(GameState& gameState)
 
 	for (int i = 0; i < inventorySize; i++)
 	{
-		if (inventory[i] == GameEnums::NOITEMS)
+		if (inventory[i] == GameEnums::NO_ITEMS)
 		{
 			free++;
 		}
@@ -137,7 +137,7 @@ void InventoryManager::ResetInventory(GameState& gameState)
 	SetInverters(gameState.gameConfig.minInverters);
 	SetCellPhones(gameState.gameConfig.minCellPhones);
 	SetHandCuffs(gameState.gameConfig.minHandCuffs);
-	inventory.resize(gameState.gameConfig.maxInventorySize, GameEnums::NOITEMS);
+	inventory.resize(gameState.gameConfig.maxInventorySize, GameEnums::NO_ITEMS);
 }
 
 void InventoryManager::UseSaw(GameState& gameState) 
@@ -147,7 +147,7 @@ void InventoryManager::UseSaw(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::SAW && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetSaws(GetSaws() - 1);
 			GetNumberOfItems(gameState);
 			k++;
@@ -167,7 +167,7 @@ void InventoryManager::UseBeer(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::BEER && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetBeers(GetBeers() - 1);
 			GetNumberOfItems(gameState);
 			k++;
@@ -187,7 +187,7 @@ void InventoryManager::UseMagnifier(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::MAGNIFIER && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetMagnifiers(GetMagnifiers() - 1);
 			GetNumberOfItems(gameState);
 			k++;
@@ -207,7 +207,7 @@ void InventoryManager::UseHandCuffs(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::HANDCUFFS && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetHandCuffs(GetHandCuffs() - 1);
 			GetNumberOfItems(gameState);
 			k++;
@@ -227,7 +227,7 @@ void InventoryManager::UseInverter(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::INVERTER && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetInverters(GetInverters() - 1);
 			GetNumberOfItems(gameState);
 			k++;
@@ -247,7 +247,7 @@ void InventoryManager::UseCellPhone(GameState& gameState)
 	{
 		if (inventory[i] == GameEnums::CELLPHONE && k == 0)
 		{
-			inventory[i] = GameEnums::NOITEMS;
+			inventory[i] = GameEnums::NO_ITEMS;
 			SetCellPhones(GetCellPhones() - 1);
 			GetNumberOfItems(gameState);
 			k++;

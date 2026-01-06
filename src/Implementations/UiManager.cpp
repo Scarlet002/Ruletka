@@ -99,7 +99,7 @@ void UiManager::ShowAIDifficulty(const int difficulty) const
 
 void UiManager::ItemUseSuccesHuman(GameState& gameState) const
 {
-    if (gameState.gameStateManager.GetItem() == GameEnums::NOITEMS)
+    if (gameState.gameStateManager.GetItem() == GameEnums::NO_ITEMS)
     {
         cout << "Nie uzyles zadnego przedmiotu!";
     }
@@ -141,7 +141,7 @@ void UiManager::ItemUseSuccesHuman(GameState& gameState) const
 
 void UiManager::ItemUseSuccesComputer(GameState& gameState) const
 {
-    if (gameState.gameStateManager.GetItem() == GameEnums::NOITEMS)
+    if (gameState.gameStateManager.GetItem() == GameEnums::NO_ITEMS)
     {
         cout << "Komputer nie uzyl zadnego przedmiotu!" << endl;
     }

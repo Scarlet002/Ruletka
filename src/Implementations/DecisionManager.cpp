@@ -1,4 +1,4 @@
-#include "DecisionManger.h"
+#include "DecisionManager.h"
 #include "InputValidatorManager.h"
 #include "GameEnums.h"
 #include "GameState.h"
@@ -6,7 +6,7 @@
 
 int DecisionManager::MakeDecision(GameState& gameState) const
 {
-    int choice = GameEnums::SHOOT;
+    int choice = GameEnums::NO_CHOICE;
     if (gameState.gameStateManager.GetStarter() == GameEnums::STARTER_HUMAN)
     {
         string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 6): ", InputValidatorManager::IsValidMenuChoice);

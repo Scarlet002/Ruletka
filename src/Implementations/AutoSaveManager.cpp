@@ -16,8 +16,8 @@ AutoSaveManager::AutoSaveManager(SaveJSONManager& saverRef, GameState& gameState
 void AutoSaveManager::SaveGameStateAsync(const GameState& gameState, string& autoSaveFileName)
 {
     isSaving = true;
-    saveCounter++;
-    autoSaveFileName = "autosave" + to_string(saveCounter) + ".json";
+	SetSaveCounter(GetSaveCounter() + 1);
+    autoSaveFileName = "autosave" + to_string(GetSaveCounter()) + ".json";
 
     saveFuture = async(launch::async, [this, autoSaveFileName, gameState]()
         {
@@ -32,3 +32,6 @@ bool AutoSaveManager::IsSaving() const
 {
     return isSaving;
 }
+
+void AutoSaveManager::SetSaveCounter(int newSaveCounter) { saveCounter = newSaveCounter; }
+int AutoSaveManager::GetSaveCounter() const { return saveCounter; }

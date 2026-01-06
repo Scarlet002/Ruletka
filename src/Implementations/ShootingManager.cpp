@@ -21,7 +21,6 @@ void ShootingManager::Shoot(GameState& gameState)
         {
             if (gameState.magazine.IsEmptySlot())
             {
-                //cout << "Pudlo!";
                 if (target == GameEnums::SHOOTER_HUMAN)
                 {
                     gameState.log.push_back("Komputer nie trafia!");
@@ -45,7 +44,6 @@ void ShootingManager::Shoot(GameState& gameState)
                     gameState.log.push_back("Trafiles komputer!");
                 }
                 gameState.magazine.DecreaseFullCount();
-                //cout << "Trafiony!";
             }
         }
         else
@@ -64,11 +62,9 @@ void ShootingManager::Shoot(GameState& gameState)
                         gameState.computer.RegainHP();
                         gameState.log.push_back("Komputer odzyskal 1 HP!");
                     }
-                    //cout << "Udalo sie odzyskac 1 HP!";
                 }
                 else
                 {
-                    //cout << "Masz juz max HP! Nie mozesz odzyskac zdrowia!";
                     if (shooter == GameEnums::SHOOTER_HUMAN)
                     {
                         gameState.log.push_back("Nie odzyskales HP bo masz MAXHP!");

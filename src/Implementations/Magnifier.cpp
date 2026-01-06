@@ -9,7 +9,6 @@ void Magnifier::UseItem(GameState& gameState)
 {
 	if (gameState.magazine.CheckBulletType())
 	{
-		//cout << "Uzyto lupy (pelna)!" << endl;
 		if (gameState.gameStateManager.GetStarter() == GameEnums::STARTER_HUMAN)
 		{
 			gameState.log.push_back("Uzyles lupy (pelna)!");
@@ -21,7 +20,6 @@ void Magnifier::UseItem(GameState& gameState)
 	}
 	else
 	{
-		//cout << "Uzyto lupy (pusta)!" << endl;
 		if (gameState.gameStateManager.GetStarter() == GameEnums::STARTER_HUMAN)
 		{
 			gameState.log.push_back("Uzyles lupy (pusta)!");

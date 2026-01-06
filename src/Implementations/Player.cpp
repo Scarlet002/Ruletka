@@ -2,21 +2,22 @@
 #include "HpManger.h"
 #include "GameState.h"
 #include "ShootingManager.h"
-#include "DecisionManger.h"
+#include "DecisionManager.h"
 #include "InventoryManager.h"
 #include <string>
 #include <vector>
 
 using std::vector;
 
-static DecisionManager decision;
-static ShootingManager gun;
-
 Player::Player(const string& playerName, const string& playerType, GameConfig& gameConfig) :
     name(playerName), 
     type(playerType),
     inventory(gameConfig),
-    hp(gameConfig) {}
+    hp(gameConfig)
+{
+    decision = std::make_unique<DecisionManager>();
+	gun = std::make_unique<ShootingManager>();
+}
 
 void Player::LoseHP(GameState& gameState) { hp.LoseHP(gameState); }
 void Player::RegainHP() { hp.RegainHP(); }
@@ -27,9 +28,9 @@ bool Player::isAlive() const { return hp.GetHP() > 0; }
 bool Player::IsHuman() const { return type == "human" || type == "Human"; }
 bool Player::IsComputer() const { return type == "computer" || type == "Computer"; }
 
-int Player::MakeDecision(GameState& gameState) const { return decision.MakeDecision(gameState); }
+int Player::MakeDecision(GameState& gameState) const { return decision->MakeDecision(gameState); }
 
-void Player::Shoot(GameState& gameState) { gun.Shoot(gameState); }
+void Player::Shoot(GameState& gameState) { gun->Shoot(gameState); }
 
 int Player::SetFreeSlots(int newFree) { return inventory.SetFreeSlots(newFree); }
 int Player::SetSaws(int newSaws) { return inventory.SetSaws(newSaws); }

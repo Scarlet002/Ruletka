@@ -3,34 +3,34 @@
 
 GameStateManager::GameStateManager(GameConfig& gameConfig) : gameConfig(gameConfig) {};
 
-int GameStateManager::SetItem(int newItem)
+void GameStateManager::SetItem(int newItem)
 {
-    return item = newItem;
+    item = newItem;
 }
 
-int GameStateManager::SetStarter(int newStarter)
+void GameStateManager::SetStarter(int newStarter)
 {
-    return starter = newStarter;
+    starter = newStarter;
 }
 
-int GameStateManager::SetChoice(int newChoice)
+void GameStateManager::SetChoice(int newChoice)
 {
-    return choice = newChoice;
+    choice = newChoice;
 }
 
-int GameStateManager::SetTarget(int newTarget)
+void GameStateManager::SetTarget(int newTarget)
 {
-    return target = newTarget;
+    target = newTarget;
 }
 
-int GameStateManager::SetShooter(int newShooter)
+void GameStateManager::SetShooter(int newShooter)
 {
-    return shooter = newShooter;
+    shooter = newShooter;
 }
 
-int GameStateManager::SetDamage(int newDamage)
+void GameStateManager::SetDamage(int newDamage)
 {
-    return damage = newDamage;
+    damage = newDamage;
 }
 
 void GameStateManager::SetStateOfHandCuffs(bool newState)
@@ -68,9 +68,14 @@ int GameStateManager::GetDamage() const
     return damage;
 }
 
+int GameStateManager::GetItem() const
+{
+    return item;
+}
+
 bool GameStateManager::GetStateOfHandCuffs() const
 {
-    return WereHandCuffsUsed == true;
+    return WereHandCuffsUsed;
 }
 
 string GameStateManager::GetLogLine() const
@@ -80,16 +85,11 @@ string GameStateManager::GetLogLine() const
 
 int GameStateManager::RandomizeStarter()
 {
-    starter = rand() % gameConfig.numberOfBulletTypes;
+    starter = rand() % gameConfig.numberOfPlayers;
     return starter;
-}
-
-int GameStateManager::GetItem() const
-{
-    return item;
 }
 
 void GameStateManager::ResetDamage()
 {
-    SetDamage(1);
+    SetDamage(gameConfig.defaultDamage);
 }
