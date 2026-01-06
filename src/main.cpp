@@ -1,4 +1,5 @@
-﻿#include "Game.h"
+﻿#include "GameConsoleVersion.h"
+#include "GameSFMLVersion.h"
 #include "SaveTXTManager.h"
 #include "LoadTXTManager.h"
 #include "SaveJSONManager.h"
@@ -21,11 +22,13 @@ int main()
     SaveJSONManager saverJSON;
     LoadJSONManager loaderJSON;
 
-    Game game(loaderJSON, saverJSON);
-
     try
     {
-        game.StartGame();
+        //GameConsoleVersion game(loaderJSON, saverJSON);
+		//game.StartGame();
+
+        GameSFMLVersion game(loaderJSON, saverJSON);
+        game.Run();
     }
     catch (const exception& e)
     {
