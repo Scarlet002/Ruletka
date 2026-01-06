@@ -23,7 +23,10 @@ struct GameConfig
     int maxInventorySize = 5;
     int numberOfItemTypes = 6;
     int numberOfBulletTypes = 2;
-    int defaultDifficulty = GameEnums::NORMAL;
+	int numberOfPlayers = 2;
+    int minBulletsCount = 0;
+    int maxLogsInLine = 3;
+    GameEnums::Difficulty defaultDifficulty = GameEnums::NORMAL;
     int StarterPlayerHP = maxPlayerHP;
 
     ~GameConfig() {};

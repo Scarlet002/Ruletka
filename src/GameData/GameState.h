@@ -14,7 +14,9 @@ using std::vector;
 
 struct GameState
 {
-    GameState(Player& human, Player& computer, MagazineManager& magazine, GameStateManager& gameStateManager, GameConfig& gameConfig, AiManager& ai, vector<string>& log);
+    GameState(Player& human, Player& computer, MagazineManager& magazine,
+        GameStateManager& gameStateManager, GameConfig& gameConfig,
+        AiManager& ai, vector<string>& log);
 
     Player& human;
     Player& computer;
@@ -23,6 +25,14 @@ struct GameState
     GameConfig& gameConfig;
     AiManager& ai;
     vector<string>& log;
+
+    bool waitingForPlayer;
+    bool gameRunning;
+    bool waitingForRestartChoice;
+    bool wasAutoSaved;
+	bool wasLogCleared;
+    bool isComputerTurn;
+    GameEnums::GameStateEnum currentGameState;
 
     ~GameState() {};
 };
