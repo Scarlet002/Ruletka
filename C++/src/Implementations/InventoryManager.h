@@ -4,6 +4,7 @@
 #include "CellPhone.h"
 #include "Beer.h"
 #include "HandCuffs.h"
+#include "Item.h"
 #include "Saw.h"
 #include "Inverter.h"
 #include "Magnifier.h"
@@ -11,6 +12,7 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
+#include <memory>
 
 using std::vector;
 
@@ -27,12 +29,12 @@ private:
 	int inverters;
 	vector<int> inventory;
 	GameConfig& gameConfig;
-	Saw saw;
-	Magnifier magnifier;
-	HandCuffs handCuffs;
-	Beer beer;
-	Inverter inverter;
-	CellPhone cellPhone;
+	std::unique_ptr<Item> saw;
+	std::unique_ptr<Item> magnifier;
+	std::unique_ptr<Item> handCuffs;
+	std::unique_ptr<Item> beer;
+	std::unique_ptr<Item> inverter;
+	std::unique_ptr<Item> cellPhone;
 
 public:
 	int inventorySize;

@@ -54,7 +54,7 @@ bool UiSFMLManager::Initialize()
 }
 
 void UiSFMLManager::DrawStatsPanel(const GameState& gameState, float x, float y, bool isHuman) {
-    const Player& player = isHuman ? gameState.human : gameState.computer;
+    const IPlayer& player = isHuman ? gameState.human : gameState.computer;
 
     string title = isHuman ? "GRACZ" : "KOMPUTER";
     Color color = isHuman ? Color::Green : Color::Red;
@@ -110,7 +110,7 @@ void UiSFMLManager::DrawStatsPanel(const GameState& gameState, float x, float y,
     }
 }
 
-void UiSFMLManager::DrawMagazinePanel(const GameState& gameState, float x, float y) {
+void UiSFMLManager::DrawMagazinePanel(GameState& gameState, float x, float y) {
     RectangleShape panel(Vector2f((WINDOW_WIDTH - 40) / 2, 100));
     panel.setPosition(x, y);
     panel.setFillColor(Color(50, 30, 30, 220));
@@ -127,9 +127,20 @@ void UiSFMLManager::DrawMagazinePanel(const GameState& gameState, float x, float
     int empty = gameState.magazine.ShowEmpty();
     int total = gameState.magazine.ShowBulletCount();
 
-    string statsText = "Pelne: " + to_string(full) +
-        "   Puste: " + to_string(empty) +
-        "   Razem: " + to_string(total);
+    string statsText;
+    if (!gameState.wasMagazineShown)
+    {
+        statsText = "Pelne: " + to_string(full) +
+            "   Puste: " + to_string(empty) +
+            "   Razem: " + to_string(total);
+    }
+    else
+    {
+        string mark = "?";
+        statsText = "Pelne: " + mark +
+            "   Puste: " + mark +
+            "   Razem: " + to_string(total);
+    }
 
     Text stats(statsText, font, 18);
     stats.setFillColor(Color::White);
@@ -693,6 +704,7 @@ void UiSFMLManager::Render(GameState& gameState) {
     window.clear(Color(20, 20, 30));
 
     DrawMagazinePanel(gameState, 10, 20);
+
     DrawDifficultyInfoPanel(gameState, WINDOW_WIDTH / 2 + 10, 20);
 
     float panelWidth = 380;

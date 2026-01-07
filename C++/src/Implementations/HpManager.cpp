@@ -1,4 +1,4 @@
-#include "HpManger.h"
+#include "HpManager.h"
 #include "GameConfig.h"
 #include "GameState.h"
 

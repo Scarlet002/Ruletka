@@ -27,7 +27,14 @@ InventoryManager::InventoryManager(GameConfig& gameConfig) :
 	cellPhones(gameConfig.minCellPhones), 
 	inventorySize(gameConfig.maxInventorySize),
 	inventory(gameConfig.maxInventorySize, GameEnums::NO_ITEMS)
-{}
+{
+	saw = std::make_unique<Saw>();
+	beer = std::make_unique<Beer>();
+	magnifier = std::make_unique<Magnifier>();
+	handCuffs = std::make_unique<HandCuffs>();
+	inverter = std::make_unique<Inverter>();
+	cellPhone = std::make_unique<CellPhone>();
+}
 
 void InventoryManager::GetRandomItem(GameState& gameState) 
 {
@@ -157,7 +164,7 @@ void InventoryManager::UseSaw(GameState& gameState)
 			continue;
 		}
 	}
-	saw.UseItem(gameState); 
+	saw->UseItem(gameState); 
 	GetNumberOfItems(gameState); 
 }
 void InventoryManager::UseBeer(GameState& gameState) 
@@ -177,7 +184,7 @@ void InventoryManager::UseBeer(GameState& gameState)
 			continue;
 		}
 	}
-	beer.UseItem(gameState);
+	beer->UseItem(gameState);
 	GetNumberOfItems(gameState);
 }
 void InventoryManager::UseMagnifier(GameState& gameState) 
@@ -197,7 +204,7 @@ void InventoryManager::UseMagnifier(GameState& gameState)
 			continue;
 		}
 	}
-	magnifier.UseItem(gameState);
+	magnifier->UseItem(gameState);
 	GetNumberOfItems(gameState);
 }
 void InventoryManager::UseHandCuffs(GameState& gameState) 
@@ -217,7 +224,7 @@ void InventoryManager::UseHandCuffs(GameState& gameState)
 			continue;
 		}
 	}
-	handCuffs.UseItem(gameState);
+	handCuffs->UseItem(gameState);
 	GetNumberOfItems(gameState);
 }
 void InventoryManager::UseInverter(GameState& gameState) 
@@ -237,7 +244,7 @@ void InventoryManager::UseInverter(GameState& gameState)
 			continue;
 		}
 	}
-	inverter.UseItem(gameState);
+	inverter->UseItem(gameState);
 	GetNumberOfItems(gameState);
 }
 void InventoryManager::UseCellPhone(GameState& gameState) 
@@ -257,6 +264,6 @@ void InventoryManager::UseCellPhone(GameState& gameState)
 			continue;
 		}
 	}
-	cellPhone.UseItem(gameState);
+	cellPhone->UseItem(gameState);
 	GetNumberOfItems(gameState);
 }

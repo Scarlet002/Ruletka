@@ -41,7 +41,7 @@ public:
     virtual unsigned int GetWindowWidth() const = 0;
     virtual unsigned int GetWindowHeight() const = 0;
 
-    virtual void DrawMagazinePanel(const GameState& gameState, float x, float y) = 0;
+    virtual void DrawMagazinePanel(GameState& gameState, float x, float y) = 0;
     virtual void DrawDifficultyInfoPanel(const GameState& gameState, float x, float y) = 0;
 
     virtual bool IsShowingItemMenu() const = 0;

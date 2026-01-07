@@ -1,10 +1,10 @@
 #pragma once
-#include "Player.h"
 #include "ForwardDeclarations.h"
-#include "MagazineManager.h"
-#include "GameStateManager.h"
+#include "IPlayer.h"
+#include "IAiManager.h"
+#include "IGameStateManager.h"
+#include "IMagazineManager.h"
 #include "GameConfig.h"
-#include "AiManager.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -14,16 +14,16 @@ using std::vector;
 
 struct GameState
 {
-    GameState(Player& human, Player& computer, MagazineManager& magazine,
-        GameStateManager& gameStateManager, GameConfig& gameConfig,
-        AiManager& ai, vector<string>& log);
+    GameState(IPlayer& human, IPlayer& computer, IMagazineManager& magazine,
+        IGameStateManager& gameStateManager, GameConfig& gameConfig,
+        IAiManager& ai, vector<string>& log);
 
-    Player& human;
-    Player& computer;
-    MagazineManager& magazine;
-    GameStateManager& gameStateManager;
+    IPlayer& human;
+    IPlayer& computer;
+    IMagazineManager& magazine;
+    IGameStateManager& gameStateManager;
     GameConfig& gameConfig;
-    AiManager& ai;
+    IAiManager& ai;
     vector<string>& log;
 
     bool waitingForPlayer;
@@ -31,6 +31,7 @@ struct GameState
     bool waitingForRestartChoice;
     bool wasAutoSaved;
 	bool wasLogCleared;
+    bool wasMagazineShown;
     bool isComputerTurn;
     GameEnums::GameStateEnum currentGameState;
 

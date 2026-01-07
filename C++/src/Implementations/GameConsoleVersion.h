@@ -2,7 +2,7 @@
 #include "ForwardDeclarations.h"
 #include "IGame.h"
 #include "AiManager.h"
-#include "HpManger.h"
+#include "HpManager.h"
 #include "AutoSaveManager.h"
 #include "LoadJSONManager.h"
 #include "SaveJSONManager.h"
@@ -22,15 +22,18 @@ class GameConsoleVersion : public IGame {
 private:
 
     GameConfig gameConfig;
+
     MagazineManager magazine;
     GameStateManager gameStateManager;
     AiManager ai;
     Player human;
     Player computer;
-    vector<string> log;
-    GameState gameState;
-    unique_ptr<AutoSaveManager> asyncSaver;
 
+    vector<string> log;
+
+    GameState gameState;
+
+    unique_ptr<AutoSaveManager> asyncSaver;
     UiManager ui;
 
     SaveJSONManager& saverJSON;

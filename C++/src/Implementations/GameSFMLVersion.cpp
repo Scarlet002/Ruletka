@@ -8,8 +8,14 @@ GameSFMLVersion::GameSFMLVersion(LoadJSONManager& loaderJSON, SaveJSONManager& s
     human("Gracz", "human", gameConfig),
     computer("Komputer", "computer", gameConfig),
     ai(), log(),
+    gameState(static_cast<IPlayer&>(human),
+        static_cast<IPlayer&>(computer),
+        static_cast<IMagazineManager&>(magazine),
+        static_cast<IGameStateManager&>(gameStateManager),
+        gameConfig,
+        static_cast<IAiManager&>(ai),
+        log),
     loaderJSON(loaderJSON), saverJSON(saverJSON),
-    gameState(human, computer, magazine, gameStateManager, gameConfig, ai, log),
     ui(gameState),
     gameRunning(true), playerTurn(false), gameOver(false),
     filename(""), autoSaveFileName("")
@@ -198,6 +204,7 @@ void GameSFMLVersion::ProcessPlayerAction(int action) {
     ui.ShowDifficultyMenu(false);
     ui.ShowRestartMenu(false);
     gameState.wasLogCleared = false;
+    gameState.wasMagazineShown = false;
 }
 
 void GameSFMLVersion::HandleItemChoice(int item) {

@@ -84,7 +84,7 @@ public:
     unsigned int GetWindowWidth() const override { return WINDOW_WIDTH; }
     unsigned int GetWindowHeight() const override { return WINDOW_HEIGHT; }
 
-    void DrawMagazinePanel(const GameState& gameState, float x, float y) override;
+    void DrawMagazinePanel(GameState& gameState, float x, float y) override;
     void DrawDifficultyInfoPanel(const GameState& gameState, float x, float y) override;
 
     bool IsShowingItemMenu() const override { return showInventory; }

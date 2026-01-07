@@ -1,7 +1,7 @@
 #pragma once
 #include "ForwardDeclarations.h"
 #include "IPlayer.h"
-#include "HpManger.h"
+#include "IHpManager.h"
 #include "ShootingManager.h"
 #include "DecisionManager.h"
 #include "InventoryManager.h"
@@ -17,8 +17,8 @@ class Player : public IPlayer
 private:
     std::unique_ptr<DecisionManager> decision;
     std::unique_ptr<ShootingManager> gun;
-    InventoryManager inventory;
-    HpManager hp;
+	std::unique_ptr<InventoryManager> inventory;
+	std::unique_ptr<IHpManager> hp;
     string name;
     string type;
 

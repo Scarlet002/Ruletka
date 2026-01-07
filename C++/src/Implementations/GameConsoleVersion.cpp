@@ -1,7 +1,7 @@
 #include "GameConsoleVersion.h"
 #include "UiManager.h"
 #include "Player.h"
-#include "HpManger.h"
+#include "HpManager.h"
 #include "AiManager.h"
 #include "SaveTXTManager.h"
 #include "SaveJSONManager.h"
@@ -24,9 +24,15 @@ using std::make_unique;
 
 GameConsoleVersion::GameConsoleVersion(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON)
     : magazine(gameConfig), gameStateManager(gameConfig),
-    human("Czlowiek", "human", gameConfig), computer("Komputer", "computer", gameConfig),
-    gameState(human, computer, magazine, gameStateManager, gameConfig, ai, log),
-    loaderJSON(loaderJSON), saverJSON(saverJSON), log({})
+    human("Czlowiek", "human", gameConfig), computer("Komputer", "computer", gameConfig), log({}),
+    gameState(static_cast<IPlayer&>(human),
+        static_cast<IPlayer&>(computer),
+        static_cast<IMagazineManager&>(magazine),
+        static_cast<IGameStateManager&>(gameStateManager),
+        gameConfig,
+        static_cast<IAiManager&>(ai),
+        log),
+    loaderJSON(loaderJSON), saverJSON(saverJSON)
 {
     asyncSaver = make_unique<AutoSaveManager>(saverJSON, gameState);
 };
