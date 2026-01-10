@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8227d8d6-7123-4f18-b1bb-49933f0aacd4}</ProjectGuid>
+    <RootNamespace>Ruletka</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)build\obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)build\obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\bin\$(Platform)\$(Configuration)\</OutDir>
+    <SourcePath>$(ProjectDir);$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)assets;$(SolutionDir)external\SFML\include\SFML;external\SFML;external\nlohmann\single_include;external\nlohmann;external;external\SFML\lib;external\SFML\bin;external\SFML\include;$(SolutionDir)src;$(SolutionDir)external\nlohmann\single_include\nlohmann;$(SolutionDir)external\SFML\include;external\SFML\include\System;external\SFML\include\Network;external\SFML\include\doc;external\SFML\include\Audio;external\SFML\include\Graphics;external\SFML\include\Window;external\nlohmann\single_include\nlohmann;src\GameData;src\Implementations;src\Interfaces</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if exist "$(OutDir)assets" rmdir /S /Q "$(OutDir)assets"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)assets;$(SolutionDir)external\SFML\include\SFML;external\SFML;external\nlohmann\single_include;external\nlohmann;external;external\SFML\lib;external\SFML\bin;external\SFML\include;$(SolutionDir)src;$(SolutionDir)external\nlohmann\single_include\nlohmann;$(SolutionDir)external\SFML\include;external\SFML\include\System;external\SFML\include\Network;external\SFML\include\doc;external\SFML\include\Audio;external\SFML\include\Graphics;external\SFML\include\Window;external\nlohmann\single_include\nlohmann;src\GameData;src\Implementations;src\Interfaces</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if exist "$(OutDir)assets" rmdir /S /Q "$(OutDir)assets"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Implementations\AiManager.cpp" />
+    <ClCompile Include="src\Implementations\AutoSaveManager.cpp" />
+    <ClCompile Include="src\Implementations\Beer.cpp" />
+    <ClCompile Include="src\Implementations\CellPhone.cpp" />
+    <ClCompile Include="src\Implementations\DecisionManager.cpp" />
+    <ClCompile Include="src\Implementations\GameConsoleVersion.cpp" />
+    <ClCompile Include="src\Implementations\GameSFMLVersion.cpp" />
+    <ClCompile Include="src\Implementations\GameState.cpp" />
+    <ClCompile Include="src\Implementations\GameStateManager.cpp" />
+    <ClCompile Include="src\Implementations\HpManager.cpp" />
+    <ClCompile Include="src\Implementations\InputValidatorManager.cpp" />
+    <ClCompile Include="src\Implementations\HandCuffs.cpp" />
+    <ClCompile Include="src\Implementations\InventoryManager.cpp" />
+    <ClCompile Include="src\Implementations\Inverter.cpp" />
+    <ClCompile Include="src\Implementations\LoadJSONManager.cpp" />
+    <ClCompile Include="src\Implementations\LoadTXTManager.cpp" />
+    <ClCompile Include="src\Implementations\MagazineManager.cpp" />
+    <ClCompile Include="src\Implementations\Magnifier.cpp" />
+    <ClCompile Include="src\Implementations\Player.cpp" />
+    <ClCompile Include="src\Implementations\SaveConfig.cpp" />
+    <ClCompile Include="src\Implementations\SaveJSONManager.cpp" />
+    <ClCompile Include="src\Implementations\SaveTXTManager.cpp" />
+    <ClCompile Include="src\Implementations\Saw.cpp" />
+    <ClCompile Include="src\Implementations\ShootingManager.cpp" />
+    <ClCompile Include="src\Implementations\UiManager.cpp" />
+    <ClCompile Include="src\Implementations\UiSFMLManager.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\GameData\GameConfig.h" />
+    <ClInclude Include="src\GameData\GameEnums.h" />
+    <ClInclude Include="src\GameData\GameState.h" />
+    <ClInclude Include="src\Implementations\AiManager.h" />
+    <ClInclude Include="src\Implementations\AutoSaveManager.h" />
+    <ClInclude Include="src\Implementations\Beer.h" />
+    <ClInclude Include="src\Implementations\CellPhone.h" />
+    <ClInclude Include="src\Implementations\DecisionManager.h" />
+    <ClInclude Include="src\Implementations\ForwardDeclarations.h" />
+    <ClInclude Include="src\Implementations\GameConsoleVersion.h" />
+    <ClInclude Include="src\Implementations\GameSFMLVersion.h" />
+    <ClInclude Include="src\Implementations\GameStateManager.h" />
+    <ClInclude Include="src\Implementations\HandCuffs.h" />
+    <ClInclude Include="src\Implementations\HpManager.h" />
+    <ClInclude Include="src\Implementations\InputValidatorManager.h" />
+    <ClInclude Include="src\Implementations\InventoryManager.h" />
+    <ClInclude Include="src\Implementations\Inverter.h" />
+    <ClInclude Include="src\Implementations\LoadJSONManager.h" />
+    <ClInclude Include="src\Implementations\LoadTXTManager.h" />
+    <ClInclude Include="src\Implementations\MagazineManager.h" />
+    <ClInclude Include="src\Implementations\Magnifier.h" />
+    <ClInclude Include="src\Implementations\Player.h" />
+    <ClInclude Include="src\Implementations\SaveConfig.h" />
+    <ClInclude Include="src\Implementations\SaveJSONManager.h" />
+    <ClInclude Include="src\Implementations\SaveTXTManager.h" />
+    <ClInclude Include="src\Implementations\Saw.h" />
+    <ClInclude Include="src\Implementations\ShootingManager.h" />
+    <ClInclude Include="src\Implementations\UiManager.h" />
+    <ClInclude Include="src\Implementations\UiSFMLManager.h" />
+    <ClInclude Include="src\Interfaces\IAiManager.h" />
+    <ClInclude Include="src\Interfaces\IDecisionManager.h" />
+    <ClInclude Include="src\Interfaces\IGame.h" />
+    <ClInclude Include="src\Interfaces\IGameSFML.h" />
+    <ClInclude Include="src\Interfaces\IGameStateManager.h" />
+    <ClInclude Include="src\Interfaces\IHpManager.h" />
+    <ClInclude Include="src\Interfaces\ILoadManager.h" />
+    <ClInclude Include="src\Interfaces\IMagazineManager.h" />
+    <ClInclude Include="src\Interfaces\Inventory.h" />
+    <ClInclude Include="src\Interfaces\IPlayer.h" />
+    <ClInclude Include="src\Interfaces\ISaveAsyncManager.h" />
+    <ClInclude Include="src\Interfaces\ISaveSyncManager.h" />
+    <ClInclude Include="src\Interfaces\IShootingManager.h" />
+    <ClInclude Include="src\Interfaces\Item.h" />
+    <ClInclude Include="src\Interfaces\IUiManager.h" />
+    <ClInclude Include="src\Interfaces\IUiSFMLManager.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
