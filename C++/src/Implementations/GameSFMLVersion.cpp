@@ -28,6 +28,7 @@ GameSFMLVersion::GameSFMLVersion(LoadJSONManager& loaderJSON, SaveJSONManager& s
         return;
     }
 
+    ai.SetDifficulty(gameConfig.defaultDifficulty);
     ui.SetGameReference(this);
     InitializeGame();
 }
@@ -44,8 +45,6 @@ void GameSFMLVersion::InitializeGame() {
     asyncSaver->SetSaveCounter(0);
     ui.ClearLog(gameState);
 
-
-    ai.SetDifficulty(gameConfig.defaultDifficulty);
     gameStateManager.SetChoice(GameEnums::NO_CHOICE);
     gameStateManager.SetItem(GameEnums::NO_ITEMS);
 
