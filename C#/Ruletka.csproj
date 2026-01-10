@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="SFML.Net" Version="2.6.1" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="xcopy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\*.dll&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\csfml-audio-2.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;copy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\csfml-graphics-2.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;copy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\csfml-system-2.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;copy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\csfml-window-2.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;copy /Y &quot;C:\Users\Scarlet\Desktop\Ruletka\C#\Object\Project\Ruletka\external\SFML\bin\openal32.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;" />
+  </Target>
+
+</Project>
