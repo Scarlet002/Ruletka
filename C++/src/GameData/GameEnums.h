@@ -1,17 +1,25 @@
 #pragma once
-#include "ForwardDeclarations.h"
 
-namespace GameEnums 
+namespace GameEnums
 {
-    enum Difficulty { EASY = 1000, NORMAL = 1001, HARD = 1002 };
-    enum Bullet { EMPTY = 0, FULL = 1 };
-    enum Choice { NO_CHOICE = -1, HEAL = 0, SHOOT = 1, USEITEM = 2, EXIT = 3, SAVE = 4, LOAD = 5, DIFFICULTY = 6 };
-    enum Starter { STARTER_COMPUTER = 0, STARTER_HUMAN = 1 };
-    enum Target { TARGET_COMPUTER = 0, TARGET_HUMAN = 1 };
-    enum Shooter { SHOOTER_COMPUTER = 0, SHOOTER_HUMAN = 1 };
-    enum Item { NO_ITEMS = 0, HANDCUFFS = 1, BEER = 2, MAGNIFIER = 3, SAW = 4, CELLPHONE = 5, INVERTER = 6 };
-	enum SaveLoadMethod { SAVE_TXT = 0, LOAD_TXT = 1, SAVE_JSON = 2, LOAD_JSON = 3 };
-	enum GameStateEnum { STATE_NOT_RUNNING = 0, STATE_RUNNING = 1, STATE_HUMAN_WIN = 2, STATE_COMPUTER_WIN = 3 };
-	enum RestartChoice { RESTART_YES = 100, RESTART_NO = 101 };
-
+    enum Difficulty { NORMAL, EASY, HARD };
+    enum Bullet { EMPTY, FULL };
+    enum Choice { NO_CHOICE = -1, HEAL, SHOOT, USEITEM, EXIT, SAVE, LOAD, DIFFICULTY };
+    enum Starter { STARTER_COMPUTER, STARTER_HUMAN };
+    enum Target { TARGET_COMPUTER, TARGET_HUMAN };
+	enum PlayerType { COMPUTER, HUMAN };
+    enum Shooter { SHOOTER_COMPUTER, SHOOTER_HUMAN };
+    enum Item { NO_ITEMS, HANDCUFFS, BEER, MAGNIFIER, SAW, CELLPHONE, INVERTER };
+    enum SaveLoadMethod { SAVE_TXT, LOAD_TXT, SAVE_JSON, LOAD_JSON };
+    enum GameStateEnum { STATE_NOT_RUNNING, STATE_RUNNING, STATE_HUMAN_WIN, STATE_COMPUTER_WIN };
+	enum HandCuffsState { HANDCUFFS_NOT_USED, HANDCUFFS_USED };
+    enum RestartChoice { RESTART_NO, RESTART_YES };
+    enum IsSaving { NOT_SAVING, SAVING };
+    enum WasMagazineShown { MAGAZINE_NOT_SHOWN, MAGAZINE_SHOWN };
+    enum WasLogCleared { LOG_NOT_CLEARED, LOG_CLEARED };
+    enum WasAutoSaved { NOT_AUTO_SAVED, AUTO_SAVED };
+    enum Turn { TURN_COMPUTER, TURN_HUMAN };
+    enum WaitingForRestartChoice { NOT_WAITING_FOR_RESTART_CHOICE, WAITING_FOR_RESTART_CHOICE };
+    enum WaitingForPlayer { NOT_WAITING_FOR_PLAYER, WAITING_FOR_PLAYER };
+    enum WasInventoryShownForComputer { INVENTORY_NOT_SHOWN, INVENTORY_SHOWN };
 }

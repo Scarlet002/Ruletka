@@ -1,13 +1,10 @@
 #pragma once
-#include "ForwardDeclarations.h"
 #include <vector>
-
-using std::vector;
+#include <cstdint>
 
 class IMagazineManager
 {
 public:
-
     virtual void Load() = 0;
     virtual void ShowBullets() const = 0;
     virtual bool CheckBulletType() const = 0;
@@ -25,12 +22,12 @@ public:
     virtual void Reload() = 0;
     virtual bool IsEmptySlot() const = 0;
     virtual bool IsEmpty() const = 0;
-    virtual const vector<int>& GetMagazine() const = 0;
-    virtual void SetMagazine(const vector<int>& newMagazine) = 0;
+    virtual const std::vector<uint8_t>& GetMagazine() const = 0;
+    virtual void SetMagazine(const std::vector<uint8_t>& newMagazine) = 0;
     virtual double CalculateHitProbability() const = 0;
     virtual bool HasEmptyBullets() const = 0;
     virtual void InvertBulletType() = 0;
-    virtual int GetMagazienSize() const = 0;
+    virtual int GetMagazineSize() const = 0;
     virtual bool CheckBulletTypeCellPhone(int bullet) const = 0;
 
     virtual ~IMagazineManager() = default;

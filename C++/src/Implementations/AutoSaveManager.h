@@ -1,27 +1,23 @@
 #pragma once
 #include "ForwardDeclarations.h"
 #include "ISaveAsyncManager.h"
-#include "GameState.h"
 #include "SaveJSONManager.h"
+#include "GameState.h"
 #include <future>
+#include <cstdint>
 
-using std::future;
-
-class AutoSaveManager : public ISaveAsyncManager {
+class AutoSaveManager : public ISaveAsyncManager 
+{
 private:
-    future<void> saveFuture;
-    bool isSaving;
-    int saveCounter;
-    SaveJSONManager& saver;
-    GameState& gameState;
-
+    std::future<void> saveFuture;
+    ISaveSyncManager& saver;
+    uint8_t saveCounter = 0;
+    std::atomic<bool> isSaving = false;
 public:
-    AutoSaveManager(SaveJSONManager& saverRef, GameState& gameState);
+    AutoSaveManager(ISaveSyncManager& saverRef);
 
     void SetSaveCounter(int newSaveCounter) override;
-    void SaveGameStateAsync(const GameState& gameState, string& autoSaveFileName) override;
+    void SaveGameStateAsync(GameState state) override;
 	int GetSaveCounter() const override;
     bool IsSaving() const override;
-
-    ~AutoSaveManager() {};
 };

@@ -6,21 +6,17 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-
-using std::vector;
+#include <cstdint>
 
 class MagazineManager : public IMagazineManager
 {
 private:
-    int full = 0;
-    int empty = 0;
-    int bulletCount = 0;
-    vector<int> magazine;
-    GameConfig& gameConfig;
-
+    std::vector<uint8_t> magazine;
+    uint8_t full = GameConfig::minBulletsCount;
+    uint8_t empty = GameConfig::minBulletsCount;
+    uint8_t bulletCount = GameConfig::minBulletsCount;
 public:
-
-    MagazineManager(GameConfig& gameConfig);
+    explicit MagazineManager();
 
     void Load() override;
     void ShowBullets() const override;
@@ -31,7 +27,6 @@ public:
     void DecreaseFullCount() override;
     void DecreaseEmptyCount() override;
     int ShowBulletCount() const override;
-    void SetBulletCount(int newBulletCount) override;
     void SetFull(int newFull) override;
     void SetEmpty(int newEmpty) override;
     void DecreaseBulletCount() override;
@@ -39,13 +34,12 @@ public:
     void Reload() override;
     bool IsEmptySlot() const override;
     bool IsEmpty() const override;
-    const vector<int>& GetMagazine() const override;
-    void SetMagazine(const vector<int>& newMagazine) override;
+	void SetBulletCount(int newBulletCount) override;
+    const std::vector<uint8_t>& GetMagazine() const override;
+    void SetMagazine(const std::vector<uint8_t>& newMagazine) override;
     double CalculateHitProbability() const override;
     bool HasEmptyBullets() const override;
     void InvertBulletType() override;
-    int GetMagazienSize() const override;
+    int GetMagazineSize() const override;
     bool CheckBulletTypeCellPhone(int bullet) const override;
-
-    ~MagazineManager() {};
 };

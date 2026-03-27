@@ -1,99 +1,75 @@
 #include "SaveTXTManager.h"
-#include "GameState.h"
 #include "SaveConfig.h"
+#include "GameState.h"
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <cstdint>
 
-using std::exception;
-using std::cout;
-using std::endl;
-using std::ofstream;
-
-void SaveTXTManager::SaveGameState(const GameState& gameState, const string& fileName) const
+void SaveTXTManager::SaveGameState(const GameState& state,
+    const std::string& fileName) const
 {
-    try
-    {
-        string saveDir;
+    std::string saveDir;
+    if (fileName.find("autosave") == 0)
+        { saveDir = SaveConfig::GetAutoSaveDirectory(); }
+    else { saveDir = SaveConfig::GetSaveDirectory(); }
+    if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
+        { throw std::runtime_error("Nie mozna utworzyc katalogu zapisow!"); }
+    std::string fullPath = saveDir + "/" + fileName;
+    std::ofstream gameSave(fullPath);
+    if (!gameSave.is_open())
+        { throw std::runtime_error("Nie mozna otworzyc pliku! "); }
+    if (gameSave.fail())
+        { throw std::runtime_error("Blad podczas zapisu stanu gry!"); }
+    gameSave << state.human->GetHP() << '\n';
+    std::vector<uint8_t> humanInventory = state.human->GetInventory();
+    uint8_t humanInventorySize = humanInventory.size();
+    gameSave << humanInventorySize << '\n';
 
-        if (fileName.find("autosave") == 0)
-        {
-            saveDir = SaveConfig::GetAutoSaveDirectory();
-        }
-        else
-        {
-            saveDir = SaveConfig::GetSaveDirectory();
-        }
+    for (uint8_t i : humanInventory)
+        { gameSave << i << '\n'; }
 
-        if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
-        {
-            cout << "Nie mozna utworzyc katalogu zapisow!" << endl;
-            return;
-        }
+    gameSave << state.human->GetSaws() << '\n';
+    gameSave << state.human->GetBeers() << '\n';
+    gameSave << state.human->GetMagnifiers() << '\n';
+    gameSave << state.human->GetInverters() << '\n';
+    gameSave << state.human->GetHandCuffs() << '\n';
+    gameSave << state.human->GetCellPhones() << '\n';
 
-        string fullPath = saveDir + "/" + fileName;
+    gameSave << state.computer->GetHP() << '\n';
+    std::vector<uint8_t> computerInventory = state.computer->GetInventory();
+    uint8_t computerInventorySize = computerInventory.size();
+    gameSave << computerInventorySize << '\n';
 
-        ofstream gameSave(fullPath);
-        if (!gameSave.is_open())
-        {
-            cout << "Nie mozna otworzyc pliku! " << endl;
-            return;
-        }
-        if (gameSave.fail())
-        {
-            cout << "Blad podczas zapisu stanu gry!" << endl;
-            return;
-        }
+    for (uint8_t i : computerInventory)
+        { gameSave << i << '\n'; }
 
-        gameSave << gameState.human.GetHP() << endl;
-        int itemsHuman = gameState.human.GetInventory().size();
-        gameSave << itemsHuman << endl;
-        for (int i : gameState.human.GetInventory())
-        {
-            gameSave << i << endl;
-        }
-        gameSave << gameState.human.GetSaws() << endl;
-        gameSave << gameState.human.GetBeers() << endl;
-        gameSave << gameState.human.GetMagnifiers() << endl;
-        gameSave << gameState.human.GetInverters() << endl;
-        gameSave << gameState.human.GetHandCuffs() << endl;
-        gameSave << gameState.human.GetCellPhones() << endl;
+    gameSave << state.computer->GetSaws() << '\n';
+    gameSave << state.computer->GetBeers() << '\n';
+    gameSave << state.computer->GetMagnifiers() << '\n';
+    gameSave << state.computer->GetInverters() << '\n';
+    gameSave << state.computer->GetHandCuffs() << '\n';
+    gameSave << state.computer->GetCellPhones() << '\n';
 
-        gameSave << gameState.computer.GetHP() << endl;
-        int itemsComputer = gameState.computer.GetInventory().size();
-        gameSave << itemsComputer << endl;
-        for (int i : gameState.computer.GetInventory())
-        {
-            gameSave << i << endl;
-        }
-        gameSave << gameState.computer.GetSaws() << endl;
-        gameSave << gameState.computer.GetBeers() << endl;
-        gameSave << gameState.computer.GetMagnifiers() << endl;
-        gameSave << gameState.computer.GetInverters() << endl;
-        gameSave << gameState.computer.GetHandCuffs() << endl;
-        gameSave << gameState.computer.GetCellPhones() << endl;
+    gameSave << state.magazine->ShowFull() << '\n';
+    gameSave << state.magazine->ShowEmpty() << '\n';
+    gameSave << state.magazine->GetMagazineSize() << '\n';
 
-        gameSave << gameState.magazine.ShowFull() << endl;
-        gameSave << gameState.magazine.ShowEmpty() << endl;
-        gameSave << gameState.magazine.ShowBulletCount() << endl;
+    std::vector<uint8_t> magazine = state.magazine->GetMagazine();
+    for (uint8_t i : magazine)
+        { gameSave << i << '\n'; }
 
-        gameSave << gameState.gameStateManager.GetStarter() << endl;
-        gameSave << gameState.ai.GetDifficulty() << endl;
-        gameSave << gameState.gameStateManager.GetChoice() << endl;
-        gameSave << gameState.gameStateManager.GetShooter() << endl;
-        gameSave << gameState.gameStateManager.GetTarget() << endl;
-        gameSave << gameState.gameStateManager.GetItem() << endl;
-        gameSave << gameState.gameStateManager.GetDamage() << endl;
-        gameSave << gameState.gameStateManager.GetStateOfHandCuffs() << endl;
+    gameSave << state.turn->GetStarter() << '\n';
+    gameSave << state.turn->GetDifficulty() << '\n';
+    gameSave << state.turn->GetChoice() << '\n';
+    gameSave << state.turn->GetShooter() << '\n';
+    gameSave << state.turn->GetTarget() << '\n';
+    gameSave << state.turn->GetItem() << '\n';
+    gameSave << state.turn->GetDamage() << '\n';
+    gameSave << state.turn->GetStateOfHandCuffs() << '\n';
+    gameSave << state.turn->GetStateOfInventory() << '\n';
+    gameSave << state.turn->GetStateOfMagnifier() << '\n';
+    gameSave << state.turn->GetStateOfCellPhone() << '\n';
 
-        for (int i : gameState.magazine.GetMagazine())
-            gameSave << i << endl;
-
-        gameSave.close();
-    }
-
-    catch (const exception& e)
-    {
-        cout << "Blad zapisywania: " << e.what() << endl;
-    }
+    gameSave.close();
 }

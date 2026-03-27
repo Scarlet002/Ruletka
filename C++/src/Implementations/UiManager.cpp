@@ -1,268 +1,183 @@
+#include "InputValidatorManager.h"
 #include "UiManager.h"
 #include "GameState.h"
-#include "InputValidatorManager.h"
 #include "Player.h"
+#include "GameConfig.h"
 #include "GameEnums.h"
-#include <string>
-#include <iostream>
 #include "json.hpp"
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <iostream>
 
-using nlohmann::json;
-using std::cout;
-using std::endl;
-using std::string;
+UiManager::UiManager(const GameState& state) 
+    : state(state) 
+    { log.reserve(GameConfig::maxLogsInLine); }
 
-void UiManager::DisplayStats(const GameState& gameState) const
+void UiManager::DisplayLastTurnLog()
 {
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "Poziom trudnosci: ";
-    ShowAIDifficulty(gameState.ai.GetDifficulty());
-    cout << endl << endl;
-    cout << "Statystyki:" << endl;
-    cout << endl;
-    cout << "czlowiek HP: " << gameState.human.GetHP() << endl;
-    cout << "czlowiek Pily: " << gameState.human.GetSaws() << endl;
-    cout << "czlowiek Piwa: " << gameState.human.GetBeers() << endl;
-    cout << "czlowiek Lupy: " << gameState.human.GetMagnifiers() << endl;
-    cout << "czlowiek Telefony: " << gameState.human.GetCellPhones() << endl;
-    cout << "czlowiek Kajdanki: " << gameState.human.GetHandCuffs() << endl;
-    cout << "czlowiek Inwertery: " << gameState.human.GetInverters() << endl;
-    cout << endl;
-    cout << "komputer HP: " << gameState.computer.GetHP() << endl;
-    cout << "komputer Pily: " << gameState.computer.GetSaws() << endl;
-    cout << "komputer Piwa: " << gameState.computer.GetBeers() << endl;
-    cout << "komputer Lupy: " << gameState.computer.GetMagnifiers() << endl;
-    cout << "komputer Telefony: " << gameState.computer.GetCellPhones() << endl;
-    cout << "komputer Kajdanki: " << gameState.computer.GetHandCuffs() << endl;
-    cout << "komputer Inwertery: " << gameState.computer.GetInverters() << endl;
-    cout << endl;
-    cout << "Pelne pociski: " << gameState.magazine.ShowFull() << endl;
-    cout << "Puste pociski: " << gameState.magazine.ShowEmpty() << endl;
-    cout << "Liczba pociskow: " << gameState.magazine.ShowBulletCount() << endl;
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+    if (log.size() != 0)
+    {
+        for (uint8_t i = 0; i < log.size(); ++i)
+        {
+            if (i != 0)
+            {
+                if (i % GameConfig::maxLogsInLine == 0) { std::cout << '\n'; }
+                std::cout << " -> ";
+            }
+            std::cout << log[i];
+        }
+    }
+    log.clear();
+    NewLine();
 }
-
-void UiManager::ScrollScreen() const { for (int i = 0; i < 30; i++) cout << endl; }
-
+int UiManager::HumanDecision()
+{
+    std::string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 6): ",
+        InputValidatorManager::IsValidMenuChoice);
+    uint8_t choice = stoi(input);
+	return choice;
+}
+void UiManager::DisplayStats() const
+{
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
+    std::cout << "Poziom trudnosci: ";
+    std::cout << GetAIDifficulty(state.turn->GetDifficulty());
+    std::cout << '\n' << '\n';
+    std::cout << "Statystyki:" << '\n';
+    std::cout << '\n';
+    std::cout << "czlowiek HP: " << state.human->GetHP() << '\n';
+    std::cout << "czlowiek Pily: " << state.human->GetSaws() << '\n';
+    std::cout << "czlowiek Piwa: " << state.human->GetBeers() << '\n';
+    std::cout << "czlowiek Lupy: " << state.human->GetMagnifiers() << '\n';
+    std::cout << "czlowiek Telefony: " << state.human->GetCellPhones() << '\n';
+    std::cout << "czlowiek Kajdanki: " << state.human->GetHandCuffs() << '\n';
+    std::cout << "czlowiek Inwertery: " << state.human->GetInverters() << '\n';
+    std::cout << '\n';
+    std::cout << "komputer HP: " << state.computer->GetHP() << '\n';
+    std::cout << "komputer Pily: " << state.computer->GetSaws() << '\n';
+    std::cout << "komputer Piwa: " << state.computer->GetBeers() << '\n';
+    std::cout << "komputer Lupy: " << state.computer->GetMagnifiers() << '\n';
+    std::cout << "komputer Telefony: " << state.computer->GetCellPhones() << '\n';
+    std::cout << "komputer Kajdanki: " << state.computer->GetHandCuffs() << '\n';
+    std::cout << "komputer Inwertery: " << state.computer->GetInverters() << '\n';
+    std::cout << '\n';
+    std::cout << "Pelne pociski: " << state.magazine->ShowFull() << '\n';
+    std::cout << "Puste pociski: " << state.magazine->ShowEmpty() << '\n';
+    std::cout << "Liczba pociskow: " << state.magazine->ShowBulletCount() << '\n';
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
+}
 void UiManager::Menu() const
 {
-    cout << "Wybierz co chcesz zrobic:" << endl;
-    cout << "0 - Sprobuj odzyskac 1 HP" << endl;
-    cout << "1 - Strzel w komputer" << endl;
-    cout << "2 - Uzyj przedmiotu" << endl;
-    cout << "3 - Zakoncz gre" << endl;
-    cout << "4 - Zapisz gre" << endl;
-    cout << "5 - Wczytaj gre" << endl;
-    cout << "6 - Wybierz poziom trudnosci" << endl;
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
+    std::cout << "Wybierz co chcesz zrobic:" << '\n';
+    std::cout << "0 - Sprobuj odzyskac 1 HP" << '\n';
+    std::cout << "1 - Strzel w komputer" << '\n';
+    std::cout << "2 - Uzyj przedmiotu" << '\n';
+    std::cout << "3 - Zakoncz gre" << '\n';
+    std::cout << "4 - Zapisz gre" << '\n';
+    std::cout << "5 - Wczytaj gre" << '\n';
+    std::cout << "6 - Wybierz poziom trudnosci" << '\n';
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
 }
-
 void UiManager::DifficultyMenu() const
 {
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "Wybierz poziom trudnosci:" << endl;
-    cout << "0 - latwy" << endl;
-    cout << "1 - normalny" << endl;
-    cout << "2 - trudny" << endl;
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
+    std::cout << "Wybierz poziom trudnosci:" << '\n';
+    std::cout << "0 - latwy" << '\n';
+    std::cout << "1 - normalny" << '\n';
+    std::cout << "2 - trudny" << '\n';
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
 }
-
 void UiManager::InventoryMenu() const
 {
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "Wybierz przedmiot ktory chcesz uzyc:" << endl;
-    cout << "0 - Nie uzywaj zadnego przedmiotu" << endl;
-    cout << "1 - Kajdanki" << endl;
-    cout << "2 - Piwo" << endl;
-    cout << "3 - Lupa" << endl;
-    cout << "4 - Pila" << endl;
-    cout << "5 - Telefon" << endl;
-    cout << "6 - Inwerter" << endl;
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
+    std::cout << "Wybierz przedmiot ktory chcesz uzyc:" << '\n';
+    std::cout << "0 - Nie uzywaj zadnego przedmiotu" << '\n';
+    std::cout << "1 - Kajdanki" << '\n';
+    std::cout << "2 - Piwo" << '\n';
+    std::cout << "3 - Lupa" << '\n';
+    std::cout << "4 - Pila" << '\n';
+    std::cout << "5 - Telefon" << '\n';
+    std::cout << "6 - Inwerter" << '\n';
+    std::cout << "-------------------------------------------------------------------------------------------------------------" << '\n';
 }
-
-void UiManager::ShowAIDifficulty(const int difficulty) const
+std::string UiManager::GetAIDifficulty(const int difficulty) const
 {
-    if (difficulty == GameEnums::EASY)
-    {
-        cout << "latwy";
-    }
-    else if (difficulty == GameEnums::NORMAL)
-    {
-        cout << "normalny";
-    }
-    else
-    {
-        cout << "trudny";
-    }
+    if (difficulty == GameEnums::EASY) { return "latwy"; }
+    else if (difficulty == GameEnums::NORMAL) { return "normalny"; }
+    else { return "trudny"; }
 }
-
-void UiManager::ItemUseSuccesHuman(GameState& gameState) const
+void UiManager::InputSaveTXT()
 {
-    if (gameState.gameStateManager.GetItem() == GameEnums::NO_ITEMS)
-    {
-        cout << "Nie uzyles zadnego przedmiotu!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::CELLPHONE && gameState.human.GetCellPhones() > 0)
-    {
-        gameState.human.UseCellPhone(gameState);
-        cout << "Pomyslnie uzyles telefonu!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::SAW && gameState.human.GetSaws() > 0)
-    {
-        gameState.human.UseSaw(gameState);
-        cout << "Pomyslnie uzyles pily!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::BEER && gameState.human.GetBeers() > 0)
-    {
-        gameState.human.UseBeer(gameState);
-        cout << "Pomyslnie wypiles piwo!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::MAGNIFIER && gameState.human.GetMagnifiers() > 0)
-    {
-        gameState.human.UseMagnifier(gameState);
-        cout << "Pomyslnie uzyles lupy!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::HANDCUFFS && gameState.human.GetHandCuffs() > 0)
-    {
-        gameState.human.UseHandCuffs(gameState);
-        cout << "Pomyslnie uzyles kajdanek!";
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::INVERTER && gameState.human.GetInverters() > 0)
-    {
-        gameState.human.UseInverter(gameState);
-        cout << "Pomyslnie uzyles inwertera!";
-    }
-    else
-    {
-        cout << "Nie masz tego przedmiotu!";
-    }
-}
-
-void UiManager::ItemUseSuccesComputer(GameState& gameState) const
-{
-    if (gameState.gameStateManager.GetItem() == GameEnums::NO_ITEMS)
-    {
-        cout << "Komputer nie uzyl zadnego przedmiotu!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::CELLPHONE && gameState.computer.GetCellPhones() > 0)
-    {
-        gameState.computer.UseCellPhone(gameState);
-        cout << "Komputer pomyslnie uzyl telefonu!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::SAW && gameState.computer.GetSaws() > 0)
-    {
-        gameState.computer.UseSaw(gameState);
-        cout << "Komputer pomyslnie uzyl pily!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::BEER && gameState.computer.GetBeers() > 0)
-    {
-        gameState.computer.UseBeer(gameState);
-        cout << "Komputer pomyslnie uzyl piwo!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::MAGNIFIER && gameState.computer.GetMagnifiers() > 0)
-    {
-        gameState.computer.UseMagnifier(gameState);
-        cout << "Komputer pomyslnie uzyl lupy!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::HANDCUFFS && gameState.computer.GetHandCuffs() > 0)
-    {
-        gameState.computer.UseHandCuffs(gameState);
-        cout << "Komputer pomyslnie uzyl kajdanek!" << endl;
-    }
-    else if (gameState.gameStateManager.GetItem() == GameEnums::INVERTER && gameState.computer.GetInverters() > 0)
-    {
-        gameState.computer.UseInverter(gameState);
-        cout << "Komputer pomyslnie uzyl inwertera!" << endl;
-    }
-    else
-    {
-        cout << "Komputer nie ma tego przedmiotu!" << endl;
-    }
-}
-
-void UiManager::InputSaveTXT(string& fileName)
-{
-    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu: ", InputValidatorManager::IsValidFileName);
+    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu: ",
+        InputValidatorManager::IsValidFileName);
     fileName += ".txt";
 }
-
-void UiManager::InputLoadTXT(string& fileName)
+void UiManager::InputLoadTXT()
 {
-    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu do wczytania: ", InputValidatorManager::IsValidFileName);
+    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu do wczytania: ",
+        InputValidatorManager::IsValidFileName);
     fileName += ".txt";
 }
-
-void UiManager::InputSaveJSON(string& fileName)
+void UiManager::InputSaveJSON()
 {
-    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu: ", InputValidatorManager::IsValidFileName);
+    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu: ",
+        InputValidatorManager::IsValidFileName);
     fileName += ".json";
 }
-
-void UiManager::InputLoadJSON(string& fileName)
+void UiManager::InputLoadJSON()
 {
-    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu do wczytania: ", InputValidatorManager::IsValidFileName);
+    fileName = InputValidatorManager::GetValidatedInput("Podaj nazwe zapisu do wczytania: ",
+        InputValidatorManager::IsValidFileName);
     fileName += ".json";
 }
-
-void UiManager::InputdifficultyLevel(GameState& gameState)
+int UiManager::InputdifficultyLevel()
 {
-    string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 2): ", InputValidatorManager::IsValidDifficultyChoice);
-    gameState.ai.SetDifficulty(stoi(input));
+    std::string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 2): ",
+        InputValidatorManager::IsValidDifficultyChoice);
+    uint8_t choice = (stoi(input));
+	return choice;
 }
-
-void UiManager::InputItemChoice(GameState& gameState)
+int UiManager::InputItemChoice()
 {
-    string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 6): ", InputValidatorManager::IsValidItemChoice);
-    gameState.gameStateManager.SetItem(stoi(input));
+    std::string input = InputValidatorManager::GetValidatedInput("Twoj wybor (0 - 6): ",
+        InputValidatorManager::IsValidItemChoice);
+    uint8_t choice = (stoi(input));
+    return choice;
 }
-
-bool UiManager::WantsToContinue(GameState& gameState)
+bool UiManager::WantsToContinue()
 {
-    string ans = InputValidatorManager::GetValidatedInput("Czy chcesz kontynuowac gre? (t/n): ", InputValidatorManager::IsValidYesNo);
-    if (ans == "t" || ans == "T")
-    {
-        gameState.human.ResetHP();
-        gameState.computer.ResetHP();
-        gameState.magazine.Reload();
-        gameState.human.ResetInventory(gameState);
-        gameState.human.GetNumberOfItems(gameState);
-        gameState.computer.ResetInventory(gameState);
-        gameState.computer.GetNumberOfItems(gameState);
-        Clear();
-        DisplayStats(gameState);
-        return true;
-    }
-    else
-    {
-        Clear();
-        ThankYou();
-        return false;
-    }
+    std::string input = InputValidatorManager::GetValidatedInput("Czy chcesz kontynuowac gre? (t/n): ",
+        InputValidatorManager::IsValidYesNo);
+    if (input == "t" || input == "T") { return true; }
+    else { return false; }
 }
-
-void UiManager::ComputerChoosing() const { cout << "Wybiera komputer!" << endl; }
-void UiManager::ComputerStarts() const { cout << "Zaczyna komputer!" << endl; }
-void UiManager::HumanStarts() const { cout << "Zaczynasz ty!" << endl; }
-void UiManager::ShowPointer() const { cout << "								*" << endl; }
-void UiManager::NewLine() const { cout << endl; }
-void UiManager::AutoSaveDone() const { cout << "Zapis automatyczny zakonczony: "; }
-void UiManager::ShowAutoSaveName(string& autoSaveFileName) const 
-{ 
-    cout << autoSaveFileName << endl;
-    cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-}
-void UiManager::SavingSucces() const { cout << "Pomyslnie zapisano stan gry!"; }
-void UiManager::LoadingSucces() const { cout << "Pomyslnie wczytano stan gry!"; }
-void UiManager::DifficultyChangeSucces() const { cout << "Pomyslnie zmieniono poziom trudnosci!"; }
-void UiManager::InvalidInput() const { cout << "Nieprawidlowy wybor." << endl; }
-void UiManager::ComputerWin() const { cout << "Komputer wygrywa gre!" << endl; }
-void UiManager::HumanWin() const { cout << "Wygrywasz gre!" << endl; }
-void UiManager::EndOfBullets() const { cout << "Koniec pociskow! Przeladowanie!" << endl; }
-void UiManager::ThankYou() const { cout << "Dziekuje za gre! Do zobaczenia!" << endl; }
-void UiManager::Clear() const 
+void UiManager::Clear() const
 {
 #ifdef _WIN32
     system("cls");
 #endif 
 }
+std::string UiManager::GetFileName() const { return fileName; }
+void UiManager::SetFileName(std::string newFileName) { fileName = newFileName; }
+void UiManager::ClearLog() { log.clear(); }
+void UiManager::SetLog(const std::vector<std::string>& newLog) { log = newLog; }
+const std::vector<std::string>& UiManager::GetLog() const { return log; }
+std::string UiManager::GetRecentLogLine() const { return log.back(); }
+void UiManager::SetRecentLogLine(std::string newLogLine) { log.push_back(newLogLine); }
+void UiManager::ShowPointer() const { std::cout << "								*" << '\n'; }
+void UiManager::ComputerChoosing() const { std::cout << "Wybiera komputer!" << '\n'; }
+void UiManager::ComputerStarts() const { std::cout << "Zaczyna komputer!" << '\n'; }
+void UiManager::HumanStarts() const { std::cout << "Zaczynasz ty!" << '\n'; }
+void UiManager::NewLine() const { std::cout << '\n'; }
+void UiManager::AutoSaveDone() const { std::cout << "Zapis automatyczny zakonczony: "; }
+std::string UiManager::GetAutoSaveName() const { return autoSaveFileName; }
+void UiManager::SavingSucces() const { std::cout << "Pomyslnie zapisano stan gry!"; }
+void UiManager::LoadingSucces() const { std::cout << "Pomyslnie wczytano stan gry!"; }
+void UiManager::DifficultyChangeSucces() const { std::cout << "Pomyslnie zmieniono poziom trudnosci!"; }
+void UiManager::InvalidInput() const { std::cout << "Nieprawidlowy wybor!" << '\n'; }
+void UiManager::ComputerWin() const { std::cout << "Komputer wygrywa gre!" << '\n'; }
+void UiManager::HumanWin() const { std::cout << "Wygrywasz gre!" << '\n'; }
+void UiManager::EndOfBullets() const { std::cout << "Koniec pociskow! Przeladowanie!" << '\n'; }
+void UiManager::ThankYou() const { std::cout << "Dziekuje za gre! Do zobaczenia!" << '\n'; }

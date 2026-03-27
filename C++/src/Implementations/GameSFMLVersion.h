@@ -1,60 +1,54 @@
-#pragma once
-#include "GameState.h"
-#include "Player.h"
-#include "MagazineManager.h"
-#include "GameStateManager.h"
-#include "GameConfig.h"
-#include "AiManager.h"
-#include "IGameSFML.h"
-#include "SaveJSONManager.h"
-#include "LoadJSONManager.h"
-#include "AutoSaveManager.h"
-#include "UiSFMLManager.h"
-#include <memory>
-#include <string>
-#include <vector>
-
-class GameSFMLVersion : public IGameSFML 
-{
-
-private:
-    GameConfig gameConfig;
-    MagazineManager magazine;
-    GameStateManager gameStateManager;
-    Player human;
-    Player computer;
-    AiManager ai;
-    std::vector<std::string> log;
-
-    LoadJSONManager& loaderJSON;
-    SaveJSONManager& saverJSON;
-    GameState gameState;
-
-    std::unique_ptr<AutoSaveManager> asyncSaver;
-    UiSFMLManager ui;
-
-    bool gameRunning;
-    std::string autoSaveFileName;
-    std::string filename;
-
-    bool playerTurn;
-    bool gameOver;
-
-public:
-    GameSFMLVersion(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON);
-
-    void InitializeGame() override;
-    void ProcessPlayerAction(int action) override;
-    void ProcessComputerTurn() override;
-    void UseItem(int item) override;
-    void CheckGameConditions() override;
-    void SwitchTurn() override;
-    void Run() override;
-    void HandlePlayerChoice(int choice) override;
-    void HandleItemChoice(int item) override;
-    void HandleRestartChoice(int choice) override;
-    void HandleSaveLoadWithFilename(int action, const std::string& filename) override;
-    void HandleDifficultyChoice(int choice) override;
-
-    ~GameSFMLVersion();
-};
+//#pragma once
+//#include "Player.h"
+//#include "MagazineManager.h"
+//#include "TurnContext.h"
+//#include "GameConfig.h"
+//#include "AIStrategyManager.h"
+//#include "IGameEngine.h"
+//#include "SaveJSONManager.h"
+//#include "LoadJSONManager.h"
+//#include "AutoSaveManager.h"
+//#include "UiSFMLManager.h"
+//#include <memory>
+//#include <string>
+//#include <vector>
+//
+//class GameSFMLVersion : public IGameEngine
+//{
+//private:
+//    MagazineManager magazine;
+//    TurnContext TurnContext;
+//    Player human;
+//    Player computer;
+//    AIStrategyManager ai;
+//    std::vector<std::string> log;
+//
+//    ILoadManager& loader;
+//    ISaveSyncManager& saver;
+//
+//    std::unique_ptr<AutoSaveManager> asyncSaver;
+//    UiSFMLManager ui;
+//
+//    bool gameRunning;
+//    std::string autoSaveFileName;
+//    std::string filename;
+//
+//    bool playerTurn;
+//    bool gameOver;
+//
+//    inline void HandlePlayerChoice(int choice);
+//    inline void HandleItemChoice(int item);
+//    inline void HandleRestartChoice(int choice);
+//    inline void HandleSaveLoadWithFilename(int action, const std::string& filename);
+//    inline void HandleDifficultyChoice(int choice);
+//    inline void InitializeGame();
+//    inline void ProcessPlayerAction(int action);
+//    inline void ProcessComputerTurn();
+//    inline void UseItem(int item);
+//    inline void CheckGameConditions();
+//    inline void SwitchTurn();
+//public:
+//    GameSFMLVersion();
+//
+//    void Run() override;
+//};

@@ -1,48 +1,45 @@
 #include "InputValidatorManager.h"
+#include <iostream>
 #include <string>
 #include <regex>
-#include <iostream>
 
-using std::regex;
-using std::cin;
-using std::string;
-using std::cout;
-using std::endl;
+bool InputValidatorManager::IsValidFileName(const std::string& fileName)
+{
+    std::regex pattern("^[a-zA-Z0-9_-]{1,30}$");
+    return regex_match(fileName, pattern);
+}
+bool InputValidatorManager::IsValidMenuChoice(const std::string& input)
+{
+    std::regex pattern("^[0-6]$");
+    return regex_match(input, pattern);
+}
+bool InputValidatorManager::IsValidItemChoice(const std::string& input)
+{
+    std::regex pattern("^[0-6]$");
+    return regex_match(input, pattern);
+}
+bool InputValidatorManager::IsValidYesNo(const std::string& input)
+{
+    std::regex pattern("^[tTnN]$");
+    return regex_match(input, pattern);
+}
+bool InputValidatorManager::IsValidDifficultyChoice(const std::string& input)
+{
+    std::regex pattern("^[0-2]$");
+    return regex_match(input, pattern);
+}
+std::string InputValidatorManager::GetValidatedInput(const std::string& prompt,
+    bool (*validator)(const std::string&))
+{
+    std::string input;
+    while (true)
+    {
+        std::cout << prompt;
+        std::cin >> input;
 
-    bool InputValidatorManager::IsValidFileName(const string& fileName) {
-        regex pattern("^[a-zA-Z0-9_-]{1,30}$");
-        return regex_match(fileName, pattern);
-    }
-
-    bool InputValidatorManager::IsValidMenuChoice(const string& input) {
-        regex pattern("^[0-6]$");
-        return regex_match(input, pattern);
-    }
-
-    bool InputValidatorManager::IsValidItemChoice(const string& input) {
-        regex pattern("^[0-6]$");
-        return regex_match(input, pattern);
-    }
-
-    bool InputValidatorManager::IsValidYesNo(const string& input) {
-        regex pattern("^[tTnN]$");
-        return regex_match(input, pattern);
-    }
-
-    bool InputValidatorManager::IsValidDifficultyChoice(const string& input) {
-        regex pattern("^[0-2]$");
-        return regex_match(input, pattern);
-    }
-
-    string InputValidatorManager::GetValidatedInput(const string& prompt, bool (*validator)(const string&)) {
-        string input;
-        while (true) {
-            cout << prompt;
-            cin >> input;
-
-            if (validator(input)) {
-                return input;
-            }
-            cout << "Nieprawidlowe dane! Sprobuj ponownie." << endl;
+        if (validator(input)) {
+            return input;
         }
+        std::cout << "Nieprawidlowe dane! Sprobuj ponownie." << '\n';
     }
+}

@@ -1,53 +1,49 @@
 #pragma once
 #include "ForwardDeclarations.h"
-#include "IGame.h"
-#include "AiManager.h"
-#include "HpManager.h"
-#include "AutoSaveManager.h"
-#include "LoadJSONManager.h"
-#include "SaveJSONManager.h"
-#include "UiManager.h"
-#include "Player.h"
-#include "GameStateManager.h"
-#include "MagazineManager.h"
-#include "GameConfig.h"
 #include "GameState.h"
+#include "IGameEngine.h"
+#include "GameConfig.h"
 #include <string>
 #include <memory>
 
-using std::string;
-using std::unique_ptr;
-
-class GameConsoleVersion : public IGame {
+class GameConsoleVersion : public IGameEngine 
+{
 private:
+    GameState state;
+    std::unique_ptr<ISaveSyncManager> saver;
+    std::unique_ptr<ILoadManager> loader;
+    std::unique_ptr<ISaveAsyncManager> asyncSaver;
+    std::unique_ptr<IAIStrategyManager> ai;
+    std::unique_ptr<IUiManager> ui;
 
-    GameConfig gameConfig;
+	inline void NewLoop();
+    inline void NewRound();
+    inline bool WhoWon();
+    inline void Initialize();
 
-    MagazineManager magazine;
-    GameStateManager gameStateManager;
-    AiManager ai;
-    Player human;
-    Player computer;
+    inline void ProcessTurn(IPlayer& turnHandler, IPlayer& target, bool& isRunning);
 
-    vector<string> log;
+    inline void VerifyMagazine();
 
-    GameState gameState;
+    inline void ChangeTurnHandler(IPlayer& turnHandlert);
+    inline void CloseInventoryForAI(IPlayer& turnHandler);
 
-    unique_ptr<AutoSaveManager> asyncSaver;
-    UiManager ui;
+    inline void ProcessHeal(IPlayer& turnHandler);
+    inline void ProcessShot(IPlayer& turnHandler, IPlayer& target);
+    inline void HandleInventory(IPlayer& turnHandler);
+    inline void HandleExit(bool& isRunning);
+    inline void HandleSave();
+    inline void HandleLoad();
+    inline void HandleDifficulty();
 
-    SaveJSONManager& saverJSON;
-    LoadJSONManager& loaderJSON;
-
-    string fileName = "";
-    string autoSaveFileName = "";
-
+    inline void HandleHandCuffs(IPlayer& turnHandler);
+    inline void HandleBeer(IPlayer& turnHandler);
+    inline void HandleMagnifier(IPlayer& turnHandler);
+    inline void HandleSaw(IPlayer& turnHandler);
+    inline void HandleCellPhone(IPlayer& turnHandler);
+    inline void HandleInverter(IPlayer& turnHandler);
 public:
-    GameConsoleVersion(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON);
+    GameConsoleVersion();
 
-    void NewRound(GameState& gameState, const UiManager& ui) override;
-    bool WhoWon(const GameState& gameState, const UiManager& ui) override;
-    void StartGame() override;
-
-    ~GameConsoleVersion();
+    void Run() override;
 };

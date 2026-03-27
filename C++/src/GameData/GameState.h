@@ -1,39 +1,17 @@
 #pragma once
-#include "ForwardDeclarations.h"
 #include "IPlayer.h"
-#include "IAiManager.h"
-#include "IGameStateManager.h"
 #include "IMagazineManager.h"
-#include "GameConfig.h"
+#include "ITurnManager.h"
 #include <memory>
-#include <string>
-#include <vector>
 
-using std::string;
-using std::vector;
-
-struct GameState
+struct GameState 
 {
-    GameState(IPlayer& human, IPlayer& computer, IMagazineManager& magazine,
-        IGameStateManager& gameStateManager, GameConfig& gameConfig,
-        IAiManager& ai, vector<string>& log);
+    GameState();
 
-    IPlayer& human;
-    IPlayer& computer;
-    IMagazineManager& magazine;
-    IGameStateManager& gameStateManager;
-    GameConfig& gameConfig;
-    IAiManager& ai;
-    vector<string>& log;
+    std::unique_ptr<IPlayer> human;
+    std::unique_ptr<IPlayer> computer;
+    std::unique_ptr<IMagazineManager> magazine;
+    std::unique_ptr<ITurnManager> turn;
 
-    bool waitingForPlayer;
-    bool gameRunning;
-    bool waitingForRestartChoice;
-    bool wasAutoSaved;
-	bool wasLogCleared;
-    bool wasMagazineShown;
-    bool isComputerTurn;
-    GameEnums::GameStateEnum currentGameState;
-
-    ~GameState() {};
+    void CopyStateToSnapshot(const GameState& state);
 };

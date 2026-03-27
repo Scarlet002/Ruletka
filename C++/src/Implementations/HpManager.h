@@ -1,23 +1,17 @@
 #pragma once
 #include "IHpManager.h"
 #include "GameConfig.h"
-#include "ForwardDeclarations.h"
+#include <cstdint>
 
 class HpManager : public IHpManager
 {
 private:
-    GameConfig& gameConfig;
-    const int MAXHP;
-    int currentHP;
+    int8_t currentHP = GameConfig::maxPlayerHP;
+    const uint8_t maxHP = GameConfig::maxPlayerHP;
 public:
-
-    HpManager(GameConfig& gameConfig);
-
-    void LoseHP(GameState& gameState) override;
+    void SetHP(int newHP) override;
+    void LoseHP(int damage) override;
     void RegainHP() override;
     void ResetHP() override;
     int GetHP() const override;
-    void SetHP(int newHP) override;
-
-    ~HpManager() {};
 };

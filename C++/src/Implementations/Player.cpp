@@ -1,45 +1,26 @@
 #include "Player.h"
 #include "HpManager.h"
-#include "GameState.h"
-#include "ShootingManager.h"
-#include "DecisionManager.h"
 #include "InventoryManager.h"
 #include <string>
 #include <vector>
+#include <cstdint>
 
-using std::vector;
+Player::Player(const std::string& playerName, 
+	const std::string& playerType) 
+	: hp(std::make_unique<HpManager>())
+	, inventory(std::make_unique<InventoryManager>())
+    , name(playerName)
+	, type(playerType) {}
 
-Player::Player(const string& playerName, const string& playerType, GameConfig& gameConfig) :
-    name(playerName), 
-    type(playerType)
-{
-    decision = std::make_unique<DecisionManager>();
-	gun = std::make_unique<ShootingManager>();
-	hp = std::make_unique<HpManager>(gameConfig);
-	inventory = std::make_unique<InventoryManager>(gameConfig);
-}
-
-void Player::LoseHP(GameState& gameState) { hp->LoseHP(gameState); }
+void Player::SetHP(int newHP) { hp->SetHP(newHP); }
+void Player::LoseHP(int damage) { hp->LoseHP(damage); }
 void Player::RegainHP() { hp->RegainHP(); }
 void Player::ResetHP() { hp->ResetHP(); }
 int Player::GetHP() const { return hp->GetHP(); }
-void Player::SetHP(int newHP) { hp->SetHP(newHP); }
-bool Player::isAlive() const { return hp->GetHP() > 0; }
-bool Player::IsHuman() const { return type == "human" || type == "Human"; }
-bool Player::IsComputer() const { return type == "computer" || type == "Computer"; }
 
-int Player::MakeDecision(GameState& gameState) const { return decision->MakeDecision(gameState); }
-
-void Player::Shoot(GameState& gameState) { gun->Shoot(gameState); }
-
-int Player::SetFreeSlots(int newFree) { return inventory->SetFreeSlots(newFree); }
-int Player::SetSaws(int newSaws) { return inventory->SetSaws(newSaws); }
-int Player::SetBeers(int newBeers) { return inventory->SetBeers(newBeers); }
-int Player::SetMagnifiers(int newMagnifiers) { return inventory->SetMagnifiers(newMagnifiers); }
-int Player::SetHandCuffs(int newHandCuffs) { return inventory->SetHandCuffs(newHandCuffs); }
-int Player::SetInverters(int newInverters) { return inventory->SetInverters(newInverters); }
-int Player::SetCellPhones(int newCellPhones) { return inventory->SetCellPhones(newCellPhones); }
-void Player::SetInventory(const vector<int>& newInventory) { inventory->SetInventory(newInventory); }
+bool Player::IsAlive() const { return hp->GetHP() > 0; }
+bool Player::GetType() const { return type == "human" || type == "Human" || type == "HUMAN"; }
+std::string Player::GetName() const { return name; }
 
 int Player::GetFreeSlots() const { return inventory->GetFreeSlots(); }
 int Player::GetSaws() const { return inventory->GetSaws(); }
@@ -48,20 +29,17 @@ int Player::GetMagnifiers() const { return inventory->GetMagnifiers(); }
 int Player::GetHandCuffs() const { return inventory->GetHandCuffs(); }
 int Player::GetInverters() const { return inventory->GetInverters(); }
 int Player::GetCellPhones() const { return inventory->GetCellPhones(); }
-const vector<int>& Player::GetInventory() const { return inventory->GetInventory(); }
+const std::vector<uint8_t>& Player::GetInventory() const { return inventory->GetInventory(); }
+void Player::GetRandomItem() { inventory->GetRandomItem(); }
+void Player::GetNumberOfItems() { inventory->GetNumberOfItems(); }
+void Player::UseItem(int itemType) { inventory->UseItem(itemType); }
+void Player::ResetInventory() { inventory->ResetInventory(); }
 
-void Player::GetRandomItem(GameState& gameState) { inventory->GetRandomItem(gameState); }
-void Player::GetNumberOfItems(GameState& gameState) 
-{ 
-    inventory->GetNumberOfItems(gameState);
-}
-void Player::ResetInventory(GameState& gameState) 
-{ 
-    inventory->ResetInventory(gameState);
-}
-void Player::UseSaw(GameState& gameState) { inventory->UseSaw(gameState); }
-void Player::UseMagnifier(GameState& gameState) { inventory->UseMagnifier(gameState); }
-void Player::UseBeer(GameState& gameState) { inventory->UseBeer(gameState); }
-void Player::UseCellPhone(GameState& gameState) { inventory->UseCellPhone(gameState); }
-void Player::UseInverter(GameState& gameState) { inventory->UseInverter(gameState); }
-void Player::UseHandCuffs(GameState& gameState) { inventory->UseHandCuffs(gameState); }
+void Player::SetFreeSlots(int newFree) { inventory->SetFreeSlots(newFree); }
+void Player::SetSaws(int newSaws) { inventory->SetSaws(newSaws); }
+void Player::SetBeers(int newBeers) { inventory->SetBeers(newBeers); }
+void Player::SetMagnifiers(int newMagnifiers) { inventory->SetMagnifiers(newMagnifiers); }
+void Player::SetHandCuffs(int newHandCuffs) { inventory->SetHandCuffs(newHandCuffs); }
+void Player::SetInverters(int newInverters) { inventory->SetInverters(newInverters); }
+void Player::SetCellPhones(int newCellPhones) { inventory->SetCellPhones(newCellPhones); }
+void Player::SetInventory(const std::vector<uint8_t>& newInventory) { inventory->SetInventory(newInventory); }

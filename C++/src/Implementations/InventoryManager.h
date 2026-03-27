@@ -1,57 +1,41 @@
 #pragma once
 #include "Inventory.h"
 #include "GameConfig.h"
-#include "CellPhone.h"
-#include "Beer.h"
-#include "HandCuffs.h"
-#include "Item.h"
-#include "Saw.h"
-#include "Inverter.h"
-#include "Magnifier.h"
 #include "ForwardDeclarations.h"
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
 #include <memory>
-
-using std::vector;
+#include <cstdint>
 
 class InventoryManager : public Inventory
 {
 private:
-	int numberOfItems;
-	int free;
-	int saws;
-	int cellPhones;
-	int beers;
-	int handCuffsAmount;
-	int magnifiers;
-	int inverters;
-	vector<int> inventory;
-	GameConfig& gameConfig;
-	std::unique_ptr<Item> saw;
-	std::unique_ptr<Item> magnifier;
-	std::unique_ptr<Item> handCuffs;
-	std::unique_ptr<Item> beer;
-	std::unique_ptr<Item> inverter;
-	std::unique_ptr<Item> cellPhone;
-
+	std::vector<uint8_t> inventory;
+	uint8_t free = GameConfig::minInventorySize;
+	uint8_t numberOfItems = GameConfig::minNumberOfItems;
+	uint8_t saws = GameConfig::minNumberOfItems;
+	uint8_t cellPhones = GameConfig::minNumberOfItems;
+	uint8_t beers = GameConfig::minNumberOfItems;
+	uint8_t handCuffs = GameConfig::minNumberOfItems;
+	uint8_t magnifiers = GameConfig::minNumberOfItems;
+	uint8_t inverters = GameConfig::minNumberOfItems;
 public:
-	int inventorySize;
+	explicit InventoryManager();
 
-	InventoryManager(GameConfig& gameConfig);
+	void GetRandomItem() override;
+	void GetNumberOfItems() override;
+	void UseItem(int itemType) override;
+	void ResetInventory() override;
 
-	void GetRandomItem(GameState& gameState) override;
-	void GetNumberOfItems(GameState& gameState) override;
-
-	int SetFreeSlots(int newFree) override;
-	int SetSaws(int newSaws) override;
-	int SetBeers(int newBeers) override;
-	int SetMagnifiers(int newMagnifiers) override;
-	int SetHandCuffs(int newHandCuffs) override;
-	int SetInverters(int newInverters) override;
-	int SetCellPhones(int newCellPhones) override;
-	void SetInventory(const vector<int>& newInventory) override;
+	void SetFreeSlots(int newFree) override;
+	void SetSaws(int newSaws) override;
+	void SetBeers(int newBeers) override;
+	void SetMagnifiers(int newMagnifiers) override;
+	void SetHandCuffs(int newHandCuffs) override;
+	void SetInverters(int newInverters) override;
+	void SetCellPhones(int newCellPhones) override;
+	void SetInventory(const std::vector<uint8_t>& newInventory) override;
 
 	int GetFreeSlots() const override;
 	int GetSaws() const override;
@@ -60,16 +44,6 @@ public:
 	int GetHandCuffs() const override;
 	int GetInverters() const override;
 	int GetCellPhones() const override;
-	const vector<int>& GetInventory() const override;
-
-	void ResetInventory(GameState& gameState) override;
-	void UseSaw(GameState& gameState) override;
-	void UseBeer(GameState& gameState) override;
-	void UseMagnifier(GameState& gameState) override;
-	void UseHandCuffs(GameState& gameState) override;
-	void UseInverter(GameState& gameState) override;
-	void UseCellPhone(GameState& gameState) override;
-
-	~InventoryManager() {};
+	const std::vector<uint8_t>& GetInventory() const override;
 };
 

@@ -7,10 +7,6 @@
 class LoadJSONManager : public ILoadManager
 {
 public:
-
-	LoadJSONManager() {};
-
-	void LoadGameState(GameState& gameState, const string& fileName) const override;
-
-	~LoadJSONManager() {};
+	void LoadGameState(GameState& state,
+		const std::string& fileName) override;
 };

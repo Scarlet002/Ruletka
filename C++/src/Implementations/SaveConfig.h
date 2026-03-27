@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 
-using std::string;
-
 class SaveConfig
 {
 public:
-    static const string GetSaveDirectory();
-    static const string GetAutoSaveDirectory();
-    static bool CreateDirectoryIfNotExists(const string& path);
+	SaveConfig() = delete;
+
+    static std::string GetSaveDirectory();
+    static std::string GetAutoSaveDirectory();
+    static bool CreateDirectoryIfNotExists(const std::string& path);
 };

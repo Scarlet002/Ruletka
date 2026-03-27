@@ -1,232 +1,468 @@
-#include "GameConsoleVersion.h"
-#include "UiManager.h"
-#include "Player.h"
-#include "HpManager.h"
-#include "AiManager.h"
-#include "SaveTXTManager.h"
-#include "SaveJSONManager.h"
-#include "LoadTXTManager.h"
-#include "LoadJSONManager.h"
+#include "AIStrategyManager.h"
 #include "AutoSaveManager.h"
 #include "GameConfig.h"
-#include "GameState.h"
+#include "GameConsoleVersion.h"
 #include "GameEnums.h"
+#include "ILoadManager.h"
+#include "InputValidatorManager.h"
+#include "ISaveAsyncManager.h"
+#include "ISaveSyncManager.h"
+#include "IUiManager.h"
+#include "LoadJSONManager.h"
+#include "LoadTXTManager.h" 
+#include "MagazineManager.h"
+#include "Player.h"              
+#include "SaveJSONManager.h"
+#include "SaveTXTManager.h" 
+#include "TurnManager.h"
+#include "UiManager.h"
+#include <chrono>
 #include <iostream>
-#include <string>
 #include <memory>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
+#include <string>
+#include <thread>
+#include <cstdint>
 
-using std::string;
-using std::unique_ptr;
-using std::make_unique;
+GameConsoleVersion::GameConsoleVersion() 
+    : saver(std::make_unique<SaveJSONManager>())
+	, loader(std::make_unique<LoadJSONManager>())
+	, asyncSaver(std::make_unique<AutoSaveManager>(*saver))
+	, ui(std::make_unique<UiManager>(state))
+    , ai(std::make_unique<AIStrategyManager>(state)) {};
 
-GameConsoleVersion::GameConsoleVersion(LoadJSONManager& loaderJSON, SaveJSONManager& saverJSON)
-    : magazine(gameConfig), gameStateManager(gameConfig),
-    human("Czlowiek", "human", gameConfig), computer("Komputer", "computer", gameConfig), log({}),
-    gameState(static_cast<IPlayer&>(human),
-        static_cast<IPlayer&>(computer),
-        static_cast<IMagazineManager&>(magazine),
-        static_cast<IGameStateManager&>(gameStateManager),
-        gameConfig,
-        static_cast<IAiManager&>(ai),
-        log),
-    loaderJSON(loaderJSON), saverJSON(saverJSON)
+void GameConsoleVersion::NewRound()
 {
-    asyncSaver = make_unique<AutoSaveManager>(saverJSON, gameState);
-};
-
-void GameConsoleVersion::NewRound(GameState& gameState, const UiManager& ui)
-{
-    ui.EndOfBullets();
-    gameState.magazine.Reload();
-    gameState.human.GetRandomItem(gameState);
-    gameState.human.GetNumberOfItems(gameState);
-    gameState.computer.GetRandomItem(gameState);
-    gameState.computer.GetNumberOfItems(gameState);
-    ui.ScrollScreen();
-    ui.Clear();
-    ui.DisplayStats(gameState);
+    state.magazine->Reload();
+    state.human->GetRandomItem();
+	state.human->GetNumberOfItems();
+	state.computer->GetRandomItem();
+	state.computer->GetNumberOfItems();
+    ui->Clear();
+    ui->DisplayStats();
 }
-
-bool GameConsoleVersion::WhoWon(const GameState& gameState, const UiManager& ui)
+void GameConsoleVersion::NewLoop()
 {
-    if (!gameState.human.isAlive())
+	std::string autoSaveFileName = ui->GetAutoSaveName();
+    if (!asyncSaver->IsSaving()) 
+    { 
+        GameState snapshot;
+        snapshot.CopyStateToSnapshot(state);
+        asyncSaver->SaveGameStateAsync(std::move(snapshot));
+    }
+    ui->Clear();
+    ui->DisplayStats();
+    ui->AutoSaveDone();
+	uint8_t counter = asyncSaver->GetSaveCounter();
+    std::cout << autoSaveFileName 
+        + std::to_string(counter) 
+        + ".json" << '\n';
+    ui->DisplayLastTurnLog();
+    ui->Menu();
+}
+bool GameConsoleVersion::WhoWon()
+{
+    if (!state.human->IsAlive())
     {
         asyncSaver->SetSaveCounter(0);
-        ui.ComputerWin();
+        ui->ComputerWin();
         return true;
     }
-    else if (!gameState.computer.isAlive())
+    if (!state.computer->IsAlive())
     {
         asyncSaver->SetSaveCounter(0);
-        ui.HumanWin();
+        ui->HumanWin();
         return true;
     }
     return false;
 }
-
-void GameConsoleVersion::StartGame()
+void GameConsoleVersion::Initialize()
 {
-    gameState.human.ResetHP();
-    gameState.computer.ResetHP();
-    gameState.magazine.Reload();
-    gameState.human.ResetInventory(gameState);
-    gameState.computer.ResetInventory(gameState);
-    gameState.gameStateManager.RandomizeStarter();
-    gameState.gameStateManager.SetStateOfHandCuffs(false);
-    gameState.log.resize(0);
-    asyncSaver->SetSaveCounter(0);
-	ui.Clear();
-    ui.DisplayStats(gameState);
-
-    while (true)
+	state.human->ResetHP();
+	state.computer->ResetHP();
+	state.magazine->Reload();
+	state.human->ResetInventory();
+	state.computer->ResetInventory();
+    ai->SetStrategy(GameConfig::defaultDifficulty);
+    ui->ClearLog();
+	state.turn->SetDifficulty(GameConfig::defaultDifficulty);
+    state.turn->RandomizeStarter();
+    if (state.turn->GetStarter() == GameEnums::STARTER_HUMAN) 
+        { ui->HumanStarts(); }
+    else { ui->ComputerStarts(); }
+}
+void GameConsoleVersion::VerifyMagazine()
+{
+    if (state.magazine->IsEmpty())
     {
-        if (gameState.gameStateManager.GetStarter() == GameEnums::STARTER_HUMAN)
-        {
-            asyncSaver->SaveGameStateAsync(gameState, autoSaveFileName);
-            ui.AutoSaveDone();
-            ui.ShowAutoSaveName(autoSaveFileName);
-            ui.Menu();
-            if (gameState.log.size() != 0)
-            {
-                for (int i = 0; i < gameState.log.size(); i++)
-                {
-                    if (i != 0) 
-                    { 
-                        if (i % gameConfig.maxLogsInLine == 0) { std::cout << std::endl; }
-                        std::cout << " -> ";
-                    }
-                    std::cout << gameState.log[i];
-                }
-            }
-            gameState.log.resize(0);
-            ui.NewLine();
-            gameState.human.MakeDecision(gameState);
-
-            if (gameStateManager.GetChoice() == GameEnums::SHOOT)
-            {
-                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
-                gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
-                gameState.human.Shoot(gameState);
-                ui.ShowPointer();
-                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
-                {
-                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
-                }
-                else
-                {
-                    gameState.gameStateManager.SetStateOfHandCuffs(false);
-                }
-            }
-            else if (gameState.gameStateManager.GetChoice() == GameEnums::HEAL)
-            {
-                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_HUMAN);
-                gameState.gameStateManager.SetTarget(GameEnums::TARGET_HUMAN);
-                gameState.human.Shoot(gameState);
-                ui.ShowPointer();
-                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
-                {
-                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_COMPUTER);
-                }
-                else
-                {
-                    gameState.gameStateManager.SetStateOfHandCuffs(false);
-                }
-            }
-            else if (gameState.gameStateManager.GetChoice() == GameEnums::USEITEM)
-            {
-                ui.InventoryMenu();
-                ui.InputItemChoice(gameState);
-                ui.ItemUseSuccesHuman(gameState);
-                gameState.human.GetNumberOfItems(gameState);
-                ui.ShowPointer();
-            }
-            else if (gameState.gameStateManager.GetChoice() == GameEnums::SAVE)
-            {
-                ui.InputSaveJSON(fileName);
-                saverJSON.SaveGameState(gameState, fileName);
-                ui.SavingSucces();
-                ui.ShowPointer();
-            }
-            else if (gameState.gameStateManager.GetChoice() == GameEnums::LOAD)
-            {
-                ui.InputLoadJSON(fileName);
-                loaderJSON.LoadGameState(gameState, fileName);
-                ui.LoadingSucces();
-                ui.ShowPointer();
-
-            }
-            else if (gameState.gameStateManager.GetChoice() == GameEnums::DIFFICULTY)
-            {
-                ui.DifficultyMenu();
-                ui.InputdifficultyLevel(gameState);
-                ui.DifficultyChangeSucces();
-                ui.ShowPointer();
-            }
-            else
-            {
-                ui.Clear();
-                ui.ThankYou();
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                break;
-            }
-        }
-        else
-        {
-            ui.ComputerChoosing();
-            gameState.computer.MakeDecision(gameState);
-
-            if (gameState.gameStateManager.GetChoice() == GameEnums::SHOOT)
-            {
-                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
-                gameState.gameStateManager.SetTarget(GameEnums::TARGET_HUMAN);
-                gameState.computer.Shoot(gameState);
-                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
-                {
-                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
-                }
-                else
-                {
-                    gameState.gameStateManager.SetStateOfHandCuffs(false);
-                }
-                ui.NewLine();
-            }
-            else
-            {
-                gameState.gameStateManager.SetShooter(GameEnums::SHOOTER_COMPUTER);
-                gameState.gameStateManager.SetTarget(GameEnums::TARGET_COMPUTER);
-                gameState.computer.Shoot(gameState);
-                gameState.gameStateManager.SetDamage(gameConfig.defaultDamage);
-                if (gameState.gameStateManager.GetStateOfHandCuffs() == false)
-                {
-                    gameState.gameStateManager.SetStarter(GameEnums::STARTER_HUMAN);
-                }
-                else
-                {
-                    gameState.gameStateManager.SetStateOfHandCuffs(false);
-                }
-                ui.NewLine();
-            }
-        }
-        ui.Clear();
-        ui.DisplayStats(gameState);
-
-        if (WhoWon(gameState, ui)) {
-            if (!ui.WantsToContinue(gameState))
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                break;
-            }
-        }
-
-        if (gameState.magazine.IsOutOfBullets())
-            NewRound(gameState, ui);
+        throw std::runtime_error("Brak pociskow w magazynku!");
     }
 }
-
-GameConsoleVersion::~GameConsoleVersion() {};
+void GameConsoleVersion::ChangeTurnHandler(IPlayer& turnHandler)
+{
+    if (!state.turn->GetStateOfHandCuffs())
+    {
+        if (turnHandler.GetType())
+        {
+            state.turn->SetStarter(GameEnums::STARTER_COMPUTER);
+        }
+        else { state.turn->SetStarter(GameEnums::STARTER_HUMAN); }
+    }
+    else { state.turn->SetStateOfHandCuffs(GameEnums::HANDCUFFS_NOT_USED); }
+}
+void GameConsoleVersion::CloseInventoryForAI(IPlayer& turnHandler)
+{
+    if (!turnHandler.GetType())
+    {
+        state.turn->SetStateOfInventory(GameEnums::INVENTORY_NOT_SHOWN);
+    }
+}
+void GameConsoleVersion::ProcessHeal(IPlayer& turnHandler)
+{
+    VerifyMagazine();
+    if (state.magazine->CheckBulletType())
+    {
+        uint8_t damage = state.turn->GetDamage();
+        state.magazine->DecreaseFullCount();
+        turnHandler.LoseHP(damage);
+        std::string logLine = turnHandler.GetName()
+            + " stracil "
+            + std::to_string(damage)
+            + " HP!";
+        ui->SetRecentLogLine(logLine);
+    }
+    else
+    {
+        state.magazine->DecreaseEmptyCount();
+        turnHandler.RegainHP();
+        std::string logLine = turnHandler.GetName()
+            + " odzyskal 1 HP!";
+        ui->SetRecentLogLine(logLine);
+    }
+    state.magazine->DecreaseBulletCount();
+    state.turn->SetDamage(GameConfig::defaultDamage);
+    state.turn->SetStateOfCellPhone(false);
+    state.turn->SetStateOfMagnifier(false);
+    ChangeTurnHandler(turnHandler);
+}
+void GameConsoleVersion::ProcessShot(IPlayer& turnHandler, IPlayer& target)
+{
+    VerifyMagazine();
+    if (state.magazine->CheckBulletType())
+    {
+        uint8_t damage = state.turn->GetDamage();
+        state.magazine->DecreaseFullCount();
+        target.LoseHP(damage);
+        std::string logLine = turnHandler.GetName()
+            + " trafil " 
+            + target.GetName() 
+            + " i zadal mu "
+            + std::to_string(damage) 
+            + " obrazen!";
+        ui->SetRecentLogLine(logLine);
+    }
+    else
+    {
+        state.magazine->DecreaseEmptyCount();
+        std::string logLine = turnHandler.GetName()
+            + " nie trafil " 
+            + target.GetName()
+            + "!";
+        ui->SetRecentLogLine(logLine);
+    }
+    state.magazine->DecreaseBulletCount();
+    state.turn->SetDamage(GameConfig::defaultDamage);
+    state.turn->SetStateOfCellPhone(false);
+    state.turn->SetStateOfMagnifier(false);
+    ChangeTurnHandler(turnHandler);
+}
+void GameConsoleVersion::HandleHandCuffs(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetHandCuffs() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        turnHandler.UseItem(state.turn->GetChoice());
+        state.turn->SetStateOfHandCuffs(GameEnums::HANDCUFFS_USED);
+        logLine = turnHandler.GetName()
+            + " uzyl kajdanek! Otrzymuje dodatkowy ruch!";
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleBeer(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetBeers() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        VerifyMagazine();
+        turnHandler.UseItem(state.turn->GetChoice());
+        if (state.magazine->CheckBulletType())
+        {
+            state.magazine->DecreaseFullCount();
+        }
+        else { state.magazine->DecreaseEmptyCount(); }
+        state.magazine->DecreaseBulletCount();
+        logLine = turnHandler.GetName()
+            + " uzyl piwa! Usuwa pierwszy pocisk!";
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleMagnifier(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetMagnifiers() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        turnHandler.UseItem(state.turn->GetChoice());
+        logLine = turnHandler.GetName()
+            + " uzyl lupy! ";
+        state.turn->SetHitProbability(state.magazine->CheckBulletType());
+        state.turn->SetStateOfMagnifier(true);
+        if (turnHandler.GetType())
+        {
+            logLine += "Piewszy pocisk jest ";
+            if (state.magazine->CheckBulletType()) { logLine += "pelny!"; }
+            else { logLine += "pusty!"; }
+        }
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleSaw(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetSaws() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        turnHandler.UseItem(state.turn->GetChoice());
+        state.turn->SetDamage(GameConfig::sawDamage);
+        logLine = turnHandler.GetName()
+            + " uzyl pily! Obrazenia zwiekszone dla kolejnego strzalu";
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleCellPhone(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetCellPhones() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        turnHandler.UseItem(state.turn->GetChoice());
+        logLine = turnHandler.GetName()
+            + " uzyl telefonu! ";
+        state.turn->SetHitProbability(state.magazine->CheckBulletType());
+        state.turn->SetStateOfCellPhone(true);
+        if (turnHandler.GetType())
+        {
+            uint8_t randomBullet = rand() % state.magazine->GetMagazineSize();
+            if (state.magazine->CheckBulletTypeCellPhone(randomBullet))
+            {
+                logLine += std::to_string(randomBullet + 1)
+                    + " pocisk jest pelny!";
+            }
+            else {
+                logLine += std::to_string(randomBullet + 1)
+                    + " pocisk jest pusty!";
+            }
+        }
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleInverter(IPlayer& turnHandler)
+{
+    std::string logLine = "";
+    if (turnHandler.GetInverters() == 0)
+    {
+        logLine = turnHandler.GetName()
+            + " nie ma tego przedmiotu!";
+    }
+    else
+    {
+        turnHandler.UseItem(state.turn->GetChoice());
+        state.magazine->InvertBulletType();
+        logLine = turnHandler.GetName()
+            + " uzyl inwertera! Zmieniono typ pocisku!";
+    }
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleInventory(IPlayer& turnHandler)
+{
+    if (!turnHandler.GetType())
+    {
+        state.turn->SetStateOfInventory(GameEnums::INVENTORY_SHOWN);
+        state.turn->SetChoice(ai->MakeDecision());
+    }
+    else
+    {
+        ui->InventoryMenu();
+        state.turn->SetChoice(ui->InputItemChoice());
+    }
+    std::string logLine = "";
+    switch (state.turn->GetChoice())
+    {
+    case GameEnums::NO_ITEMS:
+        logLine = turnHandler.GetName()
+            + " nie uzyl zadnego przedmiotu!";
+        ui->SetRecentLogLine(logLine);
+        break;
+    case GameEnums::HANDCUFFS:
+        HandleHandCuffs(turnHandler);
+        break;
+    case GameEnums::BEER:
+        HandleBeer(turnHandler);
+        break;
+    case GameEnums::MAGNIFIER:
+        HandleMagnifier(turnHandler);
+        break;
+    case GameEnums::SAW:
+        HandleSaw(turnHandler);
+        break;
+    case GameEnums::CELLPHONE:
+        HandleCellPhone(turnHandler);
+        break;
+    case GameEnums::INVERTER:
+        HandleInverter(turnHandler);
+        break;
+    default:
+        ui->InvalidInput();
+        logLine = "Nieprawidlowy wybor!";
+        ui->SetRecentLogLine(logLine);
+        break;
+    }
+    CloseInventoryForAI(turnHandler);
+}
+void GameConsoleVersion::HandleExit(bool& isRunning)
+{
+    isRunning = false;
+    ui->Clear();
+    ui->ThankYou();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+}
+void GameConsoleVersion::HandleSave()
+{
+    ui->InputSaveJSON();
+    std::string fileName = ui->GetFileName();
+    saver->SaveGameState(state, fileName);
+    std:: string logLine = "Gra zostala zapisana jako "
+        + fileName 
+        + "!";
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleLoad()
+{
+    ui->InputLoadJSON();
+    std::string fileName = ui->GetFileName();
+    loader->LoadGameState(state, fileName);
+    std::string logLine = "Gra zostala wczytana z pliku " 
+        + fileName 
+        + "!";
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::HandleDifficulty()
+{
+    ui->DifficultyMenu();
+    state.turn->SetDifficulty(ui->InputdifficultyLevel());
+    ai->SetStrategy(state.turn->GetDifficulty());
+    std::string logLine = "Poziom trudnosci zostal ustawiony na "
+        + ui->GetAIDifficulty(state.turn->GetDifficulty()) 
+        + "!";
+    ui->NewLine();
+    ui->SetRecentLogLine(logLine);
+}
+void GameConsoleVersion::ProcessTurn(IPlayer& turnHandler,
+    IPlayer& target, bool& isRunning)
+{
+    if (!state.turn->GetStateOfMagnifier()
+        && !state.turn->GetStateOfCellPhone())
+    {
+        state.turn->SetHitProbability(state.magazine->CalculateHitProbability());
+    }
+    uint8_t choice = 0;
+    if (turnHandler.GetType())
+    {
+        NewLoop();
+        choice = ui->HumanDecision();
+    }
+    else
+    {
+        ui->ComputerChoosing();
+        choice = ai->MakeDecision();
+    }
+    state.turn->SetChoice(choice);
+    switch (choice)
+    {
+        case GameEnums::HEAL:
+            ProcessHeal(turnHandler);
+            break;
+        case GameEnums::SHOOT:
+            ProcessShot(turnHandler, target);
+		    break;
+        case GameEnums::USEITEM:
+            HandleInventory(turnHandler);
+            break;
+        case GameEnums::EXIT:
+            HandleExit(isRunning);
+            break;
+        case GameEnums::SAVE:
+            HandleSave();
+            break;
+        case GameEnums::LOAD:
+            HandleLoad();
+            break;
+        case GameEnums::DIFFICULTY:
+            HandleDifficulty();
+            break;
+        default:
+            ui->InvalidInput();
+            break;
+    }
+}
+void GameConsoleVersion::Run()
+{
+    bool isRunning = true;
+    Initialize();
+    do
+    {
+        state.magazine->CheckBullets();
+        if (state.turn->GetStarter() == GameEnums::STARTER_HUMAN)
+        {
+            ProcessTurn(*state.human, *state.computer, isRunning);
+        }
+        else { ProcessTurn(*state.computer, *state.human, isRunning); }
+        if (WhoWon()) 
+        {
+            ui->Clear();
+            ui->DisplayStats();
+            ui->DisplayLastTurnLog();
+            if (!ui->WantsToContinue())
+            {
+                isRunning = false;
+                ui->Clear();
+                ui->ThankYou();
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                ui->Clear();
+            }
+            else { Initialize(); }
+        }
+        if (state.magazine->IsOutOfBullets()) { NewRound(); }
+    } while (isRunning);
+}

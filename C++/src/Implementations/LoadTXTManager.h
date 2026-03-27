@@ -7,10 +7,6 @@
 class LoadTXTManager : public ILoadManager
 {
 public:
-
-	LoadTXTManager() {};
-
-	void LoadGameState(GameState& gameState, const string& fileName) const override;
-
-	~LoadTXTManager() {};
+	void LoadGameState(GameState& state,
+		const std::string& fileName) override;
 };

@@ -7,10 +7,6 @@
 class SaveTXTManager : public ISaveSyncManager
 {
 public:
-
-	SaveTXTManager() {};
-
-	void SaveGameState(const GameState& gameState, const string& fileName) const override;
-
-	~SaveTXTManager() {};
+	void SaveGameState(const GameState& state,
+		const std::string& fileName) const override;
 };

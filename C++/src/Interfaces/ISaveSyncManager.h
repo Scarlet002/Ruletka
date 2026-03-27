@@ -1,13 +1,12 @@
 #pragma once
-#include "ForwardDeclarations.h"
 #include "GameState.h"
 #include <string>
 
 class ISaveSyncManager
 {
 public:
-
-    virtual void SaveGameState(const GameState& gameState, const string& fileName) const = 0;
+    virtual void SaveGameState(const GameState& state,
+        const std::string& fileName) const = 0;
 
     virtual ~ISaveSyncManager() = default;
 };

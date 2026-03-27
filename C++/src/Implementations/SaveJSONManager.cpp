@@ -1,105 +1,90 @@
 #include "SaveJSONManager.h"
-#include "GameState.h"
 #include "SaveConfig.h"
+#include "GameState.h"
 #include <string>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <cstdint>
 #include "json.hpp"
 
-using nlohmann::json;
-using std::string;
-using std::cout;
-using std::endl;
-using std::ofstream;
-using std::vector;
-using std::exception;
-
-void SaveJSONManager::SaveGameState(const GameState& gameState, const string& fileName) const
+void SaveJSONManager::SaveGameState(const GameState& state,
+    const std::string& fileName) const
 {
-    try
+    std::string saveDir;
+    if (fileName.find("autosave") == 0)
     {
-        string saveDir;
-
-        if (fileName.find("autosave") == 0)
-        {
-            saveDir = SaveConfig::GetAutoSaveDirectory();
-        }
-        else
-        {
-            saveDir = SaveConfig::GetSaveDirectory();
-        }
-
-        if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
-        {
-            cout << "Nie mozna utworzyc katalogu zapisow!" << endl;
-            return;
-        }
-
-        string fullPath = saveDir + "/" + fileName;
-
-        json data;
-        data["human_HP"] = gameState.human.GetHP();
-        for (int i : gameState.human.GetInventory())
-            data["human_inventory"].push_back(i);
-
-        data["human_Saws"] = gameState.human.GetSaws();
-        data["human_Beers"] = gameState.human.GetBeers();
-        data["human_Magnifiers"] = gameState.human.GetMagnifiers();
-        data["human_Inverters"] = gameState.human.GetInverters();
-        data["human_HandCuffs"] = gameState.human.GetHandCuffs();
-        data["human_CellPhones"] = gameState.human.GetCellPhones();
-
-        data["computer_HP"] = gameState.computer.GetHP();
-        for (int i : gameState.computer.GetInventory())
-            data["computer_inventory"].push_back(i);
-
-        data["computer_Saws"] = gameState.computer.GetSaws();
-        data["computer_Beers"] = gameState.computer.GetBeers();
-        data["computer_Magnifiers"] = gameState.computer.GetMagnifiers();
-        data["computer_Inverters"] = gameState.computer.GetInverters();
-        data["computer_HandCuffs"] = gameState.computer.GetHandCuffs();
-        data["computer_CellPhones"] = gameState.computer.GetCellPhones();
-
-        data["magazine_full"] = gameState.magazine.ShowFull();
-        data["magazine_empty"] = gameState.magazine.ShowEmpty();
-        data["magazine_bullet_count"] = gameState.magazine.ShowBulletCount();
-
-        data["Starter"] = gameState.gameStateManager.GetStarter();
-        data["difficulty"] = gameState.ai.GetDifficulty();
-        data["choice"] = gameState.gameStateManager.GetChoice();
-        data["shooter"] = gameState.gameStateManager.GetShooter();
-        data["target"] = gameState.gameStateManager.GetTarget();
-        data["item"] = gameState.gameStateManager.GetItem();
-        data["damage"] = gameState.gameStateManager.GetDamage();
-        data["WereHandCuffsUsed"] = gameState.gameStateManager.GetStateOfHandCuffs();
-
-        for (int i : gameState.magazine.GetMagazine())
-            data["magazine"].push_back(i);
-
-        ofstream gameSave(fullPath);
-        if (!gameSave.is_open())
-        {
-            cout << "Nie mozna otworzyc pliku!" << endl;
-            return;
-        }
-        if (gameSave.fail())
-        {
-            cout << "Blad podczas zapisu stanu gry!" << endl;
-            return;
-        }
-
-        gameSave << data.dump(4);
-        gameSave.close();
+        saveDir = SaveConfig::GetAutoSaveDirectory();
     }
-    catch (const json::exception& e)
+    else { saveDir = SaveConfig::GetSaveDirectory(); }
+
+    if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
     {
-        cout << "Blad pliku JSON: " << e.what() << endl;
+        throw std::runtime_error("Nie mozna utworzyc katalogu zapisow!");
     }
-    catch (const exception& e)
+
+    std::string fullPath = saveDir + "/" + fileName;
+    nlohmann::json data;
+
+    // Human data
+    data["human_HP"] = state.human->GetHP();
+    std::vector<uint8_t> humanInventory = state.human->GetInventory();
+    for (uint8_t i : humanInventory)
     {
-        cout << "Blad zapisywania: " << e.what() << endl;
+        data["human_inventory"].push_back(i);
     }
+    data["human_Saws"] = state.human->GetSaws();
+    data["human_Beers"] = state.human->GetBeers();
+    data["human_Magnifiers"] = state.human->GetMagnifiers();
+    data["human_Inverters"] = state.human->GetInverters();
+    data["human_HandCuffs"] = state.human->GetHandCuffs();
+    data["human_CellPhones"] = state.human->GetCellPhones();
+
+    // Computer data
+    data["computer_HP"] = state.computer->GetHP();
+    std::vector<uint8_t> computerInventory = state.computer->GetInventory();
+    for (uint8_t i : computerInventory)
+    {
+        data["computer_inventory"].push_back(i);
+    }
+    data["computer_Saws"] = state.computer->GetSaws();
+    data["computer_Beers"] = state.computer->GetBeers();
+    data["computer_Magnifiers"] = state.computer->GetMagnifiers();
+    data["computer_Inverters"] = state.computer->GetInverters();
+    data["computer_HandCuffs"] = state.computer->GetHandCuffs();
+    data["computer_CellPhones"] = state.computer->GetCellPhones();
+
+    // Magazine data
+    data["magazine_full"] = state.magazine->ShowFull();
+    data["magazine_empty"] = state.magazine->ShowEmpty();
+    data["magazine_bullet_count"] = state.magazine->GetMagazineSize();
+    std::vector<uint8_t> magazine = state.magazine->GetMagazine();
+    for (uint8_t i : magazine)
+    {
+        data["magazine"].push_back(i);
+    }
+
+    // Turn data
+    data["Starter"] = state.turn->GetStarter();
+    data["difficulty"] = state.turn->GetDifficulty();
+    data["choice"] = state.turn->GetChoice();
+    data["shooter"] = state.turn->GetShooter();
+    data["target"] = state.turn->GetTarget();
+    data["item"] = state.turn->GetItem();
+    data["damage"] = state.turn->GetDamage();
+    data["WereHandCuffsUsed"] = state.turn->GetStateOfHandCuffs();
+    data["WasInventoryShownForComputer"] = state.turn->GetStateOfInventory();
+    data["WasMagnifierUsed"] = state.turn->GetStateOfMagnifier();
+    data["WasCellPhoneUsed"] = state.turn->GetStateOfCellPhone();
+
+    std::ofstream gameSave(fullPath);
+    if (!gameSave.is_open())
+    {
+        throw std::runtime_error("Nie mozna otworzyc pliku!");
+    }
+
+    gameSave << data.dump(4);
+    gameSave.close();
 }
