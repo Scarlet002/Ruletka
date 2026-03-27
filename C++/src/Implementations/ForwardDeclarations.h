@@ -1,0 +1,41 @@
+#pragma once
+
+// Interfaces
+class IHpManager;
+class IMagazineManager;
+class IPlayer;
+class IUiManager;
+class ISaveSyncManager;
+class ISaveAsyncManager;
+class Inventory;
+class ILoadManager;
+class IGameEngine;
+class IUiSFMLManager;
+class IAIStrategyManager;
+class IAIStrategy;
+class ITurnManager;
+
+// Implementations
+class HpManager;
+class MagazineManager;
+class Player;
+class GameConsoleVersion;
+class GameSFMLVersion;
+class UiManager;
+class SaveJSONManager;
+class SaveTXTManager;
+class LoadJSONManager;
+class LoadTXTManager;
+class AutoSaveManager;
+class InventoryManager;
+class SaveConfig;
+class UiSFMLManager;
+class InputValidatorManager;
+class SaveConfig;
+class EasyAI;
+class NormalAI;
+class HardAI;
+class AIStrategyManager;
+class TurnManager;
+
+struct GameState;
