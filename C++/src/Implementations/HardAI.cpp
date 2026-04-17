@@ -6,9 +6,9 @@
 HardAI::HardAI(const GameState& state) 
     : state(state) {}
 
-int HardAI::MakeSpaceInInventory() const
+int8_t HardAI::MakeSpaceInInventory() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.computer->GetMagnifiers() > 0) 
     {
         choice = GameEnums::MAGNIFIER;
@@ -25,13 +25,14 @@ int HardAI::MakeSpaceInInventory() const
         return choice;
     }
 }
-int HardAI::IfBulletIsFull() const
+
+int8_t HardAI::IfBulletIsFull() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.human->GetHP() >= 2)
     {
         if (state.computer->GetHandCuffs() > 0
-            && state.turn->GetStateOfHandCuffs() == GameEnums::HANDCUFFS_NOT_USED)
+            && state.turn->GetStateOfHandCuffs() == GameEnums::ITEM_NOT_USED)
         {
             choice = GameEnums::HANDCUFFS;
             return choice;
@@ -60,9 +61,10 @@ int HardAI::IfBulletIsFull() const
         return choice;
     }
 }
-int HardAI::IfBulletIsEmpty() const
+
+int8_t HardAI::IfBulletIsEmpty() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.human->GetHP() <= 2 
         && state.computer->GetInverters() > 0)
     {
@@ -87,18 +89,20 @@ int HardAI::IfBulletIsEmpty() const
         return choice;
     }
 }
-uint8_t HardAI::ManageInventory(uint8_t& choice) const
+
+int8_t HardAI::ManageInventory(int8_t& choice) const
 {
-    if (!state.turn->GetStateOfInventory())
+    if (state.turn->GetCurrentMenu() != GameEnums::INVENTORY_MENU) //<- do zmiany
     {
         choice = GameEnums::USEITEM;
         return choice;
     }
     else { return choice; }
 }
-int HardAI::MakeDecision() const
+
+int8_t HardAI::Decision() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.computer->GetMagnifiers() > 0
         || state.computer->GetCellPhones() > 0)
     { 
@@ -106,7 +110,7 @@ int HardAI::MakeDecision() const
         choice = ManageInventory(choice);
         return choice;
     }
-    else if (state.magazine->CheckBulletType())
+    else if (state.magazine->CheckBulletType(GameEnums::LOADED))
     {
         choice = IfBulletIsFull();
         if (choice != GameEnums::NO_ITEMS) 

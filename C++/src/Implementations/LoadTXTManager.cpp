@@ -12,12 +12,18 @@ void LoadTXTManager::LoadGameState(GameState& state,
     const std::string& fileName)
 {
     std::string saveDir;
-    if (fileName.find("autosave") == 0) { saveDir = SaveConfig::GetAutoSaveDirectory(); }
+    if (fileName.find("autosave") == 0) 
+    { 
+        saveDir = SaveConfig::GetAutoSaveDirectory();
+    }
     else { saveDir = SaveConfig::GetSaveDirectory(); }
-    std::string fullPath = saveDir + "/" + fileName;
+
+    std::string fullPath = saveDir + "/" + fileName + ".txt";
     std::ifstream gameSave(fullPath);
     if (!gameSave.is_open())
-        { throw std::runtime_error("Nie mozna otworzyc pliku podczas wczytywania!"); }
+    { 
+        throw std::runtime_error("Nie mozna otworzyc pliku podczas wczytywania!");
+    }
 
     uint8_t bullet, hpHuman, itemsHuman, sawsHuman,
         beersHuman, magnifiersHuman, invertersHuman,
@@ -25,9 +31,11 @@ void LoadTXTManager::LoadGameState(GameState& state,
         itemsComputer, sawsComputer, beersComputer,
         magnifiersComputer, invertersComputer,
         handCuffsComputer, cellPhonesComputer,
-        full, empty, bulletCount, starter,
-        difficulty, choice, shooter, target,
-        item, itemHuman, itemComputer, damage;
+        bulletCount, starter, difficulty,
+        shooter, target, item, damage,
+        itemHuman, itemComputer;
+
+    int8_t choice;
 
     bool wereHandCuffsUsed,
         wasCellPhoneUsed,
@@ -78,11 +86,8 @@ void LoadTXTManager::LoadGameState(GameState& state,
     state.computer->SetHandCuffs(handCuffsComputer);
     state.computer->SetCellPhones(cellPhonesComputer);
 
-	gameSave >> full >> empty >> bulletCount;
+	gameSave >> bulletCount;
 
-    state.magazine->SetFull(full);
-    state.magazine->SetEmpty(empty);
-    state.magazine->SetBulletCount(bulletCount);
     std::vector<uint8_t> magazine;
     for (uint8_t i = 0; i < bulletCount; ++i)
     {
@@ -90,6 +95,7 @@ void LoadTXTManager::LoadGameState(GameState& state,
         magazine.push_back(bullet);
     }
     state.magazine->SetMagazine(magazine);
+	state.magazine->CheckBullets();
 
     gameSave >> starter >>
         difficulty >> choice >>

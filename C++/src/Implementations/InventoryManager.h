@@ -25,25 +25,25 @@ public:
 
 	void GetRandomItem() override;
 	void GetNumberOfItems() override;
-	void UseItem(int itemType) override;
+	void UseItem(uint8_t itemType) override;
 	void ResetInventory() override;
 
-	void SetFreeSlots(int newFree) override;
-	void SetSaws(int newSaws) override;
-	void SetBeers(int newBeers) override;
-	void SetMagnifiers(int newMagnifiers) override;
-	void SetHandCuffs(int newHandCuffs) override;
-	void SetInverters(int newInverters) override;
-	void SetCellPhones(int newCellPhones) override;
+	void SetFreeSlots(uint8_t newFree) override;
+	void SetSaws(uint8_t newSaws) override;
+	void SetBeers(uint8_t newBeers) override;
+	void SetMagnifiers(uint8_t newMagnifiers) override;
+	void SetHandCuffs(uint8_t newHandCuffs) override;
+	void SetInverters(uint8_t newInverters) override;
+	void SetCellPhones(uint8_t newCellPhones) override;
 	void SetInventory(const std::vector<uint8_t>& newInventory) override;
 
-	int GetFreeSlots() const override;
-	int GetSaws() const override;
-	int GetBeers() const override;
-	int GetMagnifiers() const override;
-	int GetHandCuffs() const override;
-	int GetInverters() const override;
-	int GetCellPhones() const override;
+	uint8_t GetFreeSlots() const override;
+	uint8_t GetSaws() const override;
+	uint8_t GetBeers() const override;
+	uint8_t GetMagnifiers() const override;
+	uint8_t GetHandCuffs() const override;
+	uint8_t GetInverters() const override;
+	uint8_t GetCellPhones() const override;
 	const std::vector<uint8_t>& GetInventory() const override;
 };
 

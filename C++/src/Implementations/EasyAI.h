@@ -9,5 +9,5 @@ private:
 public:
 	explicit EasyAI(const GameState& state);
 
-	int MakeDecision() const override;
+	int8_t Decision() const override;
 };

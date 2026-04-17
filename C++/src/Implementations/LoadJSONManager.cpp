@@ -14,12 +14,17 @@ void LoadJSONManager::LoadGameState(GameState& state,
 {
     std::string saveDir = "";
     if (fileName.find("autosave") == 0)
-        { saveDir = SaveConfig::GetAutoSaveDirectory(); }
+    { 
+        saveDir = SaveConfig::GetAutoSaveDirectory();
+    }
     else { saveDir = SaveConfig::GetSaveDirectory(); }
-    std::string fullPath = saveDir + "/" + fileName;
+
+    std::string fullPath = saveDir + "/" + fileName + ".json";
     std::ifstream gameSave(fullPath);
     if (!gameSave.is_open())
-        { throw std::runtime_error("Nie mozna otworzyc pliku podczas wczytywania!"); }
+    { 
+        throw std::runtime_error("Nie mozna otworzyc pliku podczas wczytywania!");
+    }
     nlohmann::json data = nlohmann::json::parse(gameSave);
 
     state.turn->SetStarter(data["Starter"]);
@@ -52,8 +57,5 @@ void LoadJSONManager::LoadGameState(GameState& state,
     state.computer->SetCellPhones(data["computer_CellPhones"]);
 
     state.magazine->SetMagazine(data["magazine"]);
-    state.magazine->SetFull(data["magazine_full"]);
-    state.magazine->SetEmpty(data["magazine_empty"]);
-    state.magazine->SetBulletCount(data["magazine_bullet_count"]);
     state.magazine->CheckBullets();
 }

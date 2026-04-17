@@ -9,12 +9,12 @@ class HardAI : public IAIStrategy
 private:
 	const GameState& state;
 
-	inline uint8_t ManageInventory(uint8_t& choice) const;
-	inline int MakeSpaceInInventory() const;
-	inline int IfBulletIsFull() const;
-	inline int IfBulletIsEmpty() const;
+	inline int8_t ManageInventory(int8_t& choice) const;
+	inline int8_t MakeSpaceInInventory() const;
+	inline int8_t IfBulletIsFull() const;
+	inline int8_t IfBulletIsEmpty() const;
 public:
 	HardAI(const GameState& state);
 
-	int MakeDecision() const override;
+	int8_t Decision() const override;
 };

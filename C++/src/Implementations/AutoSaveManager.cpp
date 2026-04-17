@@ -5,22 +5,28 @@
 #include <chrono>
 #include <ctime>
 #include <future>
+#include <thread>
+#include <cstdint>
 
 AutoSaveManager::AutoSaveManager(ISaveSyncManager& saverRef) 
     : saver(saverRef) {}
 
-void AutoSaveManager::SaveGameStateAsync(GameState state)
+void AutoSaveManager::SaveGameStateAsync(const GameState& state)
 {
-    isSaving = true;
+    isSaving.store(true);
 	SetSaveCounter(GetSaveCounter() + 1);
-    std::string autoSaveFileName = "autosave" + std::to_string(GetSaveCounter()) + ".json";
-    saveFuture = std::async(std::launch::async, [this, state = std::move(state), autoSaveFileName]()
+    std::string autoSaveFileName = "autosave" + std::to_string(GetSaveCounter());
+    saveFuture = std::async(std::launch::async, [this, &state, autoSaveFileName]()
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        saver.SaveGameState(state, autoSaveFileName);
-        isSaving = false;
+        GameState snapshot;
+        snapshot.CopyStateToSnapshot(state);
+        saver.SaveGameState(snapshot, autoSaveFileName);
+        isSaving.store(false);
     });
 }
+
 bool AutoSaveManager::IsSaving() const { return isSaving; }
-void AutoSaveManager::SetSaveCounter(int newSaveCounter) { saveCounter = newSaveCounter; }
-int AutoSaveManager::GetSaveCounter() const { return saveCounter; }
+
+void AutoSaveManager::SetSaveCounter(uint8_t newSaveCounter) { saveCounter = newSaveCounter; }
+
+uint8_t AutoSaveManager::GetSaveCounter() const { return saveCounter; }

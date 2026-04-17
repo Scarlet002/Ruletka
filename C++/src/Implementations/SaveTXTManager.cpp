@@ -11,23 +11,36 @@ void SaveTXTManager::SaveGameState(const GameState& state,
 {
     std::string saveDir;
     if (fileName.find("autosave") == 0)
-        { saveDir = SaveConfig::GetAutoSaveDirectory(); }
+    { 
+        saveDir = SaveConfig::GetAutoSaveDirectory();
+    }
     else { saveDir = SaveConfig::GetSaveDirectory(); }
+
     if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
-        { throw std::runtime_error("Nie mozna utworzyc katalogu zapisow!"); }
-    std::string fullPath = saveDir + "/" + fileName;
+    { 
+        throw std::runtime_error("Nie mozna utworzyc katalogu zapisow!");
+    }
+
+    std::string fullPath = saveDir + "/" + fileName + ".txt";
     std::ofstream gameSave(fullPath);
     if (!gameSave.is_open())
-        { throw std::runtime_error("Nie mozna otworzyc pliku! "); }
+    { 
+        throw std::runtime_error("Nie mozna otworzyc pliku! ");
+    }
     if (gameSave.fail())
-        { throw std::runtime_error("Blad podczas zapisu stanu gry!"); }
+    { 
+        throw std::runtime_error("Blad podczas zapisu stanu gry!");
+    }
+
     gameSave << state.human->GetHP() << '\n';
     std::vector<uint8_t> humanInventory = state.human->GetInventory();
     uint8_t humanInventorySize = humanInventory.size();
     gameSave << humanInventorySize << '\n';
 
-    for (uint8_t i : humanInventory)
-        { gameSave << i << '\n'; }
+    for (const uint8_t& item : humanInventory)
+    { 
+        gameSave << item << '\n';
+    }
 
     gameSave << state.human->GetSaws() << '\n';
     gameSave << state.human->GetBeers() << '\n';
@@ -41,8 +54,10 @@ void SaveTXTManager::SaveGameState(const GameState& state,
     uint8_t computerInventorySize = computerInventory.size();
     gameSave << computerInventorySize << '\n';
 
-    for (uint8_t i : computerInventory)
-        { gameSave << i << '\n'; }
+    for (const uint8_t& item : computerInventory)
+    { 
+        gameSave << item << '\n';
+    }
 
     gameSave << state.computer->GetSaws() << '\n';
     gameSave << state.computer->GetBeers() << '\n';
@@ -51,13 +66,13 @@ void SaveTXTManager::SaveGameState(const GameState& state,
     gameSave << state.computer->GetHandCuffs() << '\n';
     gameSave << state.computer->GetCellPhones() << '\n';
 
-    gameSave << state.magazine->ShowFull() << '\n';
-    gameSave << state.magazine->ShowEmpty() << '\n';
     gameSave << state.magazine->GetMagazineSize() << '\n';
 
     std::vector<uint8_t> magazine = state.magazine->GetMagazine();
-    for (uint8_t i : magazine)
-        { gameSave << i << '\n'; }
+    for (const uint8_t& item : magazine)
+    { 
+        gameSave << item << '\n';
+    }
 
     gameSave << state.turn->GetStarter() << '\n';
     gameSave << state.turn->GetDifficulty() << '\n';

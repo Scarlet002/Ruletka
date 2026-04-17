@@ -4,7 +4,9 @@
 #include <string>
 
 std::string SaveConfig::GetSaveDirectory() { return "data/saves"; }
+
 std::string SaveConfig::GetAutoSaveDirectory() { return "data/saves/autosaves"; }
+
 bool SaveConfig::CreateDirectoryIfNotExists(const std::string& path)
 {
     try

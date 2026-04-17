@@ -7,9 +7,4 @@
 EasyAI::EasyAI(const GameState& state) 
 	: state(state) {}
 
-int EasyAI::MakeDecision() const
-{
-	uint8_t bulletTypes = GameConfig::numberOfBulletTypes;
-	uint8_t choice = rand() % bulletTypes;
-	return choice;
-}
+int8_t EasyAI::Decision() const { return rand() % GameConfig::numberOfBulletTypes; }

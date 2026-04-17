@@ -6,18 +6,18 @@
 NormalAI::NormalAI(const GameState& state) 
     : state(state) {};
 
-int NormalAI::IfChanceForFullIsGreater() const
+int8_t NormalAI::IfChanceForFullIsGreater() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.human->GetHP() >= 2)
     {
         if (state.computer->GetHandCuffs() > 0
-            && state.turn->GetStateOfHandCuffs() == GameEnums::HANDCUFFS_NOT_USED)
+            && state.turn->GetStateOfHandCuffs() == GameEnums::ITEM_NOT_USED)
         {
             choice = GameEnums::HANDCUFFS;
             return choice;
         }
-        else if (state.turn->GetHitProbability() != 1.0
+        else if (state.turn->GetHitProbability() < 0.999
             && state.computer->GetMagnifiers() > 0
             && !state.turn->GetStateOfMagnifier())
         {
@@ -26,7 +26,7 @@ int NormalAI::IfChanceForFullIsGreater() const
         }
         else if (state.computer->GetCellPhones() > 0
             && state.magazine->GetMagazineSize() == 2
-            && state.turn->GetHitProbability() != 1.0
+            && state.turn->GetHitProbability() < 0.999
             && !state.turn->GetStateOfCellPhone())
         {
             choice = GameEnums::CELLPHONE;
@@ -46,7 +46,7 @@ int NormalAI::IfChanceForFullIsGreater() const
     }
     else if (state.computer->GetHP() == 1
         && state.computer->GetInverters() > 0
-        && state.turn->GetHitProbability() == 1.0)
+        && state.turn->GetHitProbability() > 0.999)
     {
         choice = GameEnums::INVERTER;
         return choice;
@@ -57,9 +57,10 @@ int NormalAI::IfChanceForFullIsGreater() const
         return choice;
     }
 }
-int NormalAI::IfChanceForEmptyIsGreater() const
+
+int8_t NormalAI::IfChanceForEmptyIsGreater() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.human->GetHP() <= 2
         && state.computer->GetInverters() > 0)
     {
@@ -72,7 +73,7 @@ int NormalAI::IfChanceForEmptyIsGreater() const
         choice = GameEnums::BEER;
         return choice;
     }
-    else if (state.turn->GetHitProbability() != 1.0
+    else if (state.turn->GetHitProbability() < 0.999
         && state.computer->GetMagnifiers() > 0
         && !state.turn->GetStateOfMagnifier())
     {
@@ -81,14 +82,14 @@ int NormalAI::IfChanceForEmptyIsGreater() const
     }
     else if (state.computer->GetCellPhones() > 0
         && state.magazine->GetMagazineSize() == 1
-        && state.turn->GetHitProbability() != 1.0
+        && state.turn->GetHitProbability() < 0.999
         && !state.turn->GetStateOfCellPhone())
     {
         choice = GameEnums::CELLPHONE;
         return choice;
     }
     else if (state.computer->GetInverters() > 0
-        && state.turn->GetHitProbability() == 0.0)
+        && state.turn->GetHitProbability() < 0.001)
     {
         choice = GameEnums::INVERTER;
         return choice;
@@ -105,18 +106,20 @@ int NormalAI::IfChanceForEmptyIsGreater() const
         return choice;
     }
 }
-uint8_t NormalAI::ManageInventory(uint8_t& choice) const
+
+int8_t NormalAI::ManageInventory(int8_t& choice) const
 {
-    if (!state.turn->GetStateOfInventory())
+    if (state.turn->GetCurrentMenu() != GameEnums::INVENTORY_MENU) //<- do zmiany
     {
         choice = GameEnums::USEITEM;
         return choice;
     }
-    else { return choice; }
+	return choice;
 }
-int NormalAI::MakeDecision() const
+
+int8_t NormalAI::Decision() const
 {
-    uint8_t choice = 0;
+    int8_t choice = GameEnums::NO_ITEMS;
     if (state.turn->GetHitProbability() > 0.5)
     {
         choice = IfChanceForFullIsGreater();

@@ -161,8 +161,7 @@
     <ClCompile Include="src\Implementations\AIStrategyManager.cpp" />
     <ClCompile Include="src\Implementations\AutoSaveManager.cpp" />
     <ClCompile Include="src\Implementations\EasyAI.cpp" />
-    <ClCompile Include="src\Implementations\GameConsoleVersion.cpp" />
-    <ClCompile Include="src\Implementations\GameSFMLVersion.cpp" />
+    <ClCompile Include="src\Implementations\GameEngine.cpp" />
     <ClCompile Include="src\Implementations\GameState.cpp" />
     <ClCompile Include="src\Implementations\TurnManager.cpp" />
     <ClCompile Include="src\Implementations\HardAI.cpp" />
@@ -189,8 +188,7 @@
     <ClInclude Include="src\Implementations\AutoSaveManager.h" />
     <ClInclude Include="src\Implementations\EasyAI.h" />
     <ClInclude Include="src\Implementations\ForwardDeclarations.h" />
-    <ClInclude Include="src\Implementations\GameConsoleVersion.h" />
-    <ClInclude Include="src\Implementations\GameSFMLVersion.h" />
+    <ClInclude Include="src\Implementations\GameEngine.h" />
     <ClInclude Include="src\Implementations\TurnManager.h" />
     <ClInclude Include="src\Implementations\HardAI.h" />
     <ClInclude Include="src\Implementations\HpManager.h" />
@@ -218,7 +216,6 @@
     <ClInclude Include="src\Interfaces\ISaveAsyncManager.h" />
     <ClInclude Include="src\Interfaces\ISaveSyncManager.h" />
     <ClInclude Include="src\Interfaces\IUiManager.h" />
-    <ClInclude Include="src\Interfaces\IUiSFMLManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

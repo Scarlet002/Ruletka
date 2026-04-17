@@ -5,11 +5,12 @@
 #include "HardAI.h"
 #include "GameState.h"
 #include "GameEnums.h"
+#include <cstdint>
 
 AIStrategyManager::AIStrategyManager(const GameState& state) 
 	: state(state) {}
 
-void AIStrategyManager::SetStrategy(int difficulty)
+void AIStrategyManager::SetStrategy(int8_t difficulty)
 {
 	switch (difficulty)
 	{
@@ -23,8 +24,9 @@ void AIStrategyManager::SetStrategy(int difficulty)
 		strategy = std::make_unique<HardAI>(state);
 		break;
 	default:
-		strategy = std::make_unique<EasyAI>(state);
+		if (strategy == nullptr) { strategy = std::make_unique<NormalAI>(state); }
 		break;
 	}
 }
-int AIStrategyManager::MakeDecision() const { return strategy->MakeDecision(); }
+
+int8_t AIStrategyManager::Decision() const { return strategy->Decision(); }

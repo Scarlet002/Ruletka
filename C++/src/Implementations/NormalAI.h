@@ -9,11 +9,11 @@ class NormalAI : public IAIStrategy
 private:
 	const GameState& state;
 
-	inline uint8_t ManageInventory(uint8_t& choice) const;
-	inline int IfChanceForFullIsGreater() const;
-	inline int IfChanceForEmptyIsGreater() const;
+	inline int8_t ManageInventory(int8_t& choice) const;
+	inline int8_t IfChanceForFullIsGreater() const;
+	inline int8_t IfChanceForEmptyIsGreater() const;
 public:
 	NormalAI(const GameState& state);
 
-	int MakeDecision() const override;
+	int8_t Decision() const override;
 };

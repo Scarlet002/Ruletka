@@ -9,9 +9,9 @@ private:
     int8_t currentHP = GameConfig::maxPlayerHP;
     const uint8_t maxHP = GameConfig::maxPlayerHP;
 public:
-    void SetHP(int newHP) override;
-    void LoseHP(int damage) override;
+    void SetHP(uint8_t newHP) override;
+    void LoseHP(uint8_t damage) override;
     void RegainHP() override;
     void ResetHP() override;
-    int GetHP() const override;
+    int8_t GetHP() const override;
 };

@@ -25,15 +25,15 @@ void SaveJSONManager::SaveGameState(const GameState& state,
         throw std::runtime_error("Nie mozna utworzyc katalogu zapisow!");
     }
 
-    std::string fullPath = saveDir + "/" + fileName;
+    std::string fullPath = saveDir + "/" + fileName + ".json";
     nlohmann::json data;
 
     // Human data
     data["human_HP"] = state.human->GetHP();
     std::vector<uint8_t> humanInventory = state.human->GetInventory();
-    for (uint8_t i : humanInventory)
+    for (const uint8_t& item : humanInventory)
     {
-        data["human_inventory"].push_back(i);
+        data["human_inventory"].push_back(item);
     }
     data["human_Saws"] = state.human->GetSaws();
     data["human_Beers"] = state.human->GetBeers();
@@ -45,9 +45,9 @@ void SaveJSONManager::SaveGameState(const GameState& state,
     // Computer data
     data["computer_HP"] = state.computer->GetHP();
     std::vector<uint8_t> computerInventory = state.computer->GetInventory();
-    for (uint8_t i : computerInventory)
+    for (const uint8_t& item : computerInventory)
     {
-        data["computer_inventory"].push_back(i);
+        data["computer_inventory"].push_back(item);
     }
     data["computer_Saws"] = state.computer->GetSaws();
     data["computer_Beers"] = state.computer->GetBeers();
@@ -57,13 +57,11 @@ void SaveJSONManager::SaveGameState(const GameState& state,
     data["computer_CellPhones"] = state.computer->GetCellPhones();
 
     // Magazine data
-    data["magazine_full"] = state.magazine->ShowFull();
-    data["magazine_empty"] = state.magazine->ShowEmpty();
     data["magazine_bullet_count"] = state.magazine->GetMagazineSize();
     std::vector<uint8_t> magazine = state.magazine->GetMagazine();
-    for (uint8_t i : magazine)
+    for (const uint8_t& item : magazine)
     {
-        data["magazine"].push_back(i);
+        data["magazine"].push_back(item);
     }
 
     // Turn data

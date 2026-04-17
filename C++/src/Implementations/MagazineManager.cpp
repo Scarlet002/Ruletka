@@ -9,80 +9,94 @@ MagazineManager::MagazineManager()
     : magazine() 
     { magazine.reserve(GameConfig::maxBulletsCount); }
 
-void MagazineManager::Load()
-{
-    bulletCount = rand() % GameConfig::maxBullets + GameConfig::minBullets;
-    magazine.resize(bulletCount);
-
-    for (uint8_t i = 0; i < bulletCount; ++i)
-        { magazine[i] = rand() % GameConfig::numberOfBulletTypes; }
-}
 void MagazineManager::CheckBullets()
 {
+    ValidateMagazineSize();
     full = count_if(magazine.begin(), magazine.end(),
         [](uint8_t bullet) { return bullet == GameEnums::FULL; });
     empty = magazine.size() - full;
 }
+
 void MagazineManager::DecreaseBulletCount()
 {
-    if (bulletCount == 0) { return; }
+    ValidateMagazineSize();
     magazine.erase(magazine.begin());
-    bulletCount = magazine.size();
 }
+
+void MagazineManager::UpdateMagazineState(uint8_t bullet)
+{
+    if (CheckBulletType(bullet))
+    {
+        DecreaseFullCount();
+    }
+    else { DecreaseEmptyCount(); }
+    DecreaseBulletCount();
+}
+
 void MagazineManager::Reload()
 {
     magazine.clear();
-    bulletCount = 0;
-    empty = 0;
-    full = 0;
-    Load();
+    uint8_t newSize = rand() % GameConfig::maxBullets + GameConfig::minBullets;
+    magazine.resize(newSize);
+    for (uint8_t& bullet : magazine)
+    {
+        bullet = rand() % GameConfig::numberOfBulletTypes;
+    }
     CheckBullets();
 }
-bool MagazineManager::IsEmptySlot() const
+
+void MagazineManager::ValidateMagazineSize() const
 {
-    if (magazine.empty()) throw std::runtime_error("Magazynek jest pusty!");
-    return magazine[0] == GameEnums::EMPTY;
+    if (magazine.empty())
+    {
+        throw std::runtime_error("Magazynek jest pusty!");
+    }
+    if (magazine.size() > GameConfig::maxBulletsCount)
+    {
+        throw std::runtime_error("Rozmiar magazynka przekracza maksymalna liczbe pociskow!");
+	}
 }
+
 void MagazineManager::SetMagazine(const std::vector<uint8_t>& newMagazine)
 {
     magazine = newMagazine;
-    bulletCount = magazine.size();
+    ValidateMagazineSize();
 }
-double MagazineManager::CalculateHitProbability() const
+
+float MagazineManager::CalculateHitProbability() const
 {
-    if (magazine.empty()) { return 0.0; }
-    return static_cast<double>(full) / bulletCount;
+    ValidateMagazineSize();
+    return static_cast<float>(full) / GetMagazineSize();
 }
-bool MagazineManager::HasEmptyBullets() const 
-{ return any_of(magazine.begin(), magazine.end(), [](uint8_t bullet)
-    { return bullet == GameEnums::EMPTY; }); }
-int MagazineManager::ShowFull() const { return full; }
-int MagazineManager::ShowEmpty() const { return empty; }
+
+uint8_t MagazineManager::GetFull() const { return full; }
+
+uint8_t MagazineManager::GetEmpty() const { return empty; }
+
 void MagazineManager::DecreaseFullCount() { if (full > 0) full--; }
+
 void MagazineManager::DecreaseEmptyCount() { if (empty > 0) empty--; }
-bool MagazineManager::CheckBulletType() const { return !magazine.empty() && magazine[0] == GameEnums::FULL; }
-void MagazineManager::InvertBulletType() { CheckBulletType() ? magazine[0] = GameEnums::EMPTY : magazine[0] = GameEnums::FULL; };
-int MagazineManager::GetMagazineSize() const { return magazine.size(); }
-bool MagazineManager::CheckBulletTypeCellPhone(int bullet) const { return magazine[bullet] == GameEnums::FULL; }
-bool MagazineManager::IsEmpty() const { return bulletCount == 0; }
-const std::vector<uint8_t>& MagazineManager::GetMagazine() const { return magazine; }
-bool MagazineManager::IsOutOfBullets() const { return IsEmpty(); }
-void MagazineManager::SetFull(int newFull) { full = newFull; }
-void MagazineManager::SetEmpty(int newEmpty) { empty = newEmpty; }
-void MagazineManager::SetBulletCount(int newBulletCount)
-{
-    bulletCount = newBulletCount;
-    magazine.resize(bulletCount);
+
+void MagazineManager::InvertBulletType() 
+{ 
+    ValidateMagazineSize();
+    CheckBulletType(GameEnums::LOADED) ? 
+        magazine[GameEnums::LOADED] = GameEnums::EMPTY 
+        : magazine[GameEnums::LOADED] = GameEnums::FULL;
 }
 
-void MagazineManager::ShowBullets() const
-{
-    std::cout << "Magazynek: ";
-    for (uint8_t bullet : magazine)
+uint8_t MagazineManager::GetMagazineSize() const { return magazine.size(); }
+
+bool MagazineManager::CheckBulletType(uint8_t bullet) const 
+{ 
+    ValidateMagazineSize();
+    if (bullet < magazine.size())
     {
-        std::cout << (bullet == GameEnums::FULL ? "[F] " : "[E] ");
+        return magazine[bullet] == GameEnums::FULL;
     }
-    std::cout << '\n';
+    throw std::out_of_range("Indeks pocisku poza zakresem!");
 }
 
-int MagazineManager::ShowBulletCount() const { return bulletCount; }
+bool MagazineManager::IsEmpty() const { return GetMagazineSize() == 0; }
+
+const std::vector<uint8_t>& MagazineManager::GetMagazine() const { return magazine; }

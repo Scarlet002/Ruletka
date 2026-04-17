@@ -14,6 +14,6 @@ private:
 public:
 	AIStrategyManager(const GameState& state);
 
-	void SetStrategy(int difficulty) override;
-	int MakeDecision() const override;
+	void SetStrategy(int8_t difficulty) override;
+	int8_t Decision() const override;
 };

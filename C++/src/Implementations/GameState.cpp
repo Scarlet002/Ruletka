@@ -45,8 +45,5 @@ void GameState::CopyStateToSnapshot(const GameState& state)
 
     // Magazine
     magazine->SetMagazine(state.magazine->GetMagazine());
-    magazine->SetFull(state.magazine->ShowFull());
-    magazine->SetEmpty(state.magazine->ShowEmpty());
-    magazine->SetBulletCount(state.magazine->ShowBulletCount());
     magazine->CheckBullets();
 }
