@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Headers\implementations">
+      <UniqueIdentifier>{1d7f98f7-1db0-447c-8aa4-325e7037fe6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\interfaces">
+      <UniqueIdentifier>{4677676e-7f73-4b81-b4f5-b3c87197142b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\common">
+      <UniqueIdentifier>{a5b8c3d2-1e4f-5a6b-7c8d-9e0f1a2b3c4d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\implementations\ShotgunMagazine.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\Player.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\JSONSerializer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\TXTSerializer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\ConsoleUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\Inventory.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\SFMLUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\NormalAI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\HardAI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\DecisionProcessor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\implementations\InventoryProcessor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\implementations\AutoSaveManager.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\ForwardDeclarations.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\GameEngine.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\InputValidatorManager.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Inventory.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\ShotgunMagazine.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Player.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\SaveConfig.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\ConsoleUI.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\SFMLUI.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameEngine.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\HP.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Magazine.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IInventory.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IPlayer.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\AsyncSerializer.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\UI.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\GameConfig.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\GameEnums.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\HPManager.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\AIManager.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\EasyAI.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\AI.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\NormalAI.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\HardAI.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\GameState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\RNG.h">
+      <Filter>Headers\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\SerializationManager.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Serializer.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\JSONSerializer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\TXTSerializer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\LogObserver.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Logger.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\UILogger.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Processor.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\DecisionProcessor.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\InventoryProcessor.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Action.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Cellphone.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Inverter.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Handcuffs.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Magnifier.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Saw.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Beer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\ChangeDifficulty.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\ChangeSerialization.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\SaveGame.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\LoadGame.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Exit.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Heal.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Shoot.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\Restart.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\AutoSave.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\UseItem.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\DecisionState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\ItemState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\GameLoopState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\SerializationState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\AIState.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Initializer.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\Validator.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\GameLoopInitializer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\GameLoopValidator.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\RoundInitializer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\implementations\UIInitializer.h">
+      <Filter>Headers\implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStatePlayers.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateMagazine.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateDecisions.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateItems.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateAIs.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateSerializations.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateCore.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameStateLoop.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\interfaces\IGameState.h">
+      <Filter>Headers\interfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

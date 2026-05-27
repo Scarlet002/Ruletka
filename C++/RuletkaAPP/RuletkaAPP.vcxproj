@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8227d8d6-7123-4f18-b1bb-49933f0aacd4}</ProjectGuid>
+    <RootNamespace>Ruletka</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>RuletkaAPP</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)RuletkaAPP\build\obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)RuletkaAPP\build\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)RuletkaAPP\build\obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)RuletkaAPP\build\bin\$(Platform)\$(Configuration)\</OutDir>
+    <SourcePath>$(ProjectDir);$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)assets;$(SolutionDir)RuletkaAPP\external\SFML\include\SFML;external\SFML;external\nlohmann\single_include;external\nlohmann;external;external\SFML\lib;external\SFML\bin;external\SFML\include;$(SolutionDir)RuletkaAPP\src;$(SolutionDir)RuletkaAPP\external\nlohmann\single_include\nlohmann;$(SolutionDir)RuletkaAPP\external\SFML\include;external\SFML\include\System;external\SFML\include\Network;external\SFML\include\doc;external\SFML\include\Audio;external\SFML\include\Graphics;external\SFML\include\Window;external\nlohmann\single_include\nlohmann;src\common;src\implementations;src\interfaces</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <Optimization>Custom</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)RuletkaAPP\external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if exist "$(OutDir)assets" rmdir /S /Q "$(OutDir)assets"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)assets;$(SolutionDir)RuletkaAPP\external\SFML\include\SFML;external\SFML;external\nlohmann\single_include;external\nlohmann;external;external\SFML\lib;external\SFML\bin;external\SFML\include;$(SolutionDir)RuletkaAPP\src;$(SolutionDir)RuletkaAPP\external\nlohmann\single_include\nlohmann;$(SolutionDir)RuletkaAPP\external\SFML\include;external\SFML\include\System;external\SFML\include\Network;external\SFML\include\doc;external\SFML\include\Audio;external\SFML\include\Graphics;external\SFML\include\Window;external\nlohmann\single_include\nlohmann;src\common;src\implementations;src\interfaces</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <Optimization>Custom</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)RuletkaAPP\external\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if exist "$(OutDir)assets" rmdir /S /Q "$(OutDir)assets"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\implementations\DecisionProcessor.cpp" />
+    <ClCompile Include="src\implementations\InventoryProcessor.cpp" />
+    <ClCompile Include="src\implementations\HardAI.cpp" />
+    <ClCompile Include="src\implementations\Inventory.cpp" />
+    <ClCompile Include="src\implementations\ShotgunMagazine.cpp" />
+    <ClCompile Include="src\implementations\NormalAI.cpp" />
+    <ClCompile Include="src\implementations\Player.cpp" />
+    <ClCompile Include="src\implementations\JSONSerializer.cpp" />
+    <ClCompile Include="src\implementations\TXTSerializer.cpp" />
+    <ClCompile Include="src\implementations\ConsoleUI.cpp" />
+    <ClCompile Include="src\implementations\SFMLUI.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common\GameConfig.h" />
+    <ClInclude Include="src\common\GameEnums.h" />
+    <ClInclude Include="src\implementations\AIState.h" />
+    <ClInclude Include="src\implementations\AutoSave.h" />
+    <ClInclude Include="src\implementations\Beer.h" />
+    <ClInclude Include="src\implementations\Cellphone.h" />
+    <ClInclude Include="src\implementations\ChangeDifficulty.h" />
+    <ClInclude Include="src\implementations\ChangeSerialization.h" />
+    <ClInclude Include="src\implementations\DecisionState.h" />
+    <ClInclude Include="src\implementations\Exit.h" />
+    <ClInclude Include="src\implementations\GameLoopInitializer.h" />
+    <ClInclude Include="src\implementations\GameLoopState.h" />
+    <ClInclude Include="src\implementations\GameLoopValidator.h" />
+    <ClInclude Include="src\implementations\GameState.h" />
+    <ClInclude Include="src\implementations\AIManager.h" />
+    <ClInclude Include="src\implementations\AutoSaveManager.h" />
+    <ClInclude Include="src\implementations\DecisionProcessor.h" />
+    <ClInclude Include="src\implementations\EasyAI.h" />
+    <ClInclude Include="src\common\ForwardDeclarations.h" />
+    <ClInclude Include="src\implementations\GameEngine.h" />
+    <ClInclude Include="src\implementations\ItemState.h" />
+    <ClInclude Include="src\implementations\RoundInitializer.h" />
+    <ClInclude Include="src\implementations\SerializationState.h" />
+    <ClInclude Include="src\implementations\Shoot.h" />
+    <ClInclude Include="src\implementations\Handcuffs.h" />
+    <ClInclude Include="src\implementations\Heal.h" />
+    <ClInclude Include="src\implementations\InventoryProcessor.h" />
+    <ClInclude Include="src\implementations\Inverter.h" />
+    <ClInclude Include="src\implementations\JSONSerializer.h" />
+    <ClInclude Include="src\common\RNG.h" />
+    <ClInclude Include="src\implementations\LoadGame.h" />
+    <ClInclude Include="src\implementations\Magnifier.h" />
+    <ClInclude Include="src\implementations\Restart.h" />
+    <ClInclude Include="src\implementations\SaveGame.h" />
+    <ClInclude Include="src\implementations\Saw.h" />
+    <ClInclude Include="src\implementations\SerializationManager.h" />
+    <ClInclude Include="src\implementations\HardAI.h" />
+    <ClInclude Include="src\implementations\HPManager.h" />
+    <ClInclude Include="src\common\InputValidatorManager.h" />
+    <ClInclude Include="src\implementations\Inventory.h" />
+    <ClInclude Include="src\implementations\ShotgunMagazine.h" />
+    <ClInclude Include="src\implementations\NormalAI.h" />
+    <ClInclude Include="src\implementations\Player.h" />
+    <ClInclude Include="src\common\SaveConfig.h" />
+    <ClInclude Include="src\implementations\ConsoleUI.h" />
+    <ClInclude Include="src\implementations\SFMLUI.h" />
+    <ClInclude Include="src\implementations\TXTSerializer.h" />
+    <ClInclude Include="src\implementations\UIInitializer.h" />
+    <ClInclude Include="src\implementations\UILogger.h" />
+    <ClInclude Include="src\implementations\UseItem.h" />
+    <ClInclude Include="src\interfaces\Action.h" />
+    <ClInclude Include="src\interfaces\AI.h" />
+    <ClInclude Include="src\interfaces\IGameState.h" />
+    <ClInclude Include="src\interfaces\IGameStateAIs.h" />
+    <ClInclude Include="src\interfaces\IGameStateCore.h" />
+    <ClInclude Include="src\interfaces\IGameStateDecisions.h" />
+    <ClInclude Include="src\interfaces\IGameStateItems.h" />
+    <ClInclude Include="src\interfaces\IGameStateLoop.h" />
+    <ClInclude Include="src\interfaces\IGameStateMagazine.h" />
+    <ClInclude Include="src\interfaces\IGameStatePlayers.h" />
+    <ClInclude Include="src\interfaces\IGameStateSerializations.h" />
+    <ClInclude Include="src\interfaces\Initializer.h" />
+    <ClInclude Include="src\interfaces\Processor.h" />
+    <ClInclude Include="src\interfaces\IGameEngine.h" />
+    <ClInclude Include="src\interfaces\HP.h" />
+    <ClInclude Include="src\interfaces\Logger.h" />
+    <ClInclude Include="src\interfaces\LogObserver.h" />
+    <ClInclude Include="src\interfaces\Magazine.h" />
+    <ClInclude Include="src\interfaces\IInventory.h" />
+    <ClInclude Include="src\interfaces\IPlayer.h" />
+    <ClInclude Include="src\interfaces\AsyncSerializer.h" />
+    <ClInclude Include="src\interfaces\Serializer.h" />
+    <ClInclude Include="src\interfaces\UI.h" />
+    <ClInclude Include="src\interfaces\Validator.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
