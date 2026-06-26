@@ -30,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+# Other
+*.user
+*.vcxproj.user
+.vs/
+.github/
+packages/
+Debug/
+assets/
+releases/
+x64/
+bin/
+obj/
+build/
+out/
+data/
+backup/
