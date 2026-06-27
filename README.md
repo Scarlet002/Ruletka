@@ -73,7 +73,7 @@ The project is built using a modular, object-oriented architecture, leveraging m
 - Strategy – AI behavior (AIManager) and serialization formats (SerializationManager).
 - Command – All game actions (Heal, Shoot, UseItem, SaveGame, LoadGame, AutoSave, Restart, Exit).
 - Observer – Logging system (Logger + UI are observers of game events).
-- State – Game state and turn management (TurnManager).
+- State – Game state (GameState).
 - Dependency Injection – All dependencies are injected via constructors, making unit testing easier.
 
 ## Testing
