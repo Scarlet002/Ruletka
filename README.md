@@ -11,7 +11,7 @@ This project was developed to demonstrate modern C++17 techniques, software desi
 - Turn-based gameplay – Player and Computer take turns performing actions.
 - Dynamic Magazine – Randomly generated at the start of each round (2 to 8 bullets, live/blanks).
 - Health System – Each player starts with 5 HP.
-- Item System – 6 unique items: Saw, Beer, Magnifying Glass, Phone, Handcuffs, Inverter.
+- Item System – 6 unique items: Saw, Beer, Magnifier, Cellphone, Handcuffs, Inverter.
 - AI Opponent – 3 difficulty levels (Easy, Normal, Hard).
 - Dual Interface – Console UI and SFML graphical UI.
 - Serialization – Save and load game states in JSON or TXT format.
@@ -43,7 +43,7 @@ Download the latest executable (.exe) from the Releases tab and run it.
    - Add the include paths to the project settings.
    - Add the lib paths to the linker settings.
 5. Copy the SFML .dll files into the same folder as the generated .exe.
-6. Build and run the project (Ctrl + F5).
+6. Build and run the project.
 
 Note: On launch, the application will prompt you for:
 - Player name
@@ -61,14 +61,14 @@ Supported formats: .json and .txt.
 ## Screenshots
 
 Example format:
-![Console Interface](screenshots/Console.png)
-![SFML Interface](screenshots/SFML.png)
+![Console Interface](screenshots/Console.PNG)
+![SFML Interface](screenshots/SFML.PNG)
 
 ## Architecture & Design Patterns
 
 The project is built using a modular, object-oriented architecture, leveraging multiple design patterns:
 
-- Strategy – AI behavior (EasyAI, NormalAI, HardAI) and serialization formats (JSONStrategy, TXTStrategy).
+- Strategy – AI behavior (AIManager) and serialization formats (SerializationManager).
 - Command – All game actions (Heal, Shoot, UseItem, SaveGame, LoadGame, AutoSave, Restart, Exit).
 - Observer – Logging system (Logger + UI are observers of game events).
 - State – Game state and turn management (TurnManager).
@@ -82,9 +82,8 @@ To run the tests, simply open the solution in Visual Studio and select Test > Ru
 ## Future Plans
 
 - Add a local multiplayer mode.
-- Improve the AI logic on the Hard difficulty.
+- Improve the SFML and Console UI.
 - Migrate the build system to CMake for cross-platform support.
-- Add more items and event cards for increased replayability.
 
 ## License
 
