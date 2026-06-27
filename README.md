@@ -60,8 +60,10 @@ Supported formats: .json and .txt.
 
 ## Screenshots
 
-Example format:
+### Console UI
 ![Console Interface](screenshots/Console.PNG)
+
+### SFML UI
 ![SFML Interface](screenshots/SFML.PNG)
 
 ## Architecture & Design Patterns
