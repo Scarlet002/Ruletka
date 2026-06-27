@@ -3,8 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![C++](https://img.shields.io/badge/C++-17-blue)
 
-A turn-based game inspired by Buckshot Roulette, featuring a dynamic item system and AI opponents. 
-This project was developed to demonstrate modern C++17 techniques, software design patterns, and multi-threading.
+A turn-based game inspired by Buckshot Roulette, featuring a dynamic item system and AI opponents.
 
 ## Features
 
