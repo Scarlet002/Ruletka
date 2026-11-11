@@ -1,0 +1,11 @@
+{
+  "name": "ruletka",
+  "version": "2.0.0",
+  "dependencies": [
+    "sfml",
+    "nlohmann-json",
+    "gtest",
+    "boost-static-string"
+  ],
+  "builtin-baseline": "bc0581e1d9b075b09553b5770817c90d9f1b63fc"
+}

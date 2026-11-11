@@ -1,7 +1,20 @@
 # Ruletka
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![C++](https://img.shields.io/badge/C++-17-blue)
+[![CI](https://github.com/Scarlet002/Ruletka/actions/workflows/ci.yml/badge.svg)](https://github.com/Scarlet002/Ruletka/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Scarlet002/Ruletka/branch/main/graph/badge.svg)](https://codecov.io/gh/Scarlet002/Ruletka)
+[![clang-tidy](https://img.shields.io/badge/clang--tidy-enabled-brightgreen.svg)](.clang-tidy)
+[![ASan](https://img.shields.io/badge/ASan-enabled-brightgreen.svg)](.github/workflows/ci.yml)
+[![UBSan](https://img.shields.io/badge/UBSan-enabled-brightgreen.svg)](.github/workflows/ci.yml)
+[![libFuzzer](https://img.shields.io/badge/fuzzing-libFuzzer-orange.svg)](fuzz/)
+
+[![C++23](https://img.shields.io/badge/C%2B%2B-23-blue.svg)](https://en.cppreference.com/w/cpp/23)
+[![CMake](https://img.shields.io/badge/CMake-3.20%2B-blue.svg)](https://cmake.org)
+[![clang-cl](https://img.shields.io/badge/clang--cl-18%2B-blue.svg)](https://clang.llvm.org/)
+[![vcpkg](https://img.shields.io/badge/vcpkg-manifest-blue.svg)](https://vcpkg.io)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![platform](https://img.shields.io/badge/platform-Windows-blue.svg)]()
+[![arch](https://img.shields.io/badge/arch-x64-lightgrey.svg)]()
 
 A turn-based game inspired by Buckshot Roulette, featuring a dynamic item system and AI opponents.
 
@@ -11,81 +24,44 @@ A turn-based game inspired by Buckshot Roulette, featuring a dynamic item system
 - Dynamic Magazine – Randomly generated at the start of each round (2 to 8 bullets, live/blanks).
 - Health System – Each player starts with 5 HP.
 - Item System – 6 unique items: Saw, Beer, Magnifier, Cellphone, Handcuffs, Inverter.
-- AI Opponent – 3 difficulty levels (Easy, Normal, Hard).
+- AI Opponent – 3 difficulty levels (Easy, Normal, Hard) with separate strategies.
 - Dual Interface – Console UI and SFML graphical UI.
 - Serialization – Save and load game states in JSON or TXT format.
-- Autosave – Asynchronous saves every turn using a separate thread (std::async).
-- Data Validation – Full integrity checks during save/load operations.
+- Autosave – Asynchronous saves every turn using `std::jthread`.
+- Data Validation – Full integrity checks on snapshots during save/load operations.
 
 ## Tech Stack
 
-- Language: C++17
-- Libraries: SFML, nlohmann/json (header-only)
-- Concurrency: std::async, std::atomic, std::mutex
-- File System: std::filesystem
-- Memory Management: RAII, Smart Pointers
+- Language: **C++23**
+- Build system: **CMake ≥ 3.20 + Ninja + vcpkg** (manifest mode)
+- Compiler: **clang-cl** (LLVM 18+) with MSVC ABI
+- Libraries: **SFML 3**, **nlohmann/json**, **Boost.StaticString**
+- Testing: **Google Test** + CTest
+- Static analysis: **clang-tidy** + **clangd**
+- Concurrency: `std::jthread`, `std::atomic`, `std::mutex`
+- File system: `std::filesystem`
+- Memory management: RAII, smart pointers
 
 ## Getting Started
 
 ### Quick Start
-Download the latest executable (.exe) from the Releases tab and run it.
 
-### Build from Source (Visual Studio)
+Download the latest executable (`.exe`) from the Releases tab and run it.
 
-1. Clone the repository:
-   git clone https://github.com/Scarlet002/Ruletka.git
-2. Open the .sln file in Visual Studio.
-3. Download and configure dependencies:
-   - SFML: Download from sfml-dev.org
-   - nlohmann/json: Download the single_include header from GitHub
-4. Configure the project properties:
-   - Add the include paths to the project settings.
-   - Add the lib paths to the linker settings.
-5. Copy the SFML .dll files into the same folder as the generated .exe.
-6. Build and run the project.
+### Build from Source
 
-Note: On launch, the application will prompt you for:
-- Player name
-- Interface type (1 for Console, 2 for SFML)
-- Serialization format (JSON/TXT)
-- AI difficulty (Normal, Easy, Hard)
+**Prerequisites:**
 
-## Save System
+- Visual Studio 2022 (MSVC toolchain)
+- LLVM/Clang (clang-cl, clang-tidy)
+- CMake ≥ 3.20
+- Ninja
+- vcpkg (clone to `C:/Program Files/Microsoft Visual Studio/2022/Community/VC/vcpkg` or set `VCPKG_ROOT`)
 
-- data/saves/ – Manual saves
-- data/saves/autosaves/ – Autosaves
+**Build:**
 
-Supported formats: .json and .txt.
-
-## Screenshots
-
-### Console UI
-![Console Interface](screenshots/Console.PNG)
-
-### SFML UI
-![SFML Interface](screenshots/SFML.PNG)
-
-## Architecture & Design Patterns
-
-The project is built using a modular, object-oriented architecture, leveraging multiple design patterns:
-
-- Strategy – AI behavior (AIManager) and serialization formats (SerializationManager).
-- Command – All game actions (Heal, Shoot, UseItem, SaveGame, LoadGame, AutoSave, Restart, Exit).
-- Observer – Logging system (Logger + UI are observers of game events).
-- State – Game state (GameState).
-- Dependency Injection – All dependencies are injected via constructors, making unit testing easier.
-
-## Testing
-
-Unit tests are located in the RuletkaTESTS folder and are built using the Google Test framework. 
-To run the tests, simply open the solution in Visual Studio and select Test > Run All Tests (or use vstest.console.exe).
-
-## Future Plans
-
-- Add a local multiplayer mode.
-- Improve the SFML and Console UI.
-- Migrate the build system to CMake for cross-platform support.
-
-## License
-
-This project is licensed under the MIT License – see the LICENSE file for details.
+```bash
+git clone https://github.com/Scarlet002/Ruletka.git
+cd Ruletka
+cmake --preset x64-debug-ninja
+cmake --build build/x64-debug-ninja --parallel

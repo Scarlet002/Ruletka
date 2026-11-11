@@ -1,0 +1,21 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+Standard: Latest
+
+AccessModifierOffset: -4
+
+BreakAfterAttributes: Always
+
+SeparateDefinitionBlocks: Always
+
+BreakBeforeConceptDeclarations: Always
+
+RequiresClausePosition: OwnLine
+
+IndentRequiresClause: true
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+ReflowComments: false

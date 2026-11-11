@@ -1,0 +1,123 @@
+---
+Checks: >
+  -*,
+  clang-diagnostic-*,
+  bugprone-*,
+  performance-*,
+  modernize-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-const-or-ref-data-members,
+  -cppcoreguidelines-pro-bounds-*,
+  readability-*,
+  clang-analyzer-*,
+  concurrency-*,
+  portability-*,
+  -portability-avoid-pragma-once,
+  cert-*,
+  misc-*
+
+WarningsAsErrors: >
+  bugprone-*,
+  clang-analyzer-*,
+  concurrency-*,
+  performance-*,
+  modernize-use-override,
+  modernize-use-nullptr,
+  modernize-use-emplace,
+  modernize-use-noexcept,
+  modernize-use-transparent-functors,
+  modernize-make-unique,
+  modernize-make-shared,
+  modernize-use-equals-default,
+  modernize-use-equals-delete
+
+HeaderFilterRegex: '.*\.(h|hpp|hxx|cpp|cxx|cc|inl|ipp|tpp)$'
+FormatStyle: file
+
+CheckOptions:
+  - key: readability-identifier-naming.NamespaceCase
+    value: CamelCase
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.MethodCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.PublicMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PublicMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.LocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.LocalConstantCase
+    value: camelBack
+  - key: readability-identifier-naming.StaticLocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.GlobalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.UnionMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ConceptCase
+    value: CamelCase
+  - key: readability-identifier-naming.IgnoreMainLikeFunctions
+    value: 'true'
+  - key: readability-function-size.LineThreshold
+    value: '150'
+  - key: readability-function-size.StatementThreshold
+    value: '100'
+  - key: readability-function-size.BranchThreshold
+    value: '30'
+  - key: readability-function-size.ParameterThreshold
+    value: '8'
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '10'
+  - key: modernize-use-override.AllowOverrideAndFinal
+    value: 'false'
+  - key: performance-move-const-arg.CheckTriviallyCopyableMove
+    value: 'true'
+  - key: performance-unnecessary-value-param.AllowedTypes
+    value: 'shared_ptr;unique_ptr;function'
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: 'true'
+  - key: cppcoreguidelines-explicit-virtual-functions.IgnoreDestructors
+    value: 'true'
+  - key: bugprone-unused-raii.IgnoredClasses
+    value: 'std::lock_guard;std::scoped_lock;std::unique_lock;std::shared_lock'
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  - key: misc-include-cleaner.IgnoreHeaders
+    value: '^(<.*>|pch\.h)$'
+  - key: misc-include-cleaner.DeduplicateFindings
+    value: 'true'

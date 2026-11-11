@@ -1,0 +1,68 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-debug-ninja/src/RuletkaAPP.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/x64-debug-ninja/src",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: build"
+        },
+        {
+            "name": "Release",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-release/src/RuletkaAPP.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/x64-release/src",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: build release"
+        },
+        {
+            "name": "Run",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-debug-ninja/src/RuletkaAPP.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/x64-debug-ninja/src",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug (args)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-debug-ninja/src/RuletkaAPP.exe",
+            "args": ["--debug", "--log-level=verbose"],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/build/x64-debug-ninja/src",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: build"
+        },
+        {
+            "name": "Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-debug-ninja/tests/RuletkaTESTS.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/build/x64-debug-ninja/tests",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: build"
+        },
+        {
+            "name": "Tests (filter)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/x64-debug-ninja/tests/RuletkaTESTS.exe",
+            "args": ["--gtest_filter=PlayerTest.*"],
+            "cwd": "${workspaceFolder}/build/x64-debug-ninja/tests",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: build"
+        }
+    ]
+}

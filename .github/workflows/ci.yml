@@ -1,0 +1,212 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  VCPKG_FORCE_SYSTEM_BINARIES: 1
+
+jobs:
+  build-and-test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install LLVM and Ninja
+        run: choco install llvm ninja -y --no-progress
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: cmake --preset x64-debug-ninja -DCMAKE_MAKE_PROGRAM=ninja
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+      - name: Build
+        run: cmake --build build/x64-debug-ninja --parallel
+      - name: Test
+        run: ctest --test-dir build/x64-debug-ninja --output-on-failure
+
+  clang-tidy:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_STANDARD=23 \
+            -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+            -DBUILD_TESTS=OFF \
+            -DCMAKE_CXX_FLAGS="--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/14" \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Run clang-tidy
+        run: |
+          run-clang-tidy-18 -p build -quiet \
+            -header-filter='.*RuletkaCPP.*' \
+            -warnings-as-errors='bugprone-use-after-move;bugprone-unchecked-optional-access;concurrency-*' \
+            src/ 2>&1 | tee tidy.log
+          ! grep -q "error:" tidy.log
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [asan, ubsan]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: |
+          FLAGS="--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/14"
+          if [ "${{ matrix.sanitizer }}" = "asan" ]; then FLAGS="$FLAGS -fsanitize=address -fno-omit-frame-pointer"; fi
+          if [ "${{ matrix.sanitizer }}" = "ubsan" ]; then FLAGS="$FLAGS -fsanitize=undefined -fno-sanitize-recover=all"; fi
+          cmake -B build-${{ matrix.sanitizer }} -G Ninja \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_STANDARD=23 \
+            -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+            -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+            -DCMAKE_CXX_FLAGS="$FLAGS" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=${{ matrix.sanitizer == 'asan' && 'address' || 'undefined' }}" \
+            -DBUILD_TESTS=ON \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Build
+        run: cmake --build build-${{ matrix.sanitizer }} --parallel
+      - name: Test
+        run: ctest --test-dir build-${{ matrix.sanitizer }} --output-on-failure
+
+  tsan:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: |
+          cmake -B build-tsan -G Ninja \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_STANDARD=23 \
+            -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+            -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+            -DCMAKE_CXX_FLAGS="--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/14 -fsanitize=thread -fno-omit-frame-pointer -O1" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread" \
+            -DBUILD_TESTS=ON \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Build
+        run: cmake --build build-tsan --parallel
+      - name: Test
+        run: ctest --test-dir build-tsan -R "AutoSave|Serialization" --output-on-failure
+
+  coverage:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 gcovr libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: |
+          cmake -B build-cov -G Ninja \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
+            -DCMAKE_CXX_STANDARD=23 \
+            -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+            -DCMAKE_CXX_FLAGS="--coverage -O0 -g" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage" \
+            -DBUILD_TESTS=ON \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Build
+        run: cmake --build build-cov --parallel
+      - name: Test
+        run: ctest --test-dir build-cov --output-on-failure
+      - name: Generate coverage report
+        run: |
+          gcovr -r . build-cov \
+            --gcov-executable gcov-14 \
+            --exclude 'tests/.*' \
+            --exclude '.*/vcpkg_installed/.*' \
+            --xml coverage.xml \
+            --html-details coverage.html
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+
+  fuzzing:
+    runs-on: ubuntu-24.04
+    if: false
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: '**/vcpkg.json'
+      - name: Configure
+        run: |
+          cmake -B build-fuzz -G Ninja \
+            -DCMAKE_CXX_COMPILER=clang++-18 \
+            -DCMAKE_CXX_STANDARD=23 \
+            -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+            -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
+            -DBUILD_FUZZERS=ON \
+            -DBUILD_TESTS=OFF \
+            -DCMAKE_CXX_FLAGS="-fsanitize=fuzzer-no-link,address -fno-omit-frame-pointer" \
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Build
+        run: cmake --build build-fuzz --parallel
+      - name: Fuzz JSON
+        run: ./build-fuzz/fuzz/fuzz_json_deserializer -max_total_time=60 -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/json
+      - name: Fuzz TXT
+        run: ./build-fuzz/fuzz/fuzz_txt_deserializer -max_total_time=60 -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/txt
+      - name: Upload crashes
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-crashes
+          path: |
+            crash-*
+            leak-*
+            timeout-*

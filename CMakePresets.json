@@ -1,0 +1,103 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 20, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "x64-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl",
+                "CMAKE_CXX_STANDARD": "23",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_CXX_EXTENSIONS": "OFF",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_DISABLE_METRICS": "ON"
+            }
+        },
+        {
+            "name": "x64-debug",
+            "inherits": "x64-base",
+            "displayName": "x64 Debug",
+            "binaryDir": "${sourceDir}/build/x64-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": "ON",
+                "ENABLE_CLANG_TIDY": "OFF"
+            }
+        },
+        {
+            "name": "x64-debug-ninja",
+            "inherits": "x64-debug",
+            "displayName": "x64 Debug (Ninja) — VS Code/clangd",
+            "binaryDir": "${sourceDir}/build/x64-debug-ninja"
+        },
+        {
+            "name": "x64-release",
+            "inherits": "x64-base",
+            "displayName": "x64 Release",
+            "binaryDir": "${sourceDir}/build/x64-release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTS": "OFF",
+                "ENABLE_CLANG_TIDY": "OFF"
+            }
+        },
+        {
+            "name": "linux-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_STANDARD": "23",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_CXX_EXTENSIONS": "OFF",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-linux",
+                "VCPKG_DISABLE_METRICS": "ON"
+            }
+        },
+        {
+            "name": "linux-debug",
+            "inherits": "linux-base",
+            "displayName": "Linux Debug",
+            "binaryDir": "${sourceDir}/build/linux-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TESTS": "ON",
+                "ENABLE_CLANG_TIDY": "OFF"
+            }
+        },
+        {
+            "name": "linux-release",
+            "inherits": "linux-base",
+            "displayName": "Linux Release",
+            "binaryDir": "${sourceDir}/build/linux-release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "BUILD_TESTS": "OFF",
+                "ENABLE_CLANG_TIDY": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        { "name": "x64-debug",       "configurePreset": "x64-debug",       "configuration": "Debug" },
+        { "name": "x64-debug-ninja", "configurePreset": "x64-debug-ninja", "configuration": "Debug" },
+        { "name": "x64-release",     "configurePreset": "x64-release",     "configuration": "Release" },
+        { "name": "linux-debug",     "configurePreset": "linux-debug" },
+        { "name": "linux-release",   "configurePreset": "linux-release" }
+    ],
+    "testPresets": [
+        { "name": "x64-debug",       "configurePreset": "x64-debug",       "configuration": "Debug", "output": { "outputOnFailure": true } },
+        { "name": "x64-debug-ninja", "configurePreset": "x64-debug-ninja", "configuration": "Debug", "output": { "outputOnFailure": true } },
+        { "name": "x64-release",     "configurePreset": "x64-release",     "configuration": "Release", "output": { "outputOnFailure": true } },
+        { "name": "linux-debug",     "configurePreset": "linux-debug",     "output": { "outputOnFailure": true } },
+        { "name": "linux-release",   "configurePreset": "linux-release",   "output": { "outputOnFailure": true } }
+    ]
+}

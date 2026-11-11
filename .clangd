@@ -1,0 +1,131 @@
+CompileFlags:
+  CompilationDatabase: build/x64-debug-ninja
+  Add:
+    - -std=c++23
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -Wconversion
+    - -Wsign-conversion
+    - -Wshadow
+    - -Wshadow-all
+    - -Wold-style-cast
+    - -Wnon-virtual-dtor
+    - -Woverloaded-virtual
+    - -Wnull-dereference
+    - -Wdouble-promotion
+    - -Wformat=2
+    - -Wcast-align
+    - -Wcast-qual
+    - -Wredundant-decls
+    - -Wundef
+    - -Wswitch-enum
+    - -Wmissing-field-initializers
+    - -Wtype-limits
+    - -Wunused-result
+    - -Wno-c++98-compat
+    - -Wno-c++98-compat-pedantic
+    - -Wno-pre-c++14-compat
+    - -Wno-pre-c++14-compat-pedantic
+    - -Wno-pre-c++17-compat
+    - -Wno-pre-c++17-compat-pedantic
+    - -Wno-pre-c++20-compat
+    - -Wno-pre-c++20-compat-pedantic
+    - -Wno-pre-c++23-compat
+    - -Wno-pre-c++23-compat-pedantic
+  Remove:
+    - -W.*
+    - -W4
+    - -W3
+    - -W2
+    - -W1
+    - -W0
+    - -Wpadded
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - clang-diagnostic-*
+      - bugprone-*
+      - performance-*
+      - modernize-*
+      - cppcoreguidelines-*
+      - readability-*
+      - clang-analyzer-*
+      - concurrency-*
+      - portability-*
+      - cert-*
+      - misc-*
+    Remove:
+      - cppcoreguidelines-avoid-const-or-ref-data-members
+      - cppcoreguidelines-pro-bounds-array-to-pointer-decay
+      - cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
+      - cppcoreguidelines-pro-bounds-constant-array-index
+      - cppcoreguidelines-pro-bounds-pointer-arithmetic
+      - portability-avoid-pragma-once
+    CheckOptions:
+      readability-identifier-naming.NamespaceCase: CamelCase
+      readability-identifier-naming.ClassCase: CamelCase
+      readability-identifier-naming.StructCase: CamelCase
+      readability-identifier-naming.EnumCase: CamelCase
+      readability-identifier-naming.EnumConstantCase: UPPER_CASE
+      readability-identifier-naming.FunctionCase: CamelCase
+      readability-identifier-naming.MethodCase: CamelCase
+      readability-identifier-naming.VariableCase: camelBack
+      readability-identifier-naming.ParameterCase: camelBack
+      readability-identifier-naming.PrivateMemberCase: camelBack
+      readability-identifier-naming.PrivateMemberPrefix: m_
+      readability-identifier-naming.ProtectedMemberCase: camelBack
+      readability-identifier-naming.ProtectedMemberPrefix: m_
+      readability-identifier-naming.PublicMemberCase: camelBack
+      readability-identifier-naming.PublicMemberPrefix: m_
+      readability-identifier-naming.LocalVariableCase: camelBack
+      readability-identifier-naming.LocalConstantCase: camelBack
+      readability-identifier-naming.StaticLocalVariableCase: camelBack
+      readability-identifier-naming.GlobalVariableCase: camelBack
+      readability-identifier-naming.GlobalConstantCase: UPPER_CASE
+      readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
+      readability-identifier-naming.TypeAliasCase: CamelCase
+      readability-identifier-naming.TypedefCase: CamelCase
+      readability-identifier-naming.UnionCase: CamelCase
+      readability-identifier-naming.UnionMemberCase: camelBack
+      readability-identifier-naming.TemplateParameterCase: CamelCase
+      readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+      readability-identifier-naming.ConceptCase: CamelCase
+      readability-identifier-naming.IgnoreMainLikeFunctions: true
+      readability-function-size.LineThreshold: 150
+      readability-function-size.StatementThreshold: 100
+      readability-function-size.BranchThreshold: 30
+      readability-function-size.ParameterThreshold: 8
+      modernize-use-auto.MinTypeNameLength: 10
+      modernize-use-override.AllowOverrideAndFinal: false
+      performance-move-const-arg.CheckTriviallyCopyableMove: true
+      performance-unnecessary-value-param.AllowedTypes: 'shared_ptr;unique_ptr;function'
+      cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+      cppcoreguidelines-explicit-virtual-functions.IgnoreDestructors: true
+      bugprone-unused-raii.IgnoredClasses: 'std::lock_guard;std::scoped_lock;std::unique_lock;std::shared_lock'
+      modernize-use-nullptr.NullMacros: 'NULL'
+      misc-include-cleaner.IgnoreHeaders: '^(<.*>|pch\.h)$'
+      misc-include-cleaner.DeduplicateFindings: true
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+
+Hover:
+  ShowAKA: Yes
+
+InlayHints:
+  BlockEnd: Yes
+  DefaultArguments: Yes
+  Designators: Yes
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+Completion:
+  AllScopes: Yes
+  ArgumentLists: FullPlaceholders
+  HeaderInsertion: Never
+
+Index:
+  Background: Build
+  StandardLibrary: Yes
