@@ -6,11 +6,24 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      enable_fuzzing:
+        description: 'Run fuzzing job (takes ~2 min per target)'
+        type: boolean
+        default: false
+      fuzz_duration:
+        description: 'Fuzz duration per target (seconds)'
+        type: string
+        default: '60'
 
 env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   CMAKE_BUILD_PARALLEL_LEVEL: 4
   VCPKG_FORCE_SYSTEM_BINARIES: 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test-windows:
@@ -54,16 +67,23 @@ jobs:
             -DCMAKE_CXX_STANDARD_REQUIRED=ON \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON \
-            -DBUILD_TESTS=OFF \
+            -DBUILD_TESTS=ON \
             -DCMAKE_CXX_FLAGS="--gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/14" \
             -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
-      - name: Run clang-tidy
+      - name: Run clang-tidy (src)
         run: |
           run-clang-tidy-18 -p build -quiet \
-            -header-filter='.*RuletkaCPP.*' \
+            -header-filter='.*src.*' \
             -warnings-as-errors='bugprone-use-after-move;bugprone-unchecked-optional-access;concurrency-*' \
-            src/ 2>&1 | tee tidy.log
-          ! grep -q "error:" tidy.log
+            src/ 2>&1 | tee tidy-src.log
+          ! grep -q "error:" tidy-src.log
+      - name: Run clang-tidy (tests)
+        run: |
+          run-clang-tidy-18 -p build -quiet \
+            -header-filter='.*tests.*' \
+            -warnings-as-errors='bugprone-use-after-move;concurrency-*' \
+            tests/ 2>&1 | tee tidy-tests.log
+          ! grep -q "error:" tidy-tests.log
 
   sanitizers:
     runs-on: ubuntu-24.04
@@ -126,7 +146,7 @@ jobs:
       - name: Build
         run: cmake --build build-tsan --parallel
       - name: Test
-        run: ctest --test-dir build-tsan -R "AutoSave|Serialization" --output-on-failure
+        run: ctest --test-dir build-tsan --output-on-failure --timeout 300
 
   coverage:
     runs-on: ubuntu-24.04
@@ -173,7 +193,7 @@ jobs:
 
   fuzzing:
     runs-on: ubuntu-24.04
-    if: false
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.enable_fuzzing == true }}
     steps:
       - uses: actions/checkout@v5
       - name: Install system dependencies
@@ -198,9 +218,9 @@ jobs:
       - name: Build
         run: cmake --build build-fuzz --parallel
       - name: Fuzz JSON
-        run: ./build-fuzz/fuzz/fuzz_json_deserializer -max_total_time=60 -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/json
+        run: ./build-fuzz/fuzz/fuzz_json_deserializer -max_total_time=${{ inputs.fuzz_duration }} -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/json
       - name: Fuzz TXT
-        run: ./build-fuzz/fuzz/fuzz_txt_deserializer -max_total_time=60 -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/txt
+        run: ./build-fuzz/fuzz/fuzz_txt_deserializer -max_total_time=${{ inputs.fuzz_duration }} -rss_limit_mb=2048 -print_final_stats=1 fuzz/corpus/txt
       - name: Upload crashes
         if: failure()
         uses: actions/upload-artifact@v4

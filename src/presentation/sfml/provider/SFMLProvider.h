@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ApplicationState.h"
+#include "Button.hpp"
 #include "GameConfig.h"
 #include "GameEnums.h"
 #include "GameLoopState.h"

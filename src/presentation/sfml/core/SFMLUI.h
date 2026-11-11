@@ -30,7 +30,6 @@ public:
     auto GetInput() -> void override;
     [[nodiscard]]
     auto GetUIType() const noexcept -> GameEnums::UIType override;
-    auto Initialize() -> void override; // <- to nie powinno być public
     auto Render() -> void override;
 
     ~SFMLUI() noexcept override;

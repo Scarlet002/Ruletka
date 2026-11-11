@@ -15,6 +15,5 @@ public:
     auto SetUIType(GameEnums::UIType uiKey) -> void;
     auto AddUIType(GameEnums::UIType uiKey, std::unique_ptr<UI> uiVersion) -> void;
     auto GetInput() -> void;
-    auto Initialize() -> void;
     auto Render() const -> void;
 };

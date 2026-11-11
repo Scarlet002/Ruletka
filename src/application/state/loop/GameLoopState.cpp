@@ -7,7 +7,7 @@
 auto GameLoopState::Reset() noexcept -> void
 {
     m_starter = GameEnums::PlayerType::HUMAN;
-    m_isOnePlayerAlive = GameEnums::YesNo::NO;
+    m_isInRestartMenu = GameEnums::YesNo::NO;
     m_isRunning = GameEnums::YesNo::YES;
     m_currentMenu = GameEnums::Window::MAIN_MENU;
     m_renderFlag = GameEnums::YesNo::YES;
@@ -23,9 +23,9 @@ auto GameLoopState::SetStarter(GameEnums::PlayerType newStarter) noexcept -> voi
     m_starter = newStarter;
 }
 
-auto GameLoopState::SetIsOnePlayerAlive(GameEnums::YesNo newState) noexcept -> void
+auto GameLoopState::SetIsInRestartMenu(GameEnums::YesNo newState) noexcept -> void
 {
-    m_isOnePlayerAlive = newState;
+    m_isInRestartMenu = newState;
 }
 
 auto GameLoopState::SetStateOfGameLoop(GameEnums::YesNo newState) noexcept -> void
@@ -35,7 +35,7 @@ auto GameLoopState::SetStateOfGameLoop(GameEnums::YesNo newState) noexcept -> vo
 
 auto GameLoopState::RandomizeStarter() -> void
 {
-    const auto value = RNG::GetRN<uint8_t>(0U, GameConfig::MAX_PLAYERS);
+    const auto value = RNG::GetRN<uint8_t>(0U, GameConfig::MAX_PLAYERS_RNG);
     m_starter = static_cast<GameEnums::PlayerType>(value);
 }
 
@@ -50,9 +50,9 @@ auto GameLoopState::GetRenderFlag() const noexcept -> GameEnums::YesNo
 }
 
 [[nodiscard]]
-auto GameLoopState::GetIsOnePlayerAlive() const noexcept -> GameEnums::YesNo
+auto GameLoopState::GetIsInRestartMenu() const noexcept -> GameEnums::YesNo
 {
-    return m_isOnePlayerAlive;
+    return m_isInRestartMenu;
 }
 
 [[nodiscard]]

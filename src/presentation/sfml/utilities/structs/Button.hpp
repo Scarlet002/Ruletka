@@ -1,3 +1,5 @@
+#pragma once
+
 #include "SFMLLayout.hpp"
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -14,9 +16,9 @@ struct Button final
     sf::Text m_label;          // NOLINT(misc-non-private-member-variables-in-classes):
     uint8_t m_actionId = 0U;   // NOLINT(misc-non-private-member-variables-in-classes):
 
-    explicit Button(const sf::Font& font) : m_label(font, "", SFMLLayout::BUTTON_DEFAULT_FONT_SIZE)
-    {
-    }
+    //explicit Button(const sf::Font& font) : m_label(font, "", SFMLLayout::BUTTON_DEFAULT_FONT_SIZE)
+    //{
+    //}
 
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     Button(const sf::Font& font, std::string_view text, uint8_t actionId, sf::Vector2f position, sf::Vector2f size)

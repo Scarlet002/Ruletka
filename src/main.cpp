@@ -62,10 +62,9 @@ namespace
 inline auto RunMainLoop(GameLoopState& loopState, IProcessor& processor, GameLoopManager& loopManager,
                         UIManager& uiManager) -> void
 {
+    auto next = std::chrono::steady_clock::now();
     while (loopState.GetStateOfGameLoop() == GameEnums::YesNo::YES)
     {
-        // const auto start = std::chrono::high_resolution_clock::now();
-        auto next = std::chrono::steady_clock::now();
         if (loopState.GetStarter() == GameEnums::PlayerType::HUMAN)
         {
             uiManager.Render();
@@ -79,10 +78,6 @@ inline auto RunMainLoop(GameLoopState& loopState, IProcessor& processor, GameLoo
         loopManager.ProcessTurnEnd();
         next += std::chrono::milliseconds(GameConfig::SLEEP_FOR_MILLISECONDS);
         std::this_thread::sleep_until(next);
-
-        /*const auto end = std::chrono::high_resolution_clock::now();
-        const auto duration_us = duration_cast<std::chrono::microseconds>(end -
-        start).count(); std::println("Loop time: {} us", duration_us);*/
     }
 }
 

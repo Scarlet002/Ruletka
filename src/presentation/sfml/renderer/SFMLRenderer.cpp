@@ -29,7 +29,7 @@
 #include <string_view>
 #include <utility>
 
-SFMLRenderer::SFMLRenderer(const ApplicationState& app, const DomainState& domain, Logger& logger,
+SFMLRenderer::SFMLRenderer(const ApplicationState& app, const DomainState& domain, const Logger& logger,
                            SFMLInitializer& initializer, sf::RenderWindow& window) noexcept
     : m_app(app), m_domain(domain), m_logger(logger), m_initializer(initializer), m_window(window)
 {
@@ -533,7 +533,7 @@ auto SFMLRenderer::Render() -> void
     {
         DrawFilenameInput();
     }
-    else if (gameLoop.GetIsOnePlayerAlive() == GameEnums::YesNo::YES)
+    else if (gameLoop.GetIsInRestartMenu() == GameEnums::YesNo::YES)
     {
         DrawGameOverScreen();
     }

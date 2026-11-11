@@ -34,7 +34,7 @@ private:
     static auto DeserializeChoice(const nlohmann::json& data, std::string_view key) -> std::optional<T>
     {
         const auto iterator = data.find(key);
-        if (iterator == data.end() && iterator->is_number_integer())
+        if (iterator == data.end() || !iterator->is_number_integer())
         {
             return std::nullopt;
         }

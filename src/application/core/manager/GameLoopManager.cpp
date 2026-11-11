@@ -32,7 +32,7 @@ auto GameLoopManager::SetRestartMenu() -> void
     initializer.SetStarter(PlayerType::HUMAN);
     decisionState.SetYesNoChoice(std::nullopt);
     initializer.SetCurrentMenu(Window::RESTART_MENU);
-    initializer.SetIsOnePlayerAlive(YesNo::YES);
+    initializer.SetIsInRestartMenu(YesNo::YES);
 }
 
 auto GameLoopManager::HandlePlayerDeath() -> void
@@ -42,7 +42,7 @@ auto GameLoopManager::HandlePlayerDeath() -> void
     const auto& computer = m_domainState.GetComputer();
     const auto& gameLoopInitializer = m_appState.GetGameLoopState();
     if (gameLoopInitializer.GetStateOfGameLoop() == YesNo::YES &&
-        gameLoopInitializer.GetIsOnePlayerAlive() == YesNo::NO &&
+        gameLoopInitializer.GetIsInRestartMenu() == YesNo::NO &&
         (human.IsAlive() == YesNo::NO || computer.IsAlive() == YesNo::NO))
     {
         SetRestartMenu();

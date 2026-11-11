@@ -1,11 +1,10 @@
 #pragma once
 
 #include "GameEnums.h"
-#include "Initializer.h"
 #include "Provider.h"
 #include "Renderer.h"
 
-class UI : public Initializer, public Renderer, public Provider
+class UI : public Renderer, public Provider
 {
 protected:
     UI() noexcept = default;

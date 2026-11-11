@@ -37,15 +37,6 @@ auto UIManager::GetInput() -> void
     m_currentUI->GetInput();
 }
 
-auto UIManager::Initialize() -> void
-{
-    if (m_currentUI == nullptr)
-    {
-        throw std::runtime_error("Ui is nullptr!");
-    }
-    m_currentUI->Initialize();
-}
-
 auto UIManager::Render() const -> void
 {
     if (m_currentUI == nullptr)

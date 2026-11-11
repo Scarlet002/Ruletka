@@ -60,7 +60,10 @@ inline constexpr uint8_t MAX_LOGS = 12U;
 inline constexpr uint8_t MIN_LOGS = 0U;
 
 // Number of players
-inline constexpr uint8_t MAX_PLAYERS = 1U; // <- ma być 2U
+inline constexpr uint8_t MAX_PLAYERS = 2U;
+
+// Number of players for RNG
+inline constexpr uint8_t MAX_PLAYERS_RNG = 1U;
 
 // First item type index for RNG
 inline constexpr uint8_t MIN_ITEM_TYPE_RNG = std::to_underlying(GameEnums::ItemType::HANDCUFFS);
@@ -179,4 +182,7 @@ inline constexpr auto GAMEOVER_BUTTONS = std::to_array<std::pair<std::string_vie
 });
 
 inline constexpr std::string_view DEFAULT_FILENAME = "SAVE";
+
+// Game version
+inline constexpr std::string_view GAME_VERSION = "1.0.0";
 }; // namespace GameConfig

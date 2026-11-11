@@ -25,11 +25,6 @@ auto ConsoleUI::GetUIType() const noexcept -> GameEnums::UIType
     return GameEnums::UIType::CONSOLE;
 }
 
-auto ConsoleUI::Initialize() -> void // <- to nie powinno byc public
-{
-    m_initializer->Initialize();
-}
-
 auto ConsoleUI::Render() -> void
 {
     m_renderer->Render();

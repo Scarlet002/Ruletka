@@ -65,6 +65,11 @@ auto SerializationValidator::ValidateMagazine(const Magazine& state) -> void
         }
     }
 
+    if (magazine.m_head > GameConfig::MAX_BULLETS)
+    {
+        throw std::runtime_error("Invalid magazine head in file!");
+    }
+
     const auto hitProbability = state.GetHitProbability();
     if (!std::isfinite(hitProbability) ||
         (hitProbability < GameConfig::MIN_PROBABILITY || hitProbability > GameConfig::MAX_PROBABILITY))

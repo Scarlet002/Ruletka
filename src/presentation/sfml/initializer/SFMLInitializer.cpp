@@ -15,7 +15,7 @@
 
 SFMLInitializer::SFMLInitializer(sf::RenderWindow& window) : m_window(window)
 {
-    if (!m_font.openFromFile("assets/fonts") && !m_font.openFromFile("assets/fonts/Jersey20-Regular.ttf"))
+    if (!m_font.openFromFile("assets/fonts/Jersey20-Regular.ttf"))
     {
         throw std::runtime_error("Font not found!");
     }

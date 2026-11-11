@@ -84,7 +84,7 @@ inline constexpr auto BUTTON_MAX_FONT_SIZE = 40U;
 inline constexpr auto BUTTON_MAX_LABEL_LENGTH = 16UZ;
 
 // Menu button bar
-inline constexpr auto MENU_BUTTON_Y = 730.0F;
+inline constexpr auto MENU_BUTTON_Y = 720.0F;
 inline constexpr auto MENU_BUTTON_WIDTH = 130.0F;
 inline constexpr auto MENU_BUTTON_HEIGHT = 40.0F;
 inline constexpr auto MENU_BUTTON_SPACING = 8.0F;

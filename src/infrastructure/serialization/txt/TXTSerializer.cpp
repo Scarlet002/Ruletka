@@ -15,11 +15,13 @@
 #include "SerializationState.h"
 #include <boost/static_string/static_string.hpp>
 #include <exception>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
 #include <string_view>
+#include <system_error>
 #include <utility>
 
 TXTSerializer::TXTSerializer()
@@ -49,17 +51,19 @@ auto TXTSerializer::SerializePlayer(std::ofstream& file, const Player& state) ->
 
 auto TXTSerializer::SerializeMagazine(std::ofstream& file, const Magazine& state) -> void
 {
-    for (const auto& bullet : state.GetMagazine().m_magazine)
+    const auto magazine = state.GetMagazine();
+    for (const auto& bullet : magazine.m_magazine)
     {
         file << static_cast<int>(std::to_underlying(bullet)) << '\n';
     }
+    file << static_cast<int>(magazine.m_head) << '\n';
     file << state.GetHitProbability() << '\n';
 }
 
 auto TXTSerializer::SerializeGameLoopState(std::ofstream& file, const GameLoopState& state) -> void
 {
     file << static_cast<int>(std::to_underlying(state.GetStarter())) << '\n';
-    file << static_cast<int>(std::to_underlying(state.GetIsOnePlayerAlive())) << '\n';
+    file << static_cast<int>(std::to_underlying(state.GetIsInRestartMenu())) << '\n';
     file << static_cast<int>(std::to_underlying(state.GetStateOfGameLoop())) << '\n';
     file << static_cast<int>(std::to_underlying(state.GetCurrentMenu())) << '\n';
 }
@@ -106,14 +110,17 @@ auto TXTSerializer::Serialize(const ApplicationState& app, const DomainState& do
             throw std::runtime_error("Save directory creation error!");
         }
 
-        boost::static_string<GameConfig::LOG_LINE_RESERVE> fullPath;
-        std::format_to(std::back_inserter(fullPath), "{}/{}.txt", saveDirectory, filename);
-        std::ofstream gameSave(fullPath.c_str());
+        boost::static_string<GameConfig::LOG_LINE_RESERVE> path;
+        std::format_to(std::back_inserter(path), "{}/{}.txt", saveDirectory, filename);
+        boost::static_string<GameConfig::LOG_LINE_RESERVE> tmpPath;
+        std::format_to(std::back_inserter(tmpPath), "{}/{}.tmp", saveDirectory, filename);
+        std::ofstream gameSave(tmpPath.c_str());
         if (!gameSave.is_open())
         {
             throw std::runtime_error("File saving error!");
         }
 
+        gameSave << GameConfig::GAME_VERSION << '\n';
         SerializePlayer(gameSave, domain.GetHuman());
         SerializePlayer(gameSave, domain.GetComputer());
         SerializeMagazine(gameSave, domain.GetMagazine());
@@ -129,6 +136,12 @@ auto TXTSerializer::Serialize(const ApplicationState& app, const DomainState& do
         }
 
         gameSave.close();
+        std::error_code errorCode;
+        std::filesystem::rename(tmpPath.c_str(), path.c_str(), errorCode);
+        if (errorCode)
+        {
+            throw std::runtime_error("File renaming error: " + errorCode.message());
+        }
     }
     catch (const std::exception& e)
     {

@@ -23,7 +23,7 @@ class SFMLRenderer final : public Renderer
 private:
     const ApplicationState& m_app;
     const DomainState& m_domain;
-    Logger& m_logger;
+    const Logger& m_logger;
     SFMLInitializer& m_initializer;
     sf::RenderWindow& m_window;
     sf::Vector2f m_windowSize{static_cast<float>(GameConfig::WINDOW_WIDTH),
@@ -61,8 +61,8 @@ private:
     auto DrawDecisionPanel(sf::FloatRect rect) -> void;
 
 public:
-    SFMLRenderer(const ApplicationState& app, const DomainState& domain, Logger& logger, SFMLInitializer& initializer,
-                 sf::RenderWindow& window) noexcept;
+    SFMLRenderer(const ApplicationState& app, const DomainState& domain, const Logger& logger,
+                 SFMLInitializer& initializer, sf::RenderWindow& window) noexcept;
 
     auto Render() -> void override;
 };

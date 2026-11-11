@@ -64,10 +64,14 @@ auto JSONDeserializer::DeserializePlayer(const nlohmann::json& data, Player& sta
 
 auto JSONDeserializer::DeserializeMagazine(const nlohmann::json& data, Magazine& state) -> void
 {
-    const auto magazine = BufferMagazine(data["magazine"]);
-    if (data.contains("magazine") && data["magazine"].is_array() && magazine.size() <= GameConfig::MAX_BULLETS)
+    if (!data.contains("magazine") || !data.contains("magazineHead"))
     {
-        state.SetMagazine({.m_magazine = magazine, .m_head = 0U});
+        return;
+    }
+    if (data["magazine"].is_array() && data["magazine"] <= GameConfig::MAX_BULLETS &&
+        data["magazineHead"].is_number_unsigned() && data["magazineHead"] <= GameConfig::MAX_BULLETS)
+    {
+        state.SetMagazine({.m_magazine = BufferMagazine(data["magazine"]), .m_head = data["magazineHead"]});
     }
     state.SetHitProbability(data.value("hitProbability", GameConfig::MIN_PROBABILITY));
 }
@@ -75,7 +79,7 @@ auto JSONDeserializer::DeserializeMagazine(const nlohmann::json& data, Magazine&
 auto JSONDeserializer::DeserializeGameLoopState(const nlohmann::json& data, GameLoopState& state) -> void
 {
     state.SetStarter(data.value("starter", GameEnums::PlayerType::HUMAN));
-    state.SetIsOnePlayerAlive(data.value("isOnePlayerAlive", GameEnums::YesNo::NO));
+    state.SetIsInRestartMenu(data.value("isInRestartMenu", GameEnums::YesNo::NO));
     state.SetStateOfGameLoop(data.value("stateOfGameLoop", GameEnums::YesNo::NO));
     state.SetCurrentMenu(data.value("Menu", GameEnums::Window::MAIN_MENU));
 }
@@ -111,6 +115,12 @@ auto JSONDeserializer::DeserializeItemState(const nlohmann::json& data, ItemStat
 
 auto JSONDeserializer::DeserializeAll(const nlohmann::json& data, ApplicationState& app, DomainState& domain) -> void
 {
+    const auto version = data.value("version", GameConfig::GAME_VERSION);
+    if (version != GameConfig::GAME_VERSION)
+    {
+        throw std::runtime_error("Unsupported save version!");
+    }
+
     DeserializePlayer(data, domain.GetHuman());
     DeserializePlayer(data, domain.GetComputer());
     DeserializeMagazine(data, domain.GetMagazine());

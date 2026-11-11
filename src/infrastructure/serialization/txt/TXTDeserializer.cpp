@@ -70,7 +70,9 @@ auto TXTDeserializer::DeserializeMagazine(std::ifstream& file, Magazine& state) 
         file >> bullet;
         newMagazine[index] = static_cast<GameEnums::MagazineChamber>(bullet);
     }
-    state.SetMagazine({.m_magazine = newMagazine, .m_head = 0U});
+    auto magazineHead = 0U;
+    file >> magazineHead;
+    state.SetMagazine({.m_magazine = newMagazine, .m_head = static_cast<uint8_t>(magazineHead)});
 
     auto hitProbability = GameConfig::MIN_PROBABILITY;
     file >> hitProbability;
@@ -81,12 +83,12 @@ auto TXTDeserializer::DeserializeGameLoopState(std::ifstream& file, GameLoopStat
 {
     using namespace GameEnums;
     auto starter = 0U;
-    auto isOnePlayerAlive = 0U;
+    auto isInRestartMenu = 0U;
     auto stateOfGameLoop = 0U;
     auto currentMenu = 0U;
-    file >> starter >> isOnePlayerAlive >> stateOfGameLoop >> currentMenu;
+    file >> starter >> isInRestartMenu >> stateOfGameLoop >> currentMenu;
     state.SetStarter(static_cast<PlayerType>(starter));
-    state.SetIsOnePlayerAlive(static_cast<YesNo>(isOnePlayerAlive));
+    state.SetIsInRestartMenu(static_cast<YesNo>(isInRestartMenu));
     state.SetStateOfGameLoop(static_cast<YesNo>(stateOfGameLoop));
     state.SetCurrentMenu(static_cast<Window>(currentMenu));
 }
@@ -143,6 +145,13 @@ auto TXTDeserializer::DeserializeAll(std::string_view path, ApplicationState& ap
         throw std::runtime_error("File loading error!");
     }
 
+    std::string version;
+    gameSave >> version;
+    if (version != GameConfig::GAME_VERSION)
+    {
+        throw std::runtime_error("Unsupported save version!");
+    }
+
     DeserializePlayer(gameSave, domain.GetHuman());
     DeserializePlayer(gameSave, domain.GetComputer());
     DeserializeMagazine(gameSave, domain.GetMagazine());
@@ -172,13 +181,13 @@ auto TXTDeserializer::Deserialize(ApplicationState& app, DomainState& domain, st
         m_serializationLog.clear();
         const auto saveDirectory =
             filename.starts_with("autosave") ? SaveConfig::GetAutoSaveDirectory() : SaveConfig::GetSaveDirectory();
-        boost::static_string<GameConfig::LOG_LINE_RESERVE> fullPath;
-        std::format_to(std::back_inserter(fullPath), "{}/{}.txt", saveDirectory, filename);
+        boost::static_string<GameConfig::LOG_LINE_RESERVE> path;
+        std::format_to(std::back_inserter(path), "{}/{}.txt", saveDirectory, filename);
         auto appSnapshot = app;
         auto domainSnapshot = domain;
-        DeserializeAll(fullPath, appSnapshot, domainSnapshot);
+        DeserializeAll(path, appSnapshot, domainSnapshot);
         m_validator.Validate(appSnapshot, domainSnapshot);
-        DeserializeAll(fullPath, app, domain);
+        DeserializeAll(path, app, domain);
     }
     catch (const std::exception& e)
     {

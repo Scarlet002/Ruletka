@@ -27,11 +27,6 @@ auto SFMLUI::GetUIType() const noexcept -> GameEnums::UIType
     return GameEnums::UIType::SFML;
 }
 
-auto SFMLUI::Initialize() -> void
-{
-    m_initializer->Initialize();
-}
-
 auto SFMLUI::Render() -> void
 {
     m_renderer->Render();

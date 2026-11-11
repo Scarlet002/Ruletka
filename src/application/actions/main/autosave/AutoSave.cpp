@@ -19,10 +19,10 @@ AutoSave::AutoSave(ApplicationState& app, DomainState& domain, Logger& logger, A
 
 auto AutoSave::Execute() -> void
 {
+    m_app.GetDecisionState().SetMainChoice(std::nullopt);
     if (!m_async.IsSaving())
     {
         m_async.SaveSnapshotAsync(m_app, m_domain);
-        m_app.GetDecisionState().SetMainChoice(std::nullopt);
         boost::static_string<GameConfig::LOG_LINE_RESERVE> log;
         std::format_to(std::back_inserter(log), "Save completed: autosave{}", m_async.GetSaveCounter());
         m_logger.UpdateLogs(log);

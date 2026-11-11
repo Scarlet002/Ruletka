@@ -15,6 +15,7 @@
 #include "SerializationState.h"
 #include <boost/static_string/static_string.hpp>
 #include <exception>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iterator>
@@ -23,6 +24,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
 
 JSONSerializer::JSONSerializer()
 {
@@ -56,13 +58,14 @@ auto JSONSerializer::SerializePlayer(nlohmann::json& data, const Player& state) 
 auto JSONSerializer::SerializeMagazine(nlohmann::json& data, const Magazine& state) -> void
 {
     data.emplace("magazine", state.GetMagazine().m_magazine);
+    data.emplace("magazineHead", state.GetMagazine().m_head);
     data.emplace("hitProbability", state.GetHitProbability());
 }
 
 auto JSONSerializer::SerializeGameLoopState(nlohmann::json& data, const GameLoopState& state) -> void
 {
     data.emplace("starter", state.GetStarter());
-    data.emplace("isOnePlayerAlive", state.GetIsOnePlayerAlive());
+    data.emplace("isInRestartMenu", state.GetIsInRestartMenu());
     data.emplace("stateOfGameLoop", state.GetStateOfGameLoop());
     data.emplace("Menu", state.GetCurrentMenu());
 }
@@ -102,14 +105,15 @@ auto JSONSerializer::Serialize(const ApplicationState& app, const DomainState& d
     try
     {
         m_serializationLog.clear();
-        const auto saveDir =
+        const auto saveDirectory =
             filename.starts_with("autosave") ? SaveConfig::GetAutoSaveDirectory() : SaveConfig::GetSaveDirectory();
-        if (!SaveConfig::CreateDirectoryIfNotExists(saveDir))
+        if (!SaveConfig::CreateDirectoryIfNotExists(saveDirectory))
         {
             throw std::runtime_error("Save directory creation error!");
         }
 
         nlohmann::json data;
+        data.emplace("version", GameConfig::GAME_VERSION);
         SerializePlayer(data, domain.GetHuman());
         SerializePlayer(data, domain.GetComputer());
         SerializeMagazine(data, domain.GetMagazine());
@@ -120,8 +124,10 @@ auto JSONSerializer::Serialize(const ApplicationState& app, const DomainState& d
         SerializeItemState(data, domain.GetItemState());
 
         boost::static_string<GameConfig::LOG_LINE_RESERVE> path;
-        std::format_to(std::back_inserter(path), "{}/{}.json", saveDir, filename);
-        std::ofstream gameSave(path.c_str());
+        std::format_to(std::back_inserter(path), "{}/{}.json", saveDirectory, filename);
+        boost::static_string<GameConfig::LOG_LINE_RESERVE> tmpPath;
+        std::format_to(std::back_inserter(tmpPath), "{}/{}.tmp", saveDirectory, filename);
+        std::ofstream gameSave(tmpPath.c_str());
         if (!gameSave.is_open())
         {
             throw std::runtime_error("File saving error!");
@@ -129,6 +135,13 @@ auto JSONSerializer::Serialize(const ApplicationState& app, const DomainState& d
 
         gameSave << data.dump(4);
         gameSave.close();
+
+        std::error_code errorCode;
+        std::filesystem::rename(tmpPath.c_str(), path.c_str(), errorCode);
+        if (errorCode)
+        {
+            throw std::runtime_error("File renaming error: " + errorCode.message());
+        }
     }
     catch (const std::exception& e)
     {
