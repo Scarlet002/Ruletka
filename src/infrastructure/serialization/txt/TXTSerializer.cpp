@@ -146,10 +146,13 @@ auto TXTSerializer::Serialize(const ApplicationState& app, const DomainState& do
     catch (const std::exception& e)
     {
         auto message = std::string_view(e.what());
-        if (message.size() > GameConfig::LOG_LINE_RESERVE)
+        if (message.size() < GameConfig::LOG_LINE_RESERVE)
         {
-            message = message.substr(0, GameConfig::LOG_LINE_RESERVE);
+            m_serializationLog = message;
         }
-        m_serializationLog = message;
+        else
+        {
+            m_serializationLog = "Failed to deserialize";
+        }
     }
 }
