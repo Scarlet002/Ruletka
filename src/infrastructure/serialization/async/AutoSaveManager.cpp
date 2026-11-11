@@ -24,10 +24,12 @@ auto AutoSaveManager::SaveSnapshotAsync(const ApplicationState& app, const Domai
         m_saveThread.join();
     }
 
+    const auto appSnapshot = app;       // NOLINT(performance-unnecessary-copy-initialization)
+    const auto domainSnapshot = domain; // NOLINT(performance-unnecessary-copy-initialization)
     m_isSaving.store(true);
     m_saveCounter++;
 
-    m_saveThread = std::jthread([this, &app, &domain](const std::stop_token& stop) -> void {
+    m_saveThread = std::jthread([this, appSnapshot, domainSnapshot](const std::stop_token& stop) -> void {
         try
         {
             if (stop.stop_requested())
@@ -36,8 +38,6 @@ auto AutoSaveManager::SaveSnapshotAsync(const ApplicationState& app, const Domai
                 return;
             }
 
-            const auto appSnapshot = app;       // NOLINT(performance-unnecessary-copy-initialization)
-            const auto domainSnapshot = domain; // NOLINT(performance-unnecessary-copy-initialization)
             boost::static_string<GameConfig::LOG_LINE_RESERVE> filename;
             const auto* end = std::format_to(filename.begin(), "autosave{}", static_cast<int>(GetSaveCounter()));
             filename.resize(static_cast<uint8_t>(end - filename.begin()));

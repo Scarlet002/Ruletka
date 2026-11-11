@@ -9,10 +9,12 @@ UILogger::UILogger() noexcept = default;
 
 auto UILogger::UpdateLogs(std::string_view newLog) -> void
 {
-    assert(newLog.size() <= GameConfig::LOG_LINE_RESERVE && "Log line will be truncated!");
-    assert(m_head < GameConfig::MAX_LOGS && "Invalid head index!");
+    if (newLog.size() > GameConfig::LOG_LINE_RESERVE)
+    {
+        newLog = newLog.substr(0U, GameConfig::LOG_LINE_RESERVE);
+    }
     m_logs[m_head] = newLog;
-    m_head = (m_head + 1) % GameConfig::MAX_LOGS;
+    m_head = (m_head + 1U) % GameConfig::MAX_LOGS;
 }
 
 auto UILogger::GetLogs() const noexcept -> LogsView
@@ -22,9 +24,11 @@ auto UILogger::GetLogs() const noexcept -> LogsView
 
 auto UILogger::SetLogs(LogsView newLogs) noexcept -> void
 {
-    assert(newLogs.m_head < GameConfig::MAX_LOGS && "Invalid head index!");
-    std::ranges::copy(newLogs.m_logs, m_logs.begin());
-    m_head = newLogs.m_head;
+    if (newLogs.m_head <= GameConfig::MAX_LOGS)
+    {
+        std::ranges::copy(newLogs.m_logs, m_logs.begin());
+        m_head = newLogs.m_head;
+    }
 }
 
 auto UILogger::ClearLogs() noexcept -> void

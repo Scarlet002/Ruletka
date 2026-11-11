@@ -23,9 +23,14 @@ class GameLoopState;
 
 class TXTDeserializer final : public Deserializer
 {
+    friend class TXTDeserializerTESTS;
+
 private:
     boost::static_string<GameConfig::LOG_LINE_RESERVE> m_serializationLog;
     const Validator& m_validator;
+
+public:
+    explicit TXTDeserializer(const Validator& validator);
 
     template <typename T>
         requires std::is_enum_v<T>
@@ -49,9 +54,6 @@ private:
     static auto DeserializeDecisionState(std::ifstream& file, DecisionState& state) -> void;
     static auto DeserializeItemState(std::ifstream& file, ItemState& state) -> void;
     static auto DeserializeAll(std::string_view path, ApplicationState& app, DomainState& domain) -> void;
-
-public:
-    explicit TXTDeserializer(const Validator& validator);
 
     [[nodiscard]]
     auto GetDeserializationLog() const -> std::string_view override;

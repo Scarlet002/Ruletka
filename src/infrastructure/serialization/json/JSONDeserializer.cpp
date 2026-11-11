@@ -18,6 +18,7 @@
 #include <boost/static_string/static_string.hpp>
 #include <cstdint>
 #include <exception>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iterator>
@@ -26,6 +27,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace
 {
@@ -41,6 +43,11 @@ auto JSONDeserializer::DeserializePlayer(const nlohmann::json& data, Player& sta
 {
     using namespace GameEnums;
     const auto prefix = std::string(state.GetTypeString());
+    const auto name = data.value(prefix + "_name", state.GetName());
+    if (name.size() > GameConfig::MAX_FILENAME_LENGTH)
+    {
+        throw std::runtime_error("Invalid player name in file!");
+    }
     state.SetName(data.value(prefix + "_name", state.GetName()));
     state.SetType(data.value(prefix + "_type", PlayerType::HUMAN));
 
@@ -68,7 +75,7 @@ auto JSONDeserializer::DeserializeMagazine(const nlohmann::json& data, Magazine&
     {
         return;
     }
-    if (data["magazine"].is_array() && data["magazine"] <= GameConfig::MAX_BULLETS &&
+    if (data["magazine"].is_array() && data["magazine"].size() == GameConfig::MAX_BULLETS &&
         data["magazineHead"].is_number_unsigned() && data["magazineHead"] <= GameConfig::MAX_BULLETS)
     {
         state.SetMagazine({.m_magazine = BufferMagazine(data["magazine"]), .m_head = data["magazineHead"]});
@@ -157,9 +164,16 @@ auto JSONDeserializer::Deserialize(ApplicationState& app, DomainState& domain, s
 
         auto appSnapshot = app;
         auto domainSnapshot = domain;
+        const auto fileSize = std::filesystem::file_size(path.c_str());
+        constexpr auto MAX_JSON_FILE_SIZE_IN_BYTES = 10U * 1000U;
+        if (fileSize > MAX_JSON_FILE_SIZE_IN_BYTES)
+        {
+            throw std::runtime_error("File size is not valid!");
+        }
         DeserializeAll(data, appSnapshot, domainSnapshot);
         m_validator.Validate(appSnapshot, domainSnapshot);
-        DeserializeAll(data, app, domain);
+        app = appSnapshot;
+        domain = std::move(domainSnapshot);
     }
     catch (const std::exception& e)
     {

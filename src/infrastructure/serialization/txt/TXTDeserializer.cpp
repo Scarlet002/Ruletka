@@ -18,12 +18,14 @@
 #include <boost/static_string/static_string.hpp>
 #include <cstdint>
 #include <exception>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace
 {
@@ -40,6 +42,10 @@ auto TXTDeserializer::DeserializePlayer(std::ifstream& file, Player& state) -> v
     std::string name;
     name.reserve(GameConfig::MAX_FILENAME_LENGTH);
     file >> name;
+    if (name.size() > GameConfig::MAX_FILENAME_LENGTH)
+    {
+        throw std::runtime_error("Invalid player name in file!");
+    }
     state.SetName(name);
 
     auto type = 0U;
@@ -185,9 +191,16 @@ auto TXTDeserializer::Deserialize(ApplicationState& app, DomainState& domain, st
         std::format_to(std::back_inserter(path), "{}/{}.txt", saveDirectory, filename);
         auto appSnapshot = app;
         auto domainSnapshot = domain;
+        const auto fileSize = std::filesystem::file_size(path.c_str());
+        constexpr auto MAX_TXT_FILE_SIZE_IN_BYTES = 500U;
+        if (fileSize > MAX_TXT_FILE_SIZE_IN_BYTES)
+        {
+            throw std::runtime_error("File size is not valid!");
+        }
         DeserializeAll(path, appSnapshot, domainSnapshot);
         m_validator.Validate(appSnapshot, domainSnapshot);
-        DeserializeAll(path, app, domain);
+        app = appSnapshot;
+        domain = std::move(domainSnapshot);
     }
     catch (const std::exception& e)
     {

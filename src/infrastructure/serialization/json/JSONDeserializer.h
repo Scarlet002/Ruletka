@@ -24,9 +24,14 @@ class GameLoopState;
 
 class JSONDeserializer final : public Deserializer
 {
+    friend class JSONDeserializerTESTS;
+
 private:
     boost::static_string<GameConfig::LOG_LINE_RESERVE> m_serializationLog;
     const Validator& m_validator;
+
+public:
+    explicit JSONDeserializer(const Validator& validator);
 
     template <typename T>
         requires std::is_enum_v<T>
@@ -55,9 +60,6 @@ private:
     static auto DeserializeDecisionState(const nlohmann::json& data, DecisionState& state) -> void;
     static auto DeserializeItemState(const nlohmann::json& data, ItemState& state) -> void;
     static auto DeserializeAll(const nlohmann::json& data, ApplicationState& app, DomainState& domain) -> void;
-
-public:
-    explicit JSONDeserializer(const Validator& validator);
 
     [[nodiscard]]
     auto GetDeserializationLog() const -> std::string_view override;

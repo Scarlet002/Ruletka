@@ -139,11 +139,16 @@ auto JSONSerializer::Serialize(const ApplicationState& app, const DomainState& d
         std::filesystem::rename(tmpPath.c_str(), path.c_str(), errorCode);
         if (errorCode)
         {
-            throw std::runtime_error("File renaming error: " + errorCode.message());
+            throw std::runtime_error("File renaming error");
         }
     }
     catch (const std::exception& e)
     {
-        m_serializationLog = e.what();
+        auto message = std::string_view(e.what());
+        if (message.size() > GameConfig::LOG_LINE_RESERVE)
+        {
+            message = message.substr(0, GameConfig::LOG_LINE_RESERVE);
+        }
+        m_serializationLog = message;
     }
 }

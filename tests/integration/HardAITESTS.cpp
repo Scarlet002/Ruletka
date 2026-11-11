@@ -7,7 +7,7 @@
 #include "HardAI.h"
 #include "Inventory.h"
 #include "Magazine.h"
-#include "TestsHelper.h"
+#include "TestsHelper.hpp"
 #include <array>
 #include <gtest/gtest.h>
 

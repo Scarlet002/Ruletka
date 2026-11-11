@@ -1,7 +1,7 @@
 #include "DecisionState.h"
 #include "EasyAI.h"
 #include "GameEnums.h"
-#include "TestsHelper.h"
+#include "TestsHelper.hpp"
 #include <gtest/gtest.h>
 
 TEST(EasyAITESTS, GetInputReturnsHealOrShootChoice)
