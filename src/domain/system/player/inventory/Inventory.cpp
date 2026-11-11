@@ -19,11 +19,10 @@ auto Inventory::GetRandomItems() -> void
     using namespace GameConfig;
     if (GetItemsCount() < MAX_ITEMS)
     {
-        for (auto itemsGained = GameConfig::MIN_ITEMS; itemsGained < MAX_ITEMS_GAINED; ++itemsGained)
+        for (auto iteration = 0UZ; iteration < GameConfig::MAX_ITEMS_GAINED; ++iteration)
         {
             const auto value = RNG::GetRN(MIN_ITEM_TYPE_RNG, MAX_ITEM_TYPE_RNG);
             const auto itemType = static_cast<GameEnums::ItemType>(value);
-
             const auto iterator = m_items.find(itemType);
             if (iterator != m_items.end() && iterator->second < MAX_ITEMS)
             {
@@ -57,9 +56,13 @@ auto Inventory::AddItemType(GameEnums::ItemType itemType, uint8_t itemCount) -> 
 
 auto Inventory::SetItemCount(GameEnums::ItemType itemType, uint8_t newItemCount) -> void
 {
-    const auto itemCountChange = newItemCount - GetItemCount(itemType);
-    const auto newTotal = GetItemsCount() + itemCountChange;
-    if (std::cmp_less_equal(newTotal, GameConfig::MAX_ITEMS))
+    if (newItemCount > GameConfig::MAX_ITEMS)
+    {
+        return;
+    }
+
+    const auto newTotal = static_cast<uint8_t>(GetItemsCount() - GetItemCount(itemType) + newItemCount);
+    if (newTotal <= GameConfig::MAX_ITEMS)
     {
         m_items[itemType] = newItemCount;
     }

@@ -94,3 +94,32 @@ TEST(HPTESTS, SetHPDoesNotExceedHPLimit)
     hpSystem.SetHP(GameConfig::MAX_PLAYER_HP + GameConfig::MAX_PLAYER_HP);
     EXPECT_EQ(hpSystem.GetHP(), GameConfig::MAX_PLAYER_HP);
 }
+
+TEST(HPTESTS, DefaultConstructorStartsAtMaxHP)
+{
+    const auto hpSystem = HP();
+    EXPECT_EQ(hpSystem.GetHP(), GameConfig::MAX_PLAYER_HP);
+}
+
+TEST(HPTESTS, SetHPWithExactMaxValueKeepsMax)
+{
+    auto hpSystem = HP();
+    hpSystem.SetHP(GameConfig::MAX_PLAYER_HP);
+    EXPECT_EQ(hpSystem.GetHP(), GameConfig::MAX_PLAYER_HP);
+}
+
+TEST(HPTESTS, LoseHPWithDamageEqualToCurrentHPSetsZero)
+{
+    auto hpSystem = HP();
+    hpSystem.SetHP(3U);
+    hpSystem.LoseHP(3U);
+    EXPECT_EQ(hpSystem.GetHP(), GameConfig::MIN_PLAYER_HP);
+}
+
+TEST(HPTESTS, LoseHPWithZeroDamageDoesNotChangeHP)
+{
+    auto hpSystem = HP();
+    const auto initialHp = hpSystem.GetHP();
+    hpSystem.LoseHP(0U);
+    EXPECT_EQ(hpSystem.GetHP(), initialHp);
+}

@@ -18,20 +18,20 @@ public:
                      SerializationState serializationState) noexcept;
 
     [[nodiscard]]
-    auto GetGameLoopState() noexcept -> GameLoopState&;
+    auto GetGameLoopState() noexcept [[clang::lifetimebound]] -> GameLoopState&;
     [[nodiscard]]
-    auto GetAIState() noexcept -> AIState&;
+    auto GetAIState() noexcept [[clang::lifetimebound]] -> AIState&;
     [[nodiscard]]
-    auto GetDecisionState() noexcept -> DecisionState&;
+    auto GetDecisionState() noexcept [[clang::lifetimebound]] -> DecisionState&;
     [[nodiscard]]
-    auto GetSerializationState() noexcept -> SerializationState&;
+    auto GetSerializationState() noexcept [[clang::lifetimebound]] -> SerializationState&;
 
     [[nodiscard]]
-    auto GetGameLoopState() const noexcept -> const GameLoopState&;
+    auto GetGameLoopState() const noexcept [[clang::lifetimebound]] -> const GameLoopState&;
     [[nodiscard]]
-    auto GetAIState() const noexcept -> const AIState&;
+    auto GetAIState() const noexcept [[clang::lifetimebound]] -> const AIState&;
     [[nodiscard]]
-    auto GetDecisionState() const noexcept -> const DecisionState&;
+    auto GetDecisionState() const noexcept [[clang::lifetimebound]] -> const DecisionState&;
     [[nodiscard]]
-    auto GetSerializationState() const noexcept -> const SerializationState&;
+    auto GetSerializationState() const noexcept [[clang::lifetimebound]] -> const SerializationState&;
 };

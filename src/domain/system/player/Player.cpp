@@ -58,5 +58,8 @@ void Player::SetName(std::string_view newName)
 
 void Player::SetType(GameEnums::PlayerType newType) noexcept
 {
-    m_type = newType;
+    if (newType == GameEnums::PlayerType::COMPUTER || newType == GameEnums::PlayerType::HUMAN)
+    {
+        m_type = newType;
+    }
 }

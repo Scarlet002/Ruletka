@@ -1,6 +1,5 @@
 #include "ConsoleProvider.h"
 #include "DecisionState.h"
-#include "GameConfig.h"
 #include "GameEnums.h"
 #include "GameLoopState.h"
 #include "InputValidator.h"

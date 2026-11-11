@@ -21,7 +21,8 @@ public:
     {
         return !filename.empty() && filename.size() <= GameConfig::MAX_FILENAME_LENGTH &&
                std::ranges::all_of(filename, [](char character) -> bool {
-                   return std::isalnum(static_cast<unsigned char>(character)) || character == '_' || character == '-';
+                   return std::isalnum(static_cast<unsigned char>(character)) != 0 || character == '_' ||
+                          character == '-';
                });
     }
 };

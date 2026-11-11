@@ -66,3 +66,41 @@ TEST(PlayerTESTS, GetTypeStringReturnsTypeInString)
 
     EXPECT_EQ(player.GetTypeString(), TYPE_STRING);
 }
+
+TEST(PlayerTESTS, ConstructorStoresAllFields)
+{
+    constexpr auto NAME = "Player1";
+    constexpr auto TYPE = GameEnums::PlayerType::HUMAN;
+    auto player = Player(NAME, HP(), Inventory(), TYPE);
+
+    EXPECT_EQ(player.GetName(), NAME);
+    EXPECT_EQ(player.GetType(), TYPE);
+    EXPECT_EQ(player.GetHP().GetHP(), GameConfig::MAX_PLAYER_HP);
+    EXPECT_EQ(player.GetInventory().GetItemsCount(), GameConfig::MIN_ITEMS);
+}
+
+TEST(PlayerTESTS, GetInventoryReturnsMutableRef)
+{
+    auto player = ArrangePlayer();
+    auto& inventory = player.GetInventory();
+    inventory.AddItemType(GameEnums::ItemType::SAW, 1U);
+
+    EXPECT_EQ(player.GetInventory().GetItemCount(GameEnums::ItemType::SAW), 1U);
+}
+
+TEST(PlayerTESTS, GetHPReturnsMutableRef)
+{
+    auto player = ArrangePlayer();
+    auto& hpSystem = player.GetHP();
+    hpSystem.LoseHP(GameConfig::SAW_DAMAGE);
+
+    EXPECT_EQ(player.GetHP().GetHP(), GameConfig::MAX_PLAYER_HP - GameConfig::SAW_DAMAGE);
+}
+
+TEST(PlayerTESTS, GetTypeStringReturnsHumanForHumanType)
+{
+    auto player = ArrangePlayer();
+    player.SetType(GameEnums::PlayerType::HUMAN);
+
+    EXPECT_EQ(player.GetTypeString(), "human");
+}

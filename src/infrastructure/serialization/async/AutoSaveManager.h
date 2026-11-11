@@ -29,8 +29,11 @@ public:
     ~AutoSaveManager() noexcept;
 
     auto SaveSnapshotAsync(const ApplicationState& app, const DomainState& domain) -> void;
+    [[nodiscard]]
     auto IsSaving() const noexcept -> bool;
     auto SetSaveCounter(uint8_t newCount) -> void;
+    [[nodiscard]]
     auto GetSaveCounter() const noexcept -> uint8_t;
+    [[nodiscard]]
     auto GetSerializationLog() const -> std::string_view;
 };

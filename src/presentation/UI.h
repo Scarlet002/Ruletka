@@ -4,6 +4,7 @@
 #include "Provider.h"
 #include "Renderer.h"
 
+// NOLINT(misc-confusable-identifiers)
 class UI : public Renderer, public Provider
 {
 protected:

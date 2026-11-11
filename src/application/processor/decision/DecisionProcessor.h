@@ -20,7 +20,6 @@ private:
     AIManager& m_aiManager;
 
     auto GetAIInput() -> void;
-    auto CalcProbability() -> void;
     auto SetDecision(GameEnums::MainChoice action) -> void;
 
 public:

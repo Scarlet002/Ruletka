@@ -6,8 +6,6 @@
 #include "GameEnums.h"
 #include "GameLoopState.h"
 #include "IAction.h"
-#include "ItemState.h"
-#include "Magazine.h"
 #include <memory>
 #include <utility>
 
@@ -27,7 +25,6 @@ auto DecisionProcessor::GetAIInput() -> void
 {
     if (m_appState.GetGameLoopState().GetStarter() == GameEnums::PlayerType::COMPUTER)
     {
-        CalcProbability();
         m_aiManager.GetInput();
     }
 }
@@ -45,16 +42,6 @@ auto DecisionProcessor::SetDecision(GameEnums::MainChoice action) -> void
         (action == GameEnums::MainChoice::HEAL || action == GameEnums::MainChoice::SHOOT))
     {
         m_appState.GetDecisionState().SetMainChoice(GameEnums::MainChoice::AUTOSAVE);
-    }
-}
-
-auto DecisionProcessor::CalcProbability() -> void
-{
-    const auto& itemState = m_domainState.GetItemState();
-    if (itemState.GetStateOfMagnifier() == GameEnums::YesNo::NO &&
-        itemState.GetStateOfCellPhone() == GameEnums::YesNo::NO)
-    {
-        m_domainState.GetMagazine().CalculateHitProbability();
     }
 }
 

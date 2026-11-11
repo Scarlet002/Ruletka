@@ -11,43 +11,43 @@ class DomainState final
 private:
     Player m_computer;
     Player m_human;
-    Magazine m_magazine;
     ItemState m_itemState;
+    Magazine m_magazine;
 
 public:
     DomainState(Player computer, Player human, ItemState itemState, Magazine magazine);
 
     [[nodiscard]]
-    auto GetHuman() noexcept -> Player&;
+    auto GetHuman() noexcept [[clang::lifetimebound]] -> Player&;
     [[nodiscard]]
-    auto GetHumanInventory() noexcept -> Inventory&;
+    auto GetHumanInventory() noexcept [[clang::lifetimebound]] -> Inventory&;
     [[nodiscard]]
-    auto GetHumanHP() noexcept -> HP&;
+    auto GetHumanHP() noexcept [[clang::lifetimebound]] -> HP&;
     [[nodiscard]]
-    auto GetComputer() noexcept -> Player&;
+    auto GetComputer() noexcept [[clang::lifetimebound]] -> Player&;
     [[nodiscard]]
-    auto GetComputerInventory() noexcept -> Inventory&;
+    auto GetComputerInventory() noexcept [[clang::lifetimebound]] -> Inventory&;
     [[nodiscard]]
-    auto GetComputerHP() noexcept -> HP&;
+    auto GetComputerHP() noexcept [[clang::lifetimebound]] -> HP&;
     [[nodiscard]]
-    auto GetMagazine() noexcept -> Magazine&;
+    auto GetMagazine() noexcept [[clang::lifetimebound]] -> Magazine&;
     [[nodiscard]]
-    auto GetItemState() noexcept -> ItemState&;
+    auto GetItemState() noexcept [[clang::lifetimebound]] -> ItemState&;
 
     [[nodiscard]]
-    auto GetHuman() const noexcept -> const Player&;
+    auto GetHuman() const noexcept [[clang::lifetimebound]] -> const Player&;
     [[nodiscard]]
-    auto GetHumanInventory() const noexcept -> const Inventory&;
+    auto GetHumanInventory() const noexcept [[clang::lifetimebound]] -> const Inventory&;
     [[nodiscard]]
-    auto GetHumanHP() const noexcept -> const HP&;
+    auto GetHumanHP() const noexcept [[clang::lifetimebound]] -> const HP&;
     [[nodiscard]]
-    auto GetComputer() const noexcept -> const Player&;
+    auto GetComputer() const noexcept [[clang::lifetimebound]] -> const Player&;
     [[nodiscard]]
-    auto GetComputerInventory() const noexcept -> const Inventory&;
+    auto GetComputerInventory() const noexcept [[clang::lifetimebound]] -> const Inventory&;
     [[nodiscard]]
-    auto GetComputerHP() const noexcept -> const HP&;
+    auto GetComputerHP() const noexcept [[clang::lifetimebound]] -> const HP&;
     [[nodiscard]]
-    auto GetMagazine() const noexcept -> const Magazine&;
+    auto GetMagazine() const noexcept [[clang::lifetimebound]] -> const Magazine&;
     [[nodiscard]]
-    auto GetItemState() const noexcept -> const ItemState&;
+    auto GetItemState() const noexcept [[clang::lifetimebound]] -> const ItemState&;
 };

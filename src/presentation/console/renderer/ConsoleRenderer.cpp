@@ -70,8 +70,9 @@ auto ConsoleRenderer::Clear() -> void
 
     SetConsoleCursorPosition(hStdOut, homeCoords);
 #else
-    const char* clear_seq = "\033[2J\033[H";
-    write(STDOUT_FILENO, clear_seq, 7);
+    constexpr auto CLEAR_SEQ = std::string_view("\033[2J\033[H");
+    constexpr auto CLEAR_SEQ_LENGTH = 7U;
+    write(STDOUT_FILENO, CLEAR_SEQ.data(), CLEAR_SEQ_LENGTH);
 #endif
 }
 

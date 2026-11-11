@@ -3,11 +3,10 @@
 #include "DecisionState.h"
 #include "GameLoopState.h"
 #include "SerializationState.h"
-#include <utility>
 
 ApplicationState::ApplicationState(AIState aiState, DecisionState decisionState, GameLoopState gameLoopState,
                                    SerializationState serializationState) noexcept
-    : m_aiState(aiState), m_decisionState(std::move(decisionState)), m_gameLoopState(gameLoopState),
+    : m_aiState(aiState), m_decisionState(decisionState), m_gameLoopState(gameLoopState),
       m_serializationState(serializationState)
 {
 }

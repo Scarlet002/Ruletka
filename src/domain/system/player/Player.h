@@ -19,13 +19,13 @@ public:
     Player(std::string_view name, HP hitPoints, Inventory inventory, GameEnums::PlayerType type);
 
     [[nodiscard]]
-    auto GetInventory() const noexcept -> const Inventory&;
+    auto GetInventory() const noexcept [[clang::lifetimebound]] -> const Inventory&;
     [[nodiscard]]
-    auto GetHP() const noexcept -> const HP&;
+    auto GetHP() const noexcept [[clang::lifetimebound]] -> const HP&;
     [[nodiscard]]
-    auto GetInventory() noexcept -> Inventory&;
+    auto GetInventory() noexcept [[clang::lifetimebound]] -> Inventory&;
     [[nodiscard]]
-    auto GetHP() noexcept -> HP&;
+    auto GetHP() noexcept [[clang::lifetimebound]] -> HP&;
     [[nodiscard]]
     auto IsAlive() const noexcept -> GameEnums::YesNo;
     [[nodiscard]]

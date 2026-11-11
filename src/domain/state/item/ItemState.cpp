@@ -19,7 +19,10 @@ auto ItemState::ResetDamage() noexcept -> void
 
 auto ItemState::SetDamage(uint8_t newDamage) noexcept -> void
 {
-    m_damage = newDamage;
+    if (newDamage <= GameConfig::SAW_DAMAGE && newDamage > 0U)
+    {
+        m_damage = newDamage;
+    }
 }
 
 auto ItemState::SetStateOfHandCuffs(GameEnums::YesNo newState) noexcept -> void

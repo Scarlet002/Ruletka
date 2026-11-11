@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 namespace
 {
@@ -309,4 +310,58 @@ TEST(ShotgunMagazineTESTS, CalculateHitProbabilityReturns0WhenMagazineIsEmpty)
     magazine.CalculateHitProbability();
 
     EXPECT_FLOAT_EQ(magazine.GetHitProbability(), EXPECTED_RETURN);
+}
+
+TEST(ShotgunMagazineTESTS, CalculateHitProbabilityResetsToZeroWhenMagazineBecomesEmpty)
+{
+    auto magazine = Magazine();
+    constexpr auto FULL_MAGAZINE = BufferMagazine{GameEnums::MagazineChamber::LIVE};
+    magazine.SetMagazine({.m_magazine = FULL_MAGAZINE, .m_head = 0U});
+    magazine.CalculateHitProbability();
+    EXPECT_FLOAT_EQ(magazine.GetHitProbability(), 1.0);
+
+    constexpr auto EMPTY_MAGAZINE = BufferMagazine{};
+    magazine.SetMagazine({.m_magazine = EMPTY_MAGAZINE, .m_head = 0U});
+    magazine.CalculateHitProbability();
+
+    EXPECT_FLOAT_EQ(magazine.GetHitProbability(), 0.0);
+}
+
+TEST(ShotgunMagazineTESTS, SetMagazineThrowsWhenHeadOutOfRange)
+{
+    auto magazine = Magazine();
+    constexpr auto BUFFER = BufferMagazine{};
+
+    EXPECT_THROW(magazine.SetMagazine({.m_magazine = BUFFER, .m_head = GameConfig::MAX_BULLETS}), std::out_of_range);
+}
+
+TEST(ShotgunMagazineTESTS, CheckMagazineChamberThrowsWhenIndexOutOfRange)
+{
+    const auto magazine = Magazine();
+
+    EXPECT_THROW(static_cast<void>(magazine.CheckMagazineChamber(GameConfig::MAX_BULLETS)), std::out_of_range);
+}
+
+TEST(ShotgunMagazineTESTS, ReloadResetsHeadToZero)
+{
+    auto magazine = Magazine();
+    constexpr auto BUFFER = BufferMagazine{GameEnums::MagazineChamber::LIVE, GameEnums::MagazineChamber::LIVE};
+    magazine.SetMagazine({.m_magazine = BUFFER, .m_head = 1U});
+
+    magazine.Reload();
+
+    EXPECT_EQ(magazine.GetMagazine().m_head, GameConfig::MIN_BULLETS);
+}
+
+TEST(ShotgunMagazineTESTS, ReloadSetsSizeInRngRange)
+{
+    auto magazine = Magazine();
+    constexpr auto SAMPLE = 100UZ;
+    for (auto iteration = 0UZ; iteration < SAMPLE; ++iteration)
+    {
+        magazine.Reload();
+        const auto size = magazine.GetMagazineSize();
+        EXPECT_GE(size, GameConfig::MIN_BULLETS_RNG);
+        EXPECT_LE(size, GameConfig::MAX_BULLETS_RNG);
+    }
 }

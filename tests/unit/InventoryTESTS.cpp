@@ -132,3 +132,58 @@ TEST(InventoryTESTS, CloneReturnsNewInstanceWithSameItemCount)
     EXPECT_NE(&clonedInventory, &inventory);
     EXPECT_EQ(clonedInventory.GetItemsCount(), itemCount);
 }
+
+TEST(InventoryTESTS, SetItemCountAllowsDecreasing)
+{
+    auto inventory = Inventory();
+    InitializeInventory(inventory);
+    inventory.SetItemCount(GameEnums::ItemType::BEER, GameConfig::MAX_ITEMS);
+
+    inventory.SetItemCount(GameEnums::ItemType::BEER, 2U);
+
+    EXPECT_EQ(inventory.GetItemCount(GameEnums::ItemType::BEER), 2U);
+}
+
+TEST(InventoryTESTS, SetItemCountToZeroResetsItem)
+{
+    auto inventory = Inventory();
+    InitializeInventory(inventory);
+    inventory.SetItemCount(GameEnums::ItemType::BEER, 3U);
+
+    inventory.SetItemCount(GameEnums::ItemType::BEER, 0U);
+
+    EXPECT_EQ(inventory.GetItemCount(GameEnums::ItemType::BEER), GameConfig::MIN_ITEMS);
+}
+
+TEST(InventoryTESTS, AddItemTypeWithDuplicateKeyDoesNotOverwrite)
+{
+    auto inventory = Inventory();
+    inventory.AddItemType(GameEnums::ItemType::SAW, 2U);
+    inventory.AddItemType(GameEnums::ItemType::SAW, 4U);
+
+    EXPECT_EQ(inventory.GetItemCount(GameEnums::ItemType::SAW), 2U);
+}
+
+TEST(InventoryTESTS, AddItemTypeWithTooManyItemsIsRejected)
+{
+    auto inventory = Inventory();
+    constexpr auto NEW_ITEM_COUNT = 10U;
+    inventory.AddItemType(GameEnums::ItemType::SAW, NEW_ITEM_COUNT);
+
+    EXPECT_EQ(inventory.GetItemCount(GameEnums::ItemType::SAW), GameConfig::MIN_ITEMS);
+}
+
+TEST(InventoryTESTS, GetItemCountForUnknownTypeReturnsMinItems)
+{
+    auto inventory = Inventory();
+    EXPECT_EQ(inventory.GetItemCount(GameEnums::ItemType::NOTHING), GameConfig::MIN_ITEMS);
+}
+
+TEST(InventoryTESTS, UseItemWithNothingDoesNothing)
+{
+    auto inventory = Inventory();
+    InitializeInventory(inventory);
+
+    EXPECT_NO_THROW(inventory.UseItem(GameEnums::ItemType::NOTHING));
+    EXPECT_EQ(inventory.GetItemsCount(), GameConfig::MIN_ITEMS);
+}

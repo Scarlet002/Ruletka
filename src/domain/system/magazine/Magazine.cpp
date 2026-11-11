@@ -13,10 +13,7 @@ auto Magazine::CalculateHitProbability() -> void
     const auto blank = GetBullets(GameEnums::MagazineChamber::BLANK);
     const auto live = GetBullets(GameEnums::MagazineChamber::LIVE);
     const auto total = blank + live;
-    if (total != 0)
-    {
-        m_hitProbability = IsEmpty() ? 0.0 : static_cast<double>(live) / total;
-    }
+    m_hitProbability = (total == 0) ? 0.0 : static_cast<double>(live) / total;
 }
 
 auto Magazine::SetHitProbability(double newProbability) noexcept -> void
@@ -30,20 +27,22 @@ auto Magazine::DecreaseBulletCount() -> void
     {
         return;
     }
-
     m_magazine[m_head] = GameEnums::MagazineChamber::EMPTY;
+    CalculateHitProbability();
     ++m_head;
 }
 
 auto Magazine::Reload() -> void
 {
     using GameEnums::MagazineChamber;
-    m_head = GameConfig::MIN_BULLETS;
+    using namespace GameConfig;
+    m_hitProbability = MIN_PROBABILITY;
+    m_head = MIN_BULLETS;
     for (auto& bullet : m_magazine)
     {
         bullet = MagazineChamber::EMPTY;
     }
-    using namespace GameConfig;
+
     constexpr auto BLANK_INT = std::to_underlying(MagazineChamber::BLANK);
     constexpr auto LIVE_INT = std::to_underlying(MagazineChamber::LIVE);
     const auto newSize = RNG::GetRN(MIN_BULLETS_RNG, MAX_BULLETS_RNG);
@@ -55,7 +54,10 @@ auto Magazine::Reload() -> void
 
 auto Magazine::SetMagazine(MagazineView newMagazine) -> void
 {
-    assert(newMagazine.m_head < GameConfig::MAX_BULLETS && "Invalid head index!");
+    if (newMagazine.m_head >= GameConfig::MAX_BULLETS)
+    {
+        throw std::out_of_range("Invalid magazine head index!");
+    }
     std::ranges::copy(newMagazine.m_magazine, m_magazine.begin());
     m_head = newMagazine.m_head;
 }

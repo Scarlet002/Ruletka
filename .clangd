@@ -41,6 +41,8 @@ CompileFlags:
     - -W1
     - -W0
     - -Wpadded
+    - -Wswitch-default
+    - -Wcovered-switch-default
 
 Diagnostics:
   ClangTidy:
