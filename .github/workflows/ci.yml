@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v1.13.0
       - name: Install LLVM and Ninja
         run: choco install llvm ninja -y --no-progress
       - name: Setup vcpkg
@@ -53,8 +53,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+          sudo apt-get update --fix-missing || sudo apt-get update --fix-missing
+          sudo apt-get install -y -o Acquire::Retries=5 \
+            build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev \
+            || sudo apt-get install -y --fix-missing build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -95,8 +97,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+          sudo apt-get update --fix-missing || sudo apt-get update --fix-missing
+          sudo apt-get install -y -o Acquire::Retries=5 \
+            build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev \
+            || sudo apt-get install -y --fix-missing build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -126,8 +130,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+          sudo apt-get update --fix-missing || sudo apt-get update --fix-missing
+          sudo apt-get install -y -o Acquire::Retries=5 \
+            build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev \
+            || sudo apt-get install -y --fix-missing build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -154,8 +160,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 gcovr libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+          sudo apt-get update --fix-missing || sudo apt-get update --fix-missing
+          sudo apt-get install -y -o Acquire::Retries=5 \
+            build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 gcovr libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev \
+            || sudo apt-get install -y --fix-missing build-essential ninja-build pkg-config autoconf automake libtool gcc-14 g++-14 gcovr libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
@@ -186,7 +194,7 @@ jobs:
             --xml coverage.xml \
             --html-details coverage.html
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: coverage.xml
           fail_ci_if_error: false
@@ -198,8 +206,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install system dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential ninja-build pkg-config autoconf automake libtool libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
+          sudo apt-get update --fix-missing || sudo apt-get update --fix-missing
+          sudo apt-get install -y -o Acquire::Retries=5 \
+            build-essential ninja-build pkg-config autoconf automake libtool libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev \
+            || sudo apt-get install -y --fix-missing build-essential ninja-build pkg-config autoconf automake libtool libpthread-stubs0-dev libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev libxext-dev
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
